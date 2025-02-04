@@ -24,6 +24,7 @@ namespace EasySave.Controllers
             Bienvenue sur EasySave v1.0
             ===========================
             """);
+            MainView.DisplayLang();
             MainLoop();
         }
 
