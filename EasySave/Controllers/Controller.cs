@@ -123,7 +123,12 @@ namespace EasySave.Controllers
 
         public void CreateSave()
         {
+<<<<<<< HEAD
             MainView.Display("📦 Créer une sauvegarde");
+=======
+            MainView.Display("Créer une sauvegarde");
+
+>>>>>>> 26358401f8323e5e6dfb750104820904b3b971aa
             // Exemple de sauvegarde fictive
             string backupName = "Save1";
             string sourcePath = @"\\SourcePath\File.txt";
@@ -133,6 +138,7 @@ namespace EasySave.Controllers
 
             EasySave.Logger.Logger.Log(backupName, sourcePath, destinationPath, fileSize, transferTime);
             MainView.Display("Sauvegarde enregistrée dans le journal !");
+<<<<<<< HEAD
             // Implémentation de la création de sauvegarde
         }
 
@@ -157,5 +163,9 @@ namespace EasySave.Controllers
             ParseArguments(new string[] { $"-run:{input}" });
         }
 
+=======
+        }
+
+>>>>>>> 26358401f8323e5e6dfb750104820904b3b971aa
     }
 }
