@@ -36,5 +36,15 @@ namespace EasySave.Models
         {
             StateLogger.WriteState(Saves);
         }
+
+        public string[] GetSaveNames()
+        {
+            return Saves.Select(save => save.Name).ToArray();
+        }
+
+        public string[] GetSaveInfos()
+        {
+            return Saves.Select(save => $"{save.Name} -> {save.RealDirectoryPath} <> {save.CopyDirectoryPath} ({save.Date})" ).ToArray();
+        }
     }
 }

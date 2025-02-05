@@ -45,6 +45,11 @@ namespace EasySave.Models
             Copy(RealDirectoryPath, CopyDirectoryPath, true);
         }
 
+        public void UpdateSave()
+        {
+            CreateSave();
+        }
+
         public void LoadSave()
         {
             Copy(CopyDirectoryPath, RealDirectoryPath, false);
@@ -147,6 +152,11 @@ namespace EasySave.Models
         {
             Date = DateTime.Now;
             SaveManager.SaveState();
+        }
+
+        public bool IsRealDirectoryPathValid()
+        {
+            return Directory.Exists(RealDirectoryPath);
         }
     }
 }
