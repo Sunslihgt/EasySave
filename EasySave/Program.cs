@@ -7,6 +7,6 @@ internal class Programme
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        new Controller();
+        new Controller(args);
     }
 }
