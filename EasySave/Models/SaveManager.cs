@@ -7,9 +7,9 @@ namespace EasySave.Models
 
         public SaveManager()
         {
-            Save testSave = new Save(Save.SaveType.Differential, "C:/TEST/A", "C:/TEST/SAVE");
-            Saves.Add(testSave);
-            testSave.CreateSave();
+            //Save testSave = new Save(Save.SaveType.Differential, "C:/TEST/A", "C:/TEST/SAVE");
+            //Saves.Add(testSave);
+            //testSave.CreateSave();
             //testSave.LoadSave();
         }
 

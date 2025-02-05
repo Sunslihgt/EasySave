@@ -8,8 +8,22 @@
             Differential
         }
 
+        /*
+         * "Name": "Save1",
+         * "SourceFilePath": "",
+         * "TargetFilePath": "",
+         * "State": "END",
+         * "TotalFilesToCopy": 0,
+         * "TotalFilesSize": 0,
+         * "NbFilesLeftToDo": 0,
+         * "Progression": 0
+         */
+
         public SaveType saveType;
+        public string Name { get; private set; }
         public string realDirectoryPath, copyDirectoryPath;
+
+        public string Progression { get; private set; } 
 
         public Save(SaveType saveType, string realDirectoryPath, string copyDirectoryPath)
         {
