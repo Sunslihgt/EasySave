@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EasySave.Models;
 using EasySave.Views;
 
 namespace EasySave.Controllers
@@ -24,8 +25,24 @@ namespace EasySave.Controllers
             Bienvenue sur EasySave v1.0
             ===========================
             """);
-            MainView.DisplayLang();
+            int langueChoice = MainView.DisplayLang();
+            switch (langueChoice)
+            {
+                case 1:
+                    LanguageManager.SetLanguage(LanguageManager.Language.EN);
+                    break;
+                case 2:
+                    LanguageManager.SetLanguage(LanguageManager.Language.FR);
+                    break;
+                case 3:
+                    LanguageManager.SetLanguage(LanguageManager.Language.ES);
+                    break;
+                default:
+                    LanguageManager.SetLanguage(LanguageManager.Language.EN);
+                    break;
+            }
             MainLoop();
+
         }
 
         private void MainLoop()

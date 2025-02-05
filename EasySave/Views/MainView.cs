@@ -28,7 +28,7 @@ namespace EasySave.Views
 
         public int DisplayMenu()
         {
-            return AskChoice("Choisissez une action:", ["Créer une sauvegarde", "Mettre à jour une sauvegarde", "Charger une sauvegarde", "Exécuter une/des sauvegardes", "Quitter"]);
+            return AskChoice(LanguageManager.GetText("choose_actions"), LanguageManager.GetTextArray("actions").ToArray());
         }
 
         public string AskQuestion(string question)

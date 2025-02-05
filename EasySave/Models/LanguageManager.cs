@@ -17,7 +17,8 @@ namespace EasySave.Models
         public enum Language
         {
             EN,
-            FR
+            FR,
+            ES
         }
         private static Language currentLanguage = Language.EN;
 

@@ -1,42 +1,69 @@
 {
-    "en": {
-        "choose_language": "Choose your language:",
-        "languages": [
-            "Default (English)",
-            "French (Français)",
-            "English (English)"
-        ],
-        "invalid_choice": "Invalid choice, defaulting to English.",
-        "menu_title": "Main Menu",
-        "create_save": "Create Save",
-        "update_save": "Update Save",
-        "execute_save": "Execute Save",
-        "delete_save": "Delete Save",
-        "leave": "Leave",
-        "create_save_selected": "Create Save selected",
-        "update_save_selected": "Update Save selected",
-        "execute_save_selected": "Execute Save selected",
-        "delete_save_selected": "Delete Save selected",
-        "leave_selected": "Exiting the application..."
-    },
-    "fr": {
-        "choose_language": "Choisissez votre langue :",
-        "languages": [
-            "Par défaut (Anglais)",
-            "Français (Français)",
-            "Anglais (English)"
-        ],
-        "invalid_choice": "Choix invalide, utilisation de l'anglais par défaut.",
-        "menu_title": "Menu Principal",
-        "create_save": "Créer une Sauvegarde",
-        "update_save": "Mettre à jour une Sauvegarde",
-        "execute_save": "Exécuter une Sauvegarde",
-        "delete_save": "Supprimer une Sauvegarde",
-        "leave": "Quitter",
-        "create_save_selected": "Création d'une sauvegarde sélectionnée",
-        "update_save_selected": "Mise à jour d'une sauvegarde sélectionnée",
-        "execute_save_selected": "Exécution d'une sauvegarde sélectionnée",
-        "delete_save_selected": "Suppression d'une sauvegarde sélectionnée",
-        "leave_selected": "Fermeture de l'application..."
-    }
+  "en": {
+    "choose_language": "Choose your language:",
+    "languages": [
+      "English (English)",
+      "French (Français)",
+      "Spanish (Espagnol"
+    ],
+    "invalid_choice": "Invalid choice, defaulting to English.",
+    "menu_title": "Main Menu",
+    "choose_actions": "Choose an actions please",
+    "actions": [
+      "Create Save",
+      "Update Save",
+      "Execute Save",
+      "Delete Save",
+      "Leave"
+    ],
+    "update_save": "Update Save",
+    "execute_save": "Execute Save",
+    "delete_save": "Delete Save",
+    "leave": "Leave",
+    "create_save_selected": "Create Save selected",
+    "update_save_selected": "Update Save selected",
+    "execute_save_selected": "Execute Save selected",
+    "delete_save_selected": "Delete Save selected",
+    "leave_selected": "Exiting the application..."
+  },
+  "fr": {
+    "choose_language": "Choisissez votre langue :",
+    "languages": [
+      "Par défaut (Anglais)",
+      "Français (Français)",
+      "Espagnol (Espagnol)"
+    ],
+    "invalid_choice": "Choix invalide, utilisation de l'anglais par défaut.",
+    "menu_title": "Menu Principal",
+    "create_save": "Créer une Sauvegarde",
+    "update_save": "Mettre à jour une Sauvegarde",
+    "execute_save": "Exécuter une Sauvegarde",
+    "delete_save": "Supprimer une Sauvegarde",
+    "leave": "Quitter",
+    "create_save_selected": "Création d'une sauvegarde sélectionnée",
+    "update_save_selected": "Mise à jour d'une sauvegarde sélectionnée",
+    "execute_save_selected": "Exécution d'une sauvegarde sélectionnée",
+    "delete_save_selected": "Suppression d'une sauvegarde sélectionnée",
+    "leave_selected": "Fermeture de l'application..."
+  },
+  "es": {
+    "choose_language": "Eliga su idioma ;",
+    "languages": [
+      "Ingles (English)",
+      "Frances (Français)",
+      "Español (Espagnol)"
+    ],
+    "invalid_choise ": "Opción inválida, utilización del español por defecto. ",
+    "menu_title": "menú Principal",
+    "create_save": "Crear copia de seguridad",
+    "update_save": "Actualizar copia de seguridad",
+    "execute_save": "Ejecutar copia de seguridad",
+    "delete_save": "Borrar copia de seguridad",
+    "leave": "Salir",
+    "create_save_selected": "Creación de una copia de seguridad",
+    "update_save_selected": "Actualización de una copia de seguridad",
+    "execute_save_selected": "Ejecución de una copia de seguridad",
+    "delete_save_selected": "Borrado de una copia de seguridad",
+    "leave_selected": "Cierre de la aplicación..."
+  }
 }
