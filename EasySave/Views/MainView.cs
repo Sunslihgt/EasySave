@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EasySave.Models;
 
 namespace EasySave.Views
 {
@@ -18,6 +19,11 @@ namespace EasySave.Views
             {
                 Console.Write(text);
             }
+        }
+
+        public int DisplayLang()
+        {
+            return AskChoice(LanguageManager.GetText("choose_language"), LanguageManager.GetTextArray("languages").ToArray());
         }
 
         public int DisplayMenu()
