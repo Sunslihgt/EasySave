@@ -14,7 +14,12 @@ namespace EasySave.Models
     internal static class LanguageManager
     {
         private static Dictionary<string, Dictionary<string, object>> languages;
-        private static string currentLanguage = "en";
+        public enum Language
+        {
+            EN,
+            FR
+        }
+        private static Language currentLanguage = Language.EN;
 
         static LanguageManager()
         {
@@ -45,35 +50,38 @@ namespace EasySave.Models
             }
         }
 
-        public static void SetLanguage(string languageCode)
+        public static void SetLanguage(Language language)
         {
-            if (languages.ContainsKey(languageCode))
+            if (languages.ContainsKey(language.ToString().ToLower()))
             {
-                currentLanguage = languageCode;
+                currentLanguage = language;
             }
             else
             {
                 Console.WriteLine("⚠️ Language not found! Defaulting to English.");
-                currentLanguage = "en";
+                currentLanguage = Language.EN;
             }
         }
 
         public static string GetText(string key)
         {
-            if (languages.ContainsKey(currentLanguage) && languages[currentLanguage].ContainsKey(key))
+            string langKey = currentLanguage.ToString().ToLower();
+            if (languages.ContainsKey(langKey) && languages[langKey].ContainsKey(key))
             {
-                var value = languages[currentLanguage][key];
+                var value = languages[langKey][key];
                 return value is string text ? text : $"[MISSING:{key}]";
             }
             return $"[MISSING:{key}]";
         }
+
         public static List<string> GetTextArray(string key)
         {
-            if (languages.ContainsKey(currentLanguage) && languages[currentLanguage].ContainsKey(key))
+            string langKey = currentLanguage.ToString().ToLower();
+            if (languages.ContainsKey(langKey) && languages[langKey].ContainsKey(key))
             {
                 try
                 {
-                    var value = languages[currentLanguage][key];
+                    var value = languages[langKey][key];
                     if (value is JArray jsonArray)
                     {
                         return jsonArray.ToObject<List<string>>();
@@ -86,5 +94,6 @@ namespace EasySave.Models
             }
             return new List<string> { "[MISSING]" };
         }
+
     }
 }
