@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasySave.Models;
 using EasySave.Views;
+using EasySave.Logger;
 
 namespace EasySave.Controllers
 {
@@ -123,6 +124,15 @@ namespace EasySave.Controllers
         public void CreateSave()
         {
             MainView.Display("📦 Créer une sauvegarde");
+            // Exemple de sauvegarde fictive
+            string backupName = "Save1";
+            string sourcePath = @"\\SourcePath\File.txt";
+            string destinationPath = @"\\DestinationPath\File.txt";
+            long fileSize = 1024; // Taille fictive en octets
+            double transferTime = 58.002; // Temps fictif en ms
+
+            EasySave.Logger.Logger.Log(backupName, sourcePath, destinationPath, fileSize, transferTime);
+            MainView.Display("Sauvegarde enregistrée dans le journal !");
             // Implémentation de la création de sauvegarde
         }
 
@@ -146,5 +156,6 @@ namespace EasySave.Controllers
             string input = Console.ReadLine();
             ParseArguments(new string[] { $"-run:{input}" });
         }
+
     }
 }

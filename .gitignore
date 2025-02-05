@@ -1,3 +1,5 @@
 .vs
 EasySave/obj
 EasySave/bin
+EasySave.Logger/obj
+EasySave.Logger/bin
