@@ -56,7 +56,7 @@ namespace EasySave.Controllers
                         CreateSave();
                         break;
                     case 2:
-                        MainView.Display("Mettre à jour une sauvegarde");
+                        CreateSave();
                         break;
                     case 3:
                         MainView.Display("Charger une sauvegarde");

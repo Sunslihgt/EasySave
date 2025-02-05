@@ -8,12 +8,11 @@
     ],
     "invalid_choice": "Invalid choice, defaulting to English.",
     "menu_title": "Main Menu",
-    "choose_actions": "Choose an actions please",
+    "choose_actions": "Choose an action please",
     "actions": [
       "Create Save",
       "Update Save",
       "Execute Save",
-      "Delete Save",
       "Leave"
     ],
     "update_save": "Update Save",
@@ -35,6 +34,13 @@
     ],
     "invalid_choice": "Choix invalide, utilisation de l'anglais par défaut.",
     "menu_title": "Menu Principal",
+    "choose_actions": "Choisissez une action s'il vous plaît",
+    "actions": [
+      "Créer une Sauvegarde",
+      "Mettre à jour une Sauvegarde",
+      "Exécuter une Sauvegarde",
+      "Quitter"
+    ],
     "create_save": "Créer une Sauvegarde",
     "update_save": "Mettre à jour une Sauvegarde",
     "execute_save": "Exécuter une Sauvegarde",
@@ -52,6 +58,13 @@
       "Ingles (English)",
       "Frances (Français)",
       "Español (Espagnol)"
+    ],
+    "choose_actions": "Escoga una opcion por favor",
+    "actions": [
+      "Crear copia de seguridad",
+      "Actualizar copia de seguridad",
+      "Ejecutar copia de seguridad",
+      "Salir"
     ],
     "invalid_choise ": "Opción inválida, utilización del español por defecto. ",
     "menu_title": "menú Principal",
