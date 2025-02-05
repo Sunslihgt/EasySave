@@ -1,4 +1,6 @@
-﻿namespace EasySave.Models
+﻿using System.Data;
+
+namespace EasySave.Models
 {
     public class Save
     {
@@ -8,49 +10,63 @@
             Differential
         }
 
-        /*
-         * "Name": "Save1",
-         * "SourceFilePath": "",
-         * "TargetFilePath": "",
-         * "State": "END",
-         * "TotalFilesToCopy": 0,
-         * "TotalFilesSize": 0,
-         * "NbFilesLeftToDo": 0,
-         * "Progression": 0
-         */
 
-        public SaveType saveType;
+        public SaveType Type;
         public string Name { get; private set; }
-        public string realDirectoryPath, copyDirectoryPath;
+        public string RealDirectoryPath, CopyDirectoryPath;
 
-        public string Progression { get; private set; } 
+        public DateTime? Date;
+        public bool Transfering = false;
+        public int FilesRemaining = 0;
+        public int SizeRemaining = 0;
+        public string CurrentSource = "";
+        public string CurrentDestination = "";
 
-        public Save(SaveType saveType, string realDirectoryPath, string copyDirectoryPath)
+        public SaveManager SaveManager;
+
+
+        public Save(SaveManager saveManager, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, int sizeRemaining = 0, string currentSource = "", string currentDestination = "")
         {
-            this.saveType = saveType;
-            this.realDirectoryPath = realDirectoryPath;
-            this.copyDirectoryPath = copyDirectoryPath;
+            this.SaveManager = saveManager;
+            this.Type = saveType;
+            this.Name = name;
+            this.RealDirectoryPath = realDirectoryPath;
+            this.CopyDirectoryPath = copyDirectoryPath;
+            this.Date = date;
+            this.Transfering = transfering;
+            this.FilesRemaining = filesRemaining;
+            this.SizeRemaining = sizeRemaining;
+            this.CurrentSource = currentSource;
+            this.CurrentDestination = currentDestination;
         }
 
         public void CreateSave()
         {
-            Copy(realDirectoryPath, copyDirectoryPath, true);
+            Copy(RealDirectoryPath, CopyDirectoryPath, true);
         }
 
         public void LoadSave()
         {
-            Copy(copyDirectoryPath, realDirectoryPath, false);
+            Copy(CopyDirectoryPath, RealDirectoryPath, false);
         }
 
-        private void Copy(string source, string destination, bool createSave)
+        private void Copy(string source, string destination, bool createSave, bool rootSave = true)
         {
             DirectoryInfo sourceInfo = new DirectoryInfo(source);
             DirectoryInfo destinationInfo = new DirectoryInfo(destination);
-            
+
             if (!sourceInfo.Exists)
             {
                 Console.WriteLine($"Source directory '{source}' does not exist."); // TODO: Replace with logger
                 return;
+            }
+
+            if (rootSave)
+            {
+                Transfering = true;
+                FilesRemaining = sourceInfo.GetFiles("*", SearchOption.AllDirectories).Length;
+                SizeRemaining = (int) GetDirectorySize(sourceInfo);
+                UpdateState();
             }
 
             // Create destination directory if necessary
@@ -66,7 +82,7 @@
                 bool copyFile = true;
                 if (!createSave && File.Exists(destFilePath)) // Loading save and file exists
                 {
-                    if (saveType == SaveType.Differential) // Differential file load
+                    if (Type == SaveType.Differential) // Differential file load
                     {
                         // Do not overwrite files that haven't changed
                         if (File.GetLastWriteTime(destFilePath) <= file.LastWriteTime)
@@ -79,16 +95,58 @@
                 if (copyFile)
                 {
                     file.CopyTo(destFilePath, true);
+                    
+
                     Console.WriteLine($"{DateTime.Now}: {file.FullName} -> {destFilePath}"); // TODO: Replace with logger
                 }
+                
+                FilesRemaining--;
+                SizeRemaining -= (int) file.Length;
+                CurrentSource = file.FullName;
+                CurrentDestination = destFilePath;
+                UpdateState();
             }
 
             // Copy sub directories (recursive)
             foreach (DirectoryInfo subDir in sourceInfo.GetDirectories())
             {
                 string newDestinationDir = Path.Combine(destination, subDir.Name);
-                Copy(subDir.FullName, newDestinationDir, createSave);
+                Copy(subDir.FullName, newDestinationDir, createSave, false);
             }
+
+            if (rootSave)
+            {
+                Transfering = false;
+                FilesRemaining = 0;
+                SizeRemaining = 0;
+                CurrentSource = "";
+                CurrentDestination = "";
+                UpdateState();
+            }
+        }
+
+        private long GetDirectorySize(DirectoryInfo directoryInfo)
+        {
+            long size = 0;
+            // Add file sizes
+            FileInfo[] files = directoryInfo.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                size += file.Length;
+            }
+            // Add subdirectory sizes
+            DirectoryInfo[] dirs = directoryInfo.GetDirectories();
+            foreach (DirectoryInfo dir in dirs)
+            {
+                size += GetDirectorySize(dir);
+            }
+            return size;
+        }
+
+        public void UpdateState()
+        {
+            Date = DateTime.Now;
+            SaveManager.SaveState();
         }
     }
 }

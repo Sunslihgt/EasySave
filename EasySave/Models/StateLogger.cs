@@ -1,36 +1,34 @@
-﻿using System.Text.Json;
+﻿using EasySave.Controllers;
+using System.Text.Json;
 
 namespace EasySave.Models
 {
     public class StateLogger
     {
-        private const string STATE_FILE_PATH = "C:/Users/samsa/Documents/Programmation/C#/EasySave/EasySave/State/state.json";
+        // Path to EasySave/State/state.json
+        private string STATE_FILE_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../State", "state.json").ToString();
         private FileInfo stateFile;
 
-        public StateLogger()
+        public Controller Controller;
+
+        public StateLogger(Controller controller)
         {
+            this.Controller = controller;
+
             stateFile = new FileInfo(STATE_FILE_PATH);
-            if (!stateFile.Exists)
+
+            // Create default empty file if necessary
+            if (!stateFile.Exists || stateFile.Length == 0)
             {
                 using (var stream = stateFile.Create())
                 using (var writer = new StreamWriter(stream))
                 {
-                    writer.Write("{}");
+                    writer.Write("[]");
                 }
             }
-
-            stateFile.OpenRead();
         }
 
-        public struct saveState
-        {
-            public DateTime date;
-            public string sourcePath;
-            public string destinationPath;
-        }
-
-
-        public object[] ReadState()
+        public List<Save> ReadState()
         {
             using (var stream = stateFile.OpenRead())
             using (var reader = new StreamReader(stream))
@@ -38,7 +36,7 @@ namespace EasySave.Models
                 string json = reader.ReadToEnd();
                 if (string.IsNullOrEmpty(json))
                 {
-                    return Array.Empty<object>();
+                    return new List<Save>();
                 }
 
                 using (var jsonDocument = JsonDocument.Parse(json))
@@ -46,28 +44,107 @@ namespace EasySave.Models
                     var root = jsonDocument.RootElement;
                     if (root.ValueKind == JsonValueKind.Array)
                     {
-                        var states = new List<saveState>();
+                        var states = new List<Save>();
                         foreach (var element in root.EnumerateArray())
                         {
-                            var state = new saveState
+                            try
                             {
-                                date = element.GetProperty("date").GetDateTime(),
-                                sourcePath = element.GetProperty("sourcePath").GetString(),
-                                destinationPath = element.GetProperty("destinationPath").GetString()
-                            };
-                            states.Add(state);
+                                Save.SaveType saveType = element.GetProperty("type").GetString() == "Complete" ? Save.SaveType.Complete : Save.SaveType.Differential;
+                                string? saveName = element.GetProperty("name").GetString();
+                                string? sourcePath = element.GetProperty("realDirectoryPath").GetString();
+                                string? destinationPath = element.GetProperty("copyDirectoryPath").GetString();
+
+                                if (saveName != null && !string.IsNullOrEmpty(sourcePath) && !string.IsNullOrEmpty(destinationPath))
+                                {
+                                    Save save = new(
+                                        Controller.SaveManager,
+                                        saveType,
+                                        saveName,
+                                        sourcePath,
+                                        destinationPath
+                                    );
+
+                                    if (element.TryGetProperty("date", out JsonElement dateElement) && dateElement.TryGetDateTime(out DateTime saveDate) && saveDate > DateTime.UnixEpoch)
+                                    {
+                                        save.Date = saveDate;
+                                    }
+
+                                    //bool transfering = false;
+
+                                    if (element.TryGetProperty("transfering", out JsonElement transferingElement) && transferingElement.TryGetInt32(out int transfering))
+                                    {
+                                        if (transfering == 1)
+                                        {
+                                            save.Transfering = false;
+                                            save.FilesRemaining = element.GetProperty("filesRemaining").GetInt32();
+                                            save.SizeRemaining = element.GetProperty("filesRemaining").GetInt32();
+                                            save.CurrentSource = element.GetProperty("filesRemaining").GetString() ?? "";
+                                            save.CurrentDestination = element.GetProperty("filesRemaining").GetString() ?? "";
+                                        }
+                                        else
+                                        {
+                                            save.Transfering = false;
+                                        }
+                                        
+                                    }
+
+                                    states.Add(save);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message); // TODO: replace with logger
+                            }
                         }
-                        return states.Cast<object>().ToArray();
+                        return states;
                     }
                 }
+                return new List<Save>();
             }
-            return Array.Empty<object>();
         }
 
-
-    public void WriteState(object myObject)
+        public void WriteState(List<Save> saves)
         {
-            // Implementation for writing state
+            var savesToStore = saves.Select<Save, object>(save =>
+            {
+                if (save.Transfering)
+                {
+                    return new
+                    {
+                        name = save.Name,
+                        type = save.Type.ToString(),
+                        realDirectoryPath = save.RealDirectoryPath,
+                        copyDirectoryPath = save.CopyDirectoryPath,
+                        date = save.Date ?? DateTime.UnixEpoch,
+                        transfering = 1,
+                        filesRemaining = save.FilesRemaining,
+                        sizeRemaining = save.SizeRemaining,
+                        currentSource = save.CurrentSource,
+                        currentDestination = save.CurrentDestination
+                    };
+                }
+                else
+                {
+                    return new
+                    {
+                        name = save.Name,
+                        type = save.Type.ToString(),
+                        realDirectoryPath = save.RealDirectoryPath,
+                        copyDirectoryPath = save.CopyDirectoryPath,
+                        date = save.Date ?? DateTime.UnixEpoch,
+                        transfering = 0,
+                    };
+                }
+            }).ToList();
+
+            using (var stream = stateFile.OpenWrite())
+            {
+                stream.SetLength(0); // Clear the file before writing
+                using (var writer = new StreamWriter(stream))
+                {
+                    writer.Write(JsonSerializer.Serialize(savesToStore, new JsonSerializerOptions { WriteIndented = true }));
+                }
+            }
         }
     }
 }

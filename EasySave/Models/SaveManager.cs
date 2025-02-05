@@ -4,13 +4,18 @@ namespace EasySave.Models
     public class SaveManager
     {
         public List<Save> Saves = new();
+        public StateLogger StateLogger;
 
-        public SaveManager()
+        public SaveManager(StateLogger stateLogger)
         {
-            //Save testSave = new Save(Save.SaveType.Differential, "C:/TEST/A", "C:/TEST/SAVE");
+            this.StateLogger = stateLogger;
+
+            //Saves = StateLogger.ReadState();
+
+            //Save testSave = new Save(this, Save.SaveType.Differential, "save1", "C:/TEST/A", "C:/TEST/SAVE");
             //Saves.Add(testSave);
-            //testSave.CreateSave();
-            //testSave.LoadSave();
+
+            //SaveState();
         }
 
         // Create a save by loading the user's directory into the save location
@@ -25,6 +30,11 @@ namespace EasySave.Models
         public bool LoadSave(int saveId)
         {
             throw new NotImplementedException("This feature hasn't been implemented yet");
+        }
+
+        public void SaveState()
+        {
+            StateLogger.WriteState(Saves);
         }
     }
 }

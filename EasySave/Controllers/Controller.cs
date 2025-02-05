@@ -7,12 +7,17 @@ namespace EasySave.Controllers
     {
         public bool running = true;
         public MainView MainView = new();
-        public SaveManager SaveManager = new();
-        public StateLogger StateLogger = new();
+        public StateLogger StateLogger;
+        public SaveManager SaveManager;
 
         public Controller()
         {
-            StateLogger.ReadState();
+            StateLogger = new StateLogger(this);
+            SaveManager = new SaveManager(StateLogger);
+
+            SaveManager.Saves = StateLogger.ReadState();
+            StateLogger.WriteState(SaveManager.Saves);
+
             Start();
         }
 

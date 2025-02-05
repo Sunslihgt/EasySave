@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="State\" />
     <Folder Include="Sources\" />
   </ItemGroup>
 
