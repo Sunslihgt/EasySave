@@ -12,7 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Sources\" />
+    <Folder Include="Sources\DailyLog\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasySave.Logger\EasySave.Logger.csproj" />
   </ItemGroup>
 
 </Project>
