@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EasySave.Models;
 using EasySave.Views;
 
 namespace EasySave.Controllers
@@ -11,6 +7,7 @@ namespace EasySave.Controllers
     {
         public bool running = true;
         public MainView MainView = new();
+        public SaveManager saveManager = new();
 
         public Controller()
         {
