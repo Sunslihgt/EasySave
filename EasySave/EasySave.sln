@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave", "EasySave.csproj", "{FA72AEDE-15B0-4133-96CA-DBD64D2CCEA6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{08F5C19E-8346-458F-BE70-8CE9D6DE0E50} = {08F5C19E-8346-458F-BE70-8CE9D6DE0E50}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.Logger", "..\EasySave.Logger\EasySave.Logger.csproj", "{08F5C19E-8346-458F-BE70-8CE9D6DE0E50}"
 EndProject

@@ -65,6 +65,10 @@ namespace EasySave.Views
             {
                 input = Console.ReadLine();
                 int.TryParse(input, out choice);
+                if (input == null || input == "" || choice < 1 || choice > choices.Length)
+                {
+                    Display("> ", false);
+                }
             }
             Display("");
             return choice;

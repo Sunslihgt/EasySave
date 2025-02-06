@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EasySave.Models;
+﻿using EasySave.Models;
 using EasySave.Views;
-using EasySave.Logger;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.Controllers
 {
@@ -13,35 +8,49 @@ namespace EasySave.Controllers
     {
         public bool running = true;
         public MainView MainView = new();
-
-        // ✅ Ajout des arguments dans le constructeur
-        public Controller(string[] args)
+        public StateLogger StateLogger;
+        public SaveManager SaveManager;
+        
+        public Controller(string[] args) // Main args for CLI mode
         {
+            StateLogger = new StateLogger(this);
+            SaveManager = new SaveManager(StateLogger);
+
+            SaveManager.Saves = StateLogger.ReadState();
+            StateLogger.WriteState(SaveManager.Saves);
+
             if (args.Length > 0)
             {
-                ParseArguments(args);  // Mode automatique via la ligne de commande
+                ParseArguments(args);  // CLI mode
             }
             else
             {
-                Start();  // Mode interactif si aucun argument
+                Start(); // Interactive mode
             }
         }
 
-        // 🚀 Méthode pour analyser les arguments
+        // Analyze arguments
         private void ParseArguments(string[] args)
         {
-            foreach (var arg in args)
+            foreach (string arg in args)
             {
-                if (arg.Contains("-run:")) // Ex: -run:1-3 ou -run:1;3
+                if (arg.Trim().Contains("-run:")) // -run:1-3 or -run:1;3
                 {
                     string param = arg.Split(':')[1];
 
-                    if (param.Contains('-')) // Plage de sauvegardes (ex : 1-3)
+                    if (param.Contains('-')) // List of saves (ex : 1-3)
                     {
                         var range = param.Split('-').Select(int.Parse).ToArray();
                         for (int i = range[0]; i <= range[1]; i++)
                         {
-                            ExecuteSave(i);
+                            try
+                            {
+                                SaveManager.Saves[i].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                     }
                     else if (param.Contains(';')) // Sauvegardes spécifiques (ex : 1;3)
@@ -49,24 +58,38 @@ namespace EasySave.Controllers
                         var saves = param.Split(';').Select(int.Parse);
                         foreach (var saveId in saves)
                         {
-                            ExecuteSave(saveId);
+                            try
+                            {
+                                SaveManager.Saves[saveId].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                     }
                     else // Sauvegarde unique (ex : -run:2)
                     {
                         if (int.TryParse(param, out int saveId))
                         {
-                            ExecuteSave(saveId);
+                            try
+                            {
+                                SaveManager.Saves[saveId].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                         else
                         {
-                            MainView.Display($"❌ ID de sauvegarde invalide : {param}");
+                            MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
                         }
                     }
                 }
                 else
                 {
-                    MainView.Display($"⚠️ Argument non reconnu : {arg}");
+                    MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
                 }
             }
         }
@@ -78,15 +101,15 @@ namespace EasySave.Controllers
             Bienvenue sur EasySave v1.0
             ===========================
             """);
-
-            int langueChoice = MainView.DisplayLang();
-            switch (langueChoice)
+            int languageChoice = MainView.DisplayLang();
+            switch (languageChoice)
             {
                 case 1: LanguageManager.SetLanguage(LanguageManager.Language.EN); break;
                 case 2: LanguageManager.SetLanguage(LanguageManager.Language.FR); break;
                 case 3: LanguageManager.SetLanguage(LanguageManager.Language.ES); break;
                 default: LanguageManager.SetLanguage(LanguageManager.Language.EN); break;
             }
+
             MainLoop();
         }
 
@@ -101,17 +124,13 @@ namespace EasySave.Controllers
                         CreateSave();
                         break;
                     case 2:
-                        LoadSave();
+                        UpdateSave();
                         break;
                     case 3:
-                        MainView.Display("Charger une sauvegarde");
+                        LoadSave();
                         break;
                     case 4:
-                        MainView.Display("Exécuter une/des sauvegardes");
-                        ExecuteSavePrompt();
-                        break;
-                    case 5:
-                        MainView.Display("Fermeture du programme...");
+                        MainView.Display(LanguageManager.GetText("leave"));
                         running = false;
                         break;
                     default:
@@ -123,49 +142,86 @@ namespace EasySave.Controllers
 
         public void CreateSave()
         {
-<<<<<<< HEAD
-            MainView.Display("📦 Créer une sauvegarde");
-=======
-            MainView.Display("Créer une sauvegarde");
+            MainView.Display(LanguageManager.GetText("create_save") + " :");
+            string name = MainView.AskQuestion(LanguageManager.GetText("save_name"));
+            int typeChoice = MainView.AskChoice(LanguageManager.GetText("save_type"), LanguageManager.GetTextArray("save_types").ToArray()) - 1;
+            Save.SaveType saveType = (Save.SaveType)typeChoice;
+            string source = MainView.AskQuestion(LanguageManager.GetText("source_directory"));
+            string destination = MainView.AskQuestion(LanguageManager.GetText("destination_directory"));
 
->>>>>>> 26358401f8323e5e6dfb750104820904b3b971aa
-            // Exemple de sauvegarde fictive
-            string backupName = "Save1";
-            string sourcePath = @"\\SourcePath\File.txt";
-            string destinationPath = @"\\DestinationPath\File.txt";
-            long fileSize = 1024; // Taille fictive en octets
-            double transferTime = 58.002; // Temps fictif en ms
+            Save save = new(SaveManager, saveType, name, source, destination);
+            if (save.IsRealDirectoryPathValid())
+            {
+                SaveManager.Saves.Add(save);
+                save.CreateSave();
+            }
+            else
+            {
+                MainView.Display(LanguageManager.GetText("invalid_directory"));
+            }
 
-            EasySave.Logger.Logger.Log(backupName, sourcePath, destinationPath, fileSize, transferTime);
-            MainView.Display("Sauvegarde enregistrée dans le journal !");
-<<<<<<< HEAD
-            // Implémentation de la création de sauvegarde
+            MainView.Display("\n");
+        }
+
+        public void UpdateSave()
+        {
+            if (SaveManager.Saves.Count == 0)
+            {
+                MainView.Display(LanguageManager.GetText("no_save") + "\n");
+                return;
+            }
+
+            int saveIndex = -1;
+            while (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
+            {
+                MainView.Display(LanguageManager.GetText("update_save"));
+                saveIndex = MainView.AskChoice(LanguageManager.GetText("update_save_question"), SaveManager.GetSaveNames()) - 1;
+                if (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
+                {
+                    MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                }
+            }
+            Save save = SaveManager.Saves[saveIndex];
+            if (save != null)
+            {
+                save.UpdateSave();
+            }
+            else
+            {
+                MainView.Display(LanguageManager.GetText("save_not_found"));
+            }
+            MainView.Display("\n");
         }
 
         public void LoadSave()
         {
-            MainView.Display("📂 Charger une sauvegarde");
-            // Implémentation pour charger une sauvegarde existante
-        }
+            if (SaveManager.Saves.Count == 0)
+            {
+                MainView.Display(LanguageManager.GetText("no_save") + "\n");
+                return;
+            }
 
-        // ⚡ Méthode d'exécution de sauvegarde
-        public void ExecuteSave(int saveId)
-        {
-            MainView.Display($"🚀 Exécution de la sauvegarde {saveId}...");
-            // Implémentation de la logique de sauvegarde
-        }
+            int saveIndex = -1;
+            while (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
+            {
+                MainView.Display(LanguageManager.GetText("execute_save"));
+                saveIndex = MainView.AskChoice(LanguageManager.GetText("execute_save_question"), SaveManager.GetSaveNames()) - 1;
+                if (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
+                {
+                    MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                }
+            }
 
-        // 🗂️ Demande à l'utilisateur quelles sauvegardes exécuter
-        public void ExecuteSavePrompt()
-        {
-            MainView.Display("Entrez l'ID des sauvegardes à exécuter (ex : 1-3 ou 1;3) : ");
-            string input = Console.ReadLine();
-            ParseArguments(new string[] { $"-run:{input}" });
+            Save save = SaveManager.Saves[saveIndex];
+            if (save != null)
+            {
+                save.LoadSave();
+            }
+            else
+            {
+                MainView.Display(LanguageManager.GetText("save_not_found"));
+            }
+            MainView.Display("\n");
         }
-
-=======
-        }
-
->>>>>>> 26358401f8323e5e6dfb750104820904b3b971aa
     }
 }

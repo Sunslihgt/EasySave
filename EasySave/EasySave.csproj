@@ -8,15 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DailyLog\**" />
+    <EmbeddedResource Remove="DailyLog\**" />
+    <None Remove="DailyLog\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Sources\DailyLog\" />
+    <Folder Include="State\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EasySave.Logger\EasySave.Logger.csproj" />
+    <ProjectReference Include="../EasySave.Logger/EasySave.Logger.csproj" />
   </ItemGroup>
 
 </Project>

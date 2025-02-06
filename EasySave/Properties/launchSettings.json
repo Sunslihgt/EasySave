@@ -1,8 +1,7 @@
 {
   "profiles": {
     "EasySave": {
-      "commandName": "Project",
-      "commandLineArgs": "-run:1-3"
+      "commandName": "Project"
     }
   }
 }
