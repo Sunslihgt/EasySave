@@ -8,12 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DailyLog\**" />
+    <EmbeddedResource Remove="DailyLog\**" />
+    <None Remove="DailyLog\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="State\" />
-    <Folder Include="DailyLog\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using EasySave.Models;
 using EasySave.Views;
-using EasySave.Logger;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.Controllers
 {
@@ -13,7 +13,6 @@ namespace EasySave.Controllers
         
         public Controller(string[] args) // Main args for CLI mode
         {
-            // Interactive mode
             StateLogger = new StateLogger(this);
             SaveManager = new SaveManager(StateLogger);
 
@@ -26,7 +25,7 @@ namespace EasySave.Controllers
             }
             else
             {
-                Start();
+                Start(); // Interactive mode
             }
         }
 
@@ -44,7 +43,14 @@ namespace EasySave.Controllers
                         var range = param.Split('-').Select(int.Parse).ToArray();
                         for (int i = range[0]; i <= range[1]; i++)
                         {
-                            SaveManager.Saves[i].LoadSave();
+                            try
+                            {
+                                SaveManager.Saves[i].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                     }
                     else if (param.Contains(';')) // Sauvegardes spécifiques (ex : 1;3)
@@ -52,24 +58,38 @@ namespace EasySave.Controllers
                         var saves = param.Split(';').Select(int.Parse);
                         foreach (var saveId in saves)
                         {
-                            SaveManager.Saves[saveId].LoadSave();
+                            try
+                            {
+                                SaveManager.Saves[saveId].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                     }
                     else // Sauvegarde unique (ex : -run:2)
                     {
                         if (int.TryParse(param, out int saveId))
                         {
-                            SaveManager.Saves[saveId].LoadSave();
+                            try
+                            {
+                                SaveManager.Saves[saveId].LoadSave();
+                            }
+                            catch (Exception)
+                            {
+                                MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
+                            }
                         }
                         else
                         {
-                            MainView.Display($"❌ ID de sauvegarde invalide : {param}");
+                            MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
                         }
                     }
                 }
                 else
                 {
-                    MainView.Display($"⚠️ Argument non reconnu : {arg}");
+                    MainView.Display(LanguageManager.GetText("invalid_choice") + "\n");
                 }
             }
         }
@@ -145,6 +165,12 @@ namespace EasySave.Controllers
 
         public void UpdateSave()
         {
+            if (SaveManager.Saves.Count == 0)
+            {
+                MainView.Display(LanguageManager.GetText("no_save") + "\n");
+                return;
+            }
+
             int saveIndex = -1;
             while (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
             {
@@ -169,6 +195,12 @@ namespace EasySave.Controllers
 
         public void LoadSave()
         {
+            if (SaveManager.Saves.Count == 0)
+            {
+                MainView.Display(LanguageManager.GetText("no_save") + "\n");
+                return;
+            }
+
             int saveIndex = -1;
             while (saveIndex < 0 || saveIndex >= SaveManager.Saves.Count)
             {

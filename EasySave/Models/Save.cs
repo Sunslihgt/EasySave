@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Diagnostics;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.Models
 {
@@ -99,10 +100,13 @@ namespace EasySave.Models
 
                 if (copyFile)
                 {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    
                     file.CopyTo(destFilePath, true);
                     
-
-                    Console.WriteLine($"{DateTime.Now}: {file.FullName} -> {destFilePath}"); // TODO: Replace with logger
+                    stopwatch.Stop();
+                    Log(Name, file.FullName, destFilePath, file.Length, ((double) stopwatch.ElapsedMilliseconds) / 1000);
                 }
                 
                 FilesRemaining--;

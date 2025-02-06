@@ -36,7 +36,8 @@
       "Differential"
     ],
     "invalid_directory": "Invalid path",
-    "save_not_found": "Save not found"
+    "save_not_found": "Save not found",
+    "no_save": "No save available"
   },
   "fr": {
     "choose_language": "Choisissez votre langue :",
@@ -75,7 +76,8 @@
       "Différentielle"
     ],
     "invalid_directory": "Chemin invalide",
-    "save_not_found": "Sauvegarde non trouvée"
+    "save_not_found": "Sauvegarde non trouvée",
+    "no_save": "Pas de sauvegarde disponible"
   },
   "es": {
     "choose_language": "Eliga su idioma :",
@@ -114,6 +116,7 @@
       "Diferencial"
     ],
     "invalid_directory": "Ruta incorrecta",
-    "save_not_found": "Copia de seguridad no encontrada"
+    "save_not_found": "Copia de seguridad no encontrada",
+    "no_save": "No hay copias de seguridad disponibles"
   }
 }
