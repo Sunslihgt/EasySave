@@ -7,7 +7,7 @@ namespace EasySave.Logger
 {
     public static class Logger
     {
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Log");
+        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Sources");
 
         static Logger()
         {

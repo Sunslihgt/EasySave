@@ -6,9 +6,9 @@ namespace EasySave.Models
         public List<Save> Saves = new();
         public StateLogger StateLogger;
 
-        public SaveManager(StateLogger stateLogger)
+        public SaveManager()
         {
-            this.StateLogger = stateLogger;
+            StateLogger = new StateLogger(this);
 
             //Saves = StateLogger.ReadState();
 
@@ -16,20 +16,6 @@ namespace EasySave.Models
             //Saves.Add(testSave);
 
             //SaveState();
-        }
-
-        // Create a save by loading the user's directory into the save location
-        // Returns true if the process goes right
-        public bool CreateSave(int saveId)
-        {
-            throw new NotImplementedException("This feature hasn't been implemented yet");
-        }
-
-        // Get a save and load it into the user's directory
-        // Returns true if the process goes right
-        public bool LoadSave(int saveId)
-        {
-            throw new NotImplementedException("This feature hasn't been implemented yet");
         }
 
         public void SaveState()
