@@ -3,6 +3,8 @@
 EasySave/obj
 EasySave/bin
 EasySave/State/**
+EasySave/Sources/*
+!EasySave/Sources/languages.json
 
 EasySave.Logger/obj
 EasySave.Logger/bin
