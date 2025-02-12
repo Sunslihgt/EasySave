@@ -1,20 +1,19 @@
-﻿using EasySave.Controllers;
+﻿using EasySave.ViewModels;
+using System.IO;
 using System.Text.Json;
 
 namespace EasySave.Models
 {
     public class StateLogger
     {
-        // Path to EasySave/State/state.json
-        private string STATE_FILE_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../State", "state.json").ToString();
+        private string STATE_FILE_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../Sources", "state.json").ToString();
         private FileInfo stateFile;
 
-        public Controller Controller;
+        private MainWindowViewModel mainWindowViewModel;
 
-        public StateLogger(Controller controller)
+        public StateLogger(MainWindowViewModel mainWindowViewModel)
         {
-            this.Controller = controller;
-
+            this.mainWindowViewModel = mainWindowViewModel;
             stateFile = new FileInfo(STATE_FILE_PATH);
 
             // Create default empty file if necessary
@@ -57,7 +56,7 @@ namespace EasySave.Models
                                 if (saveName != null && !string.IsNullOrEmpty(sourcePath) && !string.IsNullOrEmpty(destinationPath))
                                 {
                                     Save save = new(
-                                        Controller.SaveManager,
+                                        mainWindowViewModel,
                                         saveType,
                                         saveName,
                                         sourcePath,

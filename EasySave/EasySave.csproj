@@ -1,28 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	<!-- Exe opens a console allowing for debug output. Use WinExe to only open the window. -->
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="DailyLog\**" />
-    <EmbeddedResource Remove="DailyLog\**" />
-    <None Remove="DailyLog\**" />
-  </ItemGroup>
-
+	
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="State\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../EasySave.Logger/EasySave.Logger.csproj" />
   </ItemGroup>
-
 </Project>
