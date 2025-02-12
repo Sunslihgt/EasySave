@@ -3,6 +3,7 @@
 EasySave/obj
 EasySave/bin
 EasySave/State/**
+EasySave/Logs/**
 
 EasySave.Logger/obj
 EasySave.Logger/bin
