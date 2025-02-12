@@ -11,9 +11,9 @@ using Newtonsoft.Json.Linq;
 
 namespace EasySave.Models
 {
-    internal static class LanguageManager
+    public static class LanguageManager
     {
-        private static Dictionary<string, Dictionary<string, object>> languages;
+        private static Dictionary<string, Dictionary<string, object>> languages = new Dictionary<string, Dictionary<string, object>>();
         public enum Language
         {
             EN,

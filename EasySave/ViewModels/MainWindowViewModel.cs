@@ -9,6 +9,9 @@ namespace EasySave.ViewModels
     public class MainWindowViewModel
     {
         private readonly INavigationService _navigationService;
+
+        public Settings Settings { get; } = Settings.Instance;
+
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand DeleteSaveCommand { get; }
 
