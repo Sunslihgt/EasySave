@@ -30,6 +30,10 @@ namespace EasySave.Views
         {
             return AskChoice(LanguageManager.GetText("choose_actions"), LanguageManager.GetTextArray("actions").ToArray());
         }
+        public int DisplayFormat()
+        {
+            return AskChoice(LanguageManager.GetText("choose_format"), new string[] { "JSON", "XML" });
+        }
 
         public string AskQuestion(string question)
         {

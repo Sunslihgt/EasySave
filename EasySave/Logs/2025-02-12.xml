@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfLogEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <LogEntry>
+    <Name>test</Name>
+    <FileSource>C:\Users\Andres\OneDrive\Documents\test\fr.txt</FileSource>
+    <FileTarget>C:\Users\Andres\OneDrive\Documents\test2\fr.txt</FileTarget>
+    <FileSize>0</FileSize>
+    <FileTransferTime>0</FileTransferTime>
+    <Time>12/02/2025 16:26:53</Time>
+  </LogEntry>
+  <LogEntry>
+    <Name>test</Name>
+    <FileSource>C:\Users\Andres\OneDrive\Documents\test\rtyuio.txt</FileSource>
+    <FileTarget>C:\Users\Andres\OneDrive\Documents\test2\rtyuio.txt</FileTarget>
+    <FileSize>0</FileSize>
+    <FileTransferTime>0</FileTransferTime>
+    <Time>12/02/2025 16:26:53</Time>
+  </LogEntry>
+</ArrayOfLogEntry>

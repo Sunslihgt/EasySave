@@ -1,54 +1,94 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Xml.Serialization;
 
-namespace EasySave.Logger
+public class LogEntry
 {
-    public static class Logger
+    public string Name { get; set; }
+    public string FileSource { get; set; }
+    public string FileTarget { get; set; }
+    public long FileSize { get; set; }
+    public double FileTransferTime { get; set; }
+    public string Time { get; set; }
+}
+
+public static class Logger
+{
+    public enum LogFormat
     {
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Log");
+        JSON,
+        XML
+    }
 
-        static Logger()
+    private static LogFormat _logFormat = LogFormat.JSON;  // Format par défaut
+    private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../Logs");
+
+    public static void SetLogFormat(LogFormat format)
+    {
+        _logFormat = format;
+    }
+
+    public static void Log(string backupName, string sourcePath, string destinationPath, long fileSize, double transferTime)
+    {
+        string logFileName = $"{DateTime.Now:yyyy-MM-dd}.{_logFormat.ToString().ToLower()}"; // fichier JSON ou XML
+        string logFilePath = Path.Combine(LogDirectory, logFileName);
+
+        LogEntry logEntry = new LogEntry
         {
-            if (!Directory.Exists(LogDirectory))
-            {
-                Directory.CreateDirectory(LogDirectory);
-            }
-        }
+            Name = backupName,
+            FileSource = sourcePath,
+            FileTarget = destinationPath,
+            FileSize = fileSize,
+            FileTransferTime = transferTime,
+            Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+        };
 
-        public static void Log(string backupName, string sourcePath, string destinationPath, long fileSize, double transferTime)
+        if (_logFormat == LogFormat.JSON)
         {
-            string logFileName = $"{DateTime.Now:yyyy-MM-dd}.json";
-            string logFilePath = Path.Combine(LogDirectory, logFileName);
-
-            var logEntry = new
-            {
-                Name = backupName,
-                FileSource = sourcePath,
-                FileTarget = destinationPath,
-                FileSize = fileSize,
-                FileTransferTime = transferTime,
-                Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
-            };
-
-            List<object> logs = new List<object>();
+            List<LogEntry> logs = new List<LogEntry>();
 
             if (File.Exists(logFilePath))
             {
                 try
                 {
                     string existingLogs = File.ReadAllText(logFilePath);
-                    logs = JsonConvert.DeserializeObject<List<object>>(existingLogs) ?? new List<object>();
+                    logs = JsonConvert.DeserializeObject<List<LogEntry>>(existingLogs) ?? new List<LogEntry>();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"⚠️ Error reading log file: {ex.Message}");
+                    Console.WriteLine($"⚠️ Erreur lecture fichier log : {ex.Message}");
                 }
             }
 
             logs.Add(logEntry);
             File.WriteAllText(logFilePath, JsonConvert.SerializeObject(logs, Formatting.Indented));
+        }
+        else if (_logFormat == LogFormat.XML)
+        {
+            List<LogEntry> logs = new List<LogEntry>();
+
+            if (File.Exists(logFilePath))
+            {
+                try
+                {
+                    using (FileStream fs = new FileStream(logFilePath, FileMode.Open))
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(List<LogEntry>));
+                        logs = (List<LogEntry>)serializer.Deserialize(fs) ?? new List<LogEntry>();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Erreur lecture fichier log : {ex.Message}");
+                }
+            }
+
+            logs.Add(logEntry);
+
+            using (StreamWriter writer = new StreamWriter(logFilePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<LogEntry>));
+                serializer.Serialize(writer, logs);
+            }
         }
     }
 }

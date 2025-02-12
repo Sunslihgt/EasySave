@@ -1,6 +1,6 @@
 ﻿using EasySave.Models;
 using EasySave.Views;
-using static EasySave.Logger.Logger;
+using EasySave;
 
 namespace EasySave.Controllers
 {
@@ -109,7 +109,20 @@ namespace EasySave.Controllers
                 case 3: LanguageManager.SetLanguage(LanguageManager.Language.ES); break;
                 default: LanguageManager.SetLanguage(LanguageManager.Language.EN); break;
             }
+            int formatChoice = MainView.DisplayFormat();
+            if (formatChoice == 1)
+            {
+                Logger.SetLogFormat(Logger.LogFormat.JSON);
+            }
+            else if (formatChoice == 2)
+            {
+                Logger.SetLogFormat(Logger.LogFormat.XML);
 
+            }
+            else
+            {
+                Logger.SetLogFormat(Logger.LogFormat.JSON);
+            }
             MainLoop();
         }
 
