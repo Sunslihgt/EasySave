@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	<!-- Exe opens a console allowing for debug output. Use WinExe to only open the window. -->
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="State\**" />
-    <EmbeddedResource Remove="State\**" />
-    <None Remove="State\**" />
-    <Page Remove="State\**" />
-  </ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

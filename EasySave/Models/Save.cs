@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using EasySave.ViewModels;
+using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
 using static EasySave.Logger.Logger;
 
 namespace EasySave.Models
 {
-    public class Save
+    public class Save : IDisposable
     {
         public enum SaveType
         {
@@ -12,24 +14,28 @@ namespace EasySave.Models
             Differential
         }
 
+        private bool _disposed = false;
 
-        public SaveType Type;
-        public string Name { get; private set; }
-        public string RealDirectoryPath, CopyDirectoryPath;
+        public SaveType Type { get; set; }
+        public string Name { get; set; }
+        public string RealDirectoryPath { get; set; }
+        public string CopyDirectoryPath { get; set; }
 
-        public DateTime? Date;
-        public bool Transfering = false;
-        public int FilesRemaining = 0;
-        public int SizeRemaining = 0;
-        public string CurrentSource = "";
-        public string CurrentDestination = "";
+        public DateTime? Date { get; set; }
+        public bool Transfering { get; set; } = false;
+        public int FilesRemaining { get; set; } = 0;
+        public int SizeRemaining { get; set; } = 0;
+        public string CurrentSource { get; set; } = "";
+        public string CurrentDestination { get; set; } = "";
 
-        public SaveManager SaveManager;
+        public ICommand UpdateSaveCommand { get; }
+        public ICommand LoadSaveCommand { get; }
 
+        public MainWindowViewModel MainWindowViewModel { get; }
 
-        public Save(SaveManager saveManager, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, int sizeRemaining = 0, string currentSource = "", string currentDestination = "")
+        public Save(MainWindowViewModel MainWindowViewModel, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, int sizeRemaining = 0, string currentSource = "", string currentDestination = "")
         {
-            this.SaveManager = saveManager;
+            this.MainWindowViewModel = MainWindowViewModel;
             this.Type = saveType;
             this.Name = name;
             this.RealDirectoryPath = realDirectoryPath;
@@ -40,6 +46,24 @@ namespace EasySave.Models
             this.SizeRemaining = sizeRemaining;
             this.CurrentSource = currentSource;
             this.CurrentDestination = currentDestination;
+
+            UpdateSaveCommand = new RelayCommand(UpdateSave);
+            LoadSaveCommand = new RelayCommand(LoadSave);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                DeleteSave();
+                _disposed = true;
+            }
+            GC.SuppressFinalize(this);
+        }
+
+        ~Save()
+        {
+            Dispose();
         }
 
         public void CreateSave()
@@ -135,6 +159,14 @@ namespace EasySave.Models
             }
         }
 
+        private void DeleteSave()
+        {
+            if (Directory.Exists(CopyDirectoryPath))
+            {
+                Directory.Delete(CopyDirectoryPath, true);
+            }
+        }
+
         private long GetDirectorySize(DirectoryInfo directoryInfo)
         {
             long size = 0;
@@ -156,7 +188,7 @@ namespace EasySave.Models
         public void UpdateState()
         {
             Date = DateTime.Now;
-            SaveManager.SaveState();
+            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
         }
 
         public bool IsRealDirectoryPathValid()

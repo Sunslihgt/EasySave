@@ -8,10 +8,6 @@
         mc:Ignorable="d"
         Title="EasySave" Height="450" Width="800">
 
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -22,6 +18,7 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray">
+            <Button Command="{Binding OpenLanguageWindowCommand}" Content="Language"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
             <DataGrid ItemsSource="{Binding Saves}" AutoGenerateColumns="False">
@@ -31,6 +28,29 @@
                     <DataGridTextColumn Header="Destination" Binding="{Binding CopyDirectoryPath}"/>
                     <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
                     <DataGridTextColumn Header="Transfering" Binding="{Binding Transfering}"/>
+                    <DataGridTemplateColumn Header="Load">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding UpdateSaveCommand}" Content="Update"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Update">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding LoadSaveCommand}" Content="Load"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Delete">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}"
+                                        Content="Delete"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
