@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.Models
 {
@@ -15,7 +17,8 @@ namespace EasySave.Models
         public LanguageManager.Language Language { get; set; } = LanguageManager.Language.EN;
         public string StateFilePath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "state.json");
         public string LogDirectoryPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
-        public string LogType { get; set; } = "JSON";
+        [JsonConverter(typeof(StringEnumConverter))] // Tell the serializer this property is an enum and not an int in the config file
+        public LogFormat LogFormat { get; set; } = LogFormat.JSON;
         public string[] EncryptExtensions { get; set; } = { ".txt", ".xls", ".xlsx" };
         public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
@@ -44,6 +47,10 @@ namespace EasySave.Models
                     SaveSettings(newSettings);
                 }
             }
+
+            // Set the logger settings
+            SetLogDirectory(newSettings.LogDirectoryPath);
+            SetLogFormat(newSettings.LogFormat);
 
             return newSettings;
         }
