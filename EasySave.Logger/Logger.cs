@@ -26,6 +26,10 @@ namespace EasySave.Logger
         {
             string logFileName = $"{DateTime.Now:yyyy-MM-dd}.json";
             string logFilePath = Path.Combine(logDirectory, logFileName);
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
 
             var logEntry = new
             {

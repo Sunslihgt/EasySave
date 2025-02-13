@@ -85,17 +85,16 @@ namespace EasySave.Models
                                     {
                                         if (transfering == 1)
                                         {
-                                            save.Transfering = false;
+                                            save.Transfering = true;
                                             save.FilesRemaining = element.GetProperty("filesRemaining").GetInt32();
-                                            save.SizeRemaining = element.GetProperty("filesRemaining").GetInt32();
-                                            save.CurrentSource = element.GetProperty("filesRemaining").GetString() ?? "";
-                                            save.CurrentDestination = element.GetProperty("filesRemaining").GetString() ?? "";
+                                            save.SizeRemaining = element.GetProperty("sizeRemaining").GetInt32();
+                                            save.CurrentSource = element.GetProperty("currentSource").GetString() ?? "";
+                                            save.CurrentDestination = element.GetProperty("currentDestination").GetString() ?? "";
                                         }
                                         else
                                         {
                                             save.Transfering = false;
                                         }
-                                        
                                     }
 
                                     states.Add(save);

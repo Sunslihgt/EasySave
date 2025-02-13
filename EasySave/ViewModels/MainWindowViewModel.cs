@@ -28,11 +28,12 @@ namespace EasySave.ViewModels
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
 
             StateLogger = new StateLogger(this);
+            StateLogger.StateFilePath = Settings.Instance.StateFilePath;
             Saves.Clear();
             StateLogger.ReadState().ForEach(save => Saves.Add(save));
 
             //Console.WriteLine(SaveManager.GetSaveInfos());
-            Console.WriteLine(Saves.Count());
+            Console.WriteLine($"{Saves.Count()} saves found");
             Saves.ToList().ForEach(save =>
             {
                 Console.WriteLine($"{save.Name} {save.RealDirectoryPath} {save.CopyDirectoryPath} {save.Transfering}");
