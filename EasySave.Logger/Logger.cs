@@ -22,7 +22,7 @@ namespace EasySave.Logger
             logDirectory = path;
         }
 
-        public static void Log(string backupName, string sourcePath, string destinationPath, long fileSize, double transferTime)
+        public static void Log(string backupName, string sourcePath, string destinationPath, long fileSize, int transferTime, int cryptoTime)
         {
             string logFileName = $"{DateTime.Now:yyyy-MM-dd}.json";
             string logFilePath = Path.Combine(logDirectory, logFileName);
@@ -38,6 +38,7 @@ namespace EasySave.Logger
                 FileTarget = destinationPath,
                 FileSize = fileSize,
                 FileTransferTime = transferTime,
+                CryptoTime = cryptoTime,
                 Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
             };
 
