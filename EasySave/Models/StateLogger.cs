@@ -39,7 +39,6 @@ namespace EasySave.Models
 
         public List<Save> ReadState()
         {
-            Console.WriteLine("StateFilePath: " + Settings.Instance.StateFilePath);
             using (var stream = stateFile.OpenRead())
             using (var reader = new StreamReader(stream))
             {
