@@ -6,7 +6,17 @@ namespace EasySave.Models
 {
     public class StateLogger
     {
-        private string STATE_FILE_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../Sources", "state.json").ToString();
+        private string stateFilePath = Settings.Instance.StateFilePath;
+        public string StateFilePath
+        {
+            get => stateFilePath;
+            set
+            {
+                stateFilePath = value;
+                stateFile = new FileInfo(stateFilePath);
+            }
+        }
+
         private FileInfo stateFile;
 
         private MainWindowViewModel mainWindowViewModel;
@@ -14,7 +24,7 @@ namespace EasySave.Models
         public StateLogger(MainWindowViewModel mainWindowViewModel)
         {
             this.mainWindowViewModel = mainWindowViewModel;
-            stateFile = new FileInfo(STATE_FILE_PATH);
+            stateFile = new FileInfo(StateFilePath);
 
             // Create default empty file if necessary
             if (!stateFile.Exists || stateFile.Length == 0)
@@ -29,6 +39,7 @@ namespace EasySave.Models
 
         public List<Save> ReadState()
         {
+            Console.WriteLine("StateFilePath: " + Settings.Instance.StateFilePath);
             using (var stream = stateFile.OpenRead())
             using (var reader = new StreamReader(stream))
             {

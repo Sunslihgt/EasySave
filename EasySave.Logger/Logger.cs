@@ -7,20 +7,25 @@ namespace EasySave.Logger
 {
     public static class Logger
     {
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Sources");
+        private static string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Sources");
 
         static Logger()
         {
-            if (!Directory.Exists(LogDirectory))
+            if (!Directory.Exists(logDirectory))
             {
-                Directory.CreateDirectory(LogDirectory);
+                Directory.CreateDirectory(logDirectory);
             }
+        }
+
+        public static void SetLogDirectory(string path)
+        {
+            logDirectory = path;
         }
 
         public static void Log(string backupName, string sourcePath, string destinationPath, long fileSize, double transferTime)
         {
             string logFileName = $"{DateTime.Now:yyyy-MM-dd}.json";
-            string logFilePath = Path.Combine(LogDirectory, logFileName);
+            string logFilePath = Path.Combine(logDirectory, logFileName);
 
             var logEntry = new
             {

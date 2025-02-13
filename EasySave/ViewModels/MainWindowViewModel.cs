@@ -9,16 +9,20 @@ namespace EasySave.ViewModels
     public class MainWindowViewModel
     {
         private readonly INavigationService _navigationService;
+
+        public Settings Settings { get; } = Settings.Instance;
+
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand DeleteSaveCommand { get; }
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
 
-        //public MainWindowViewModel()
         public MainWindowViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+
+            Logger.Logger.SetLogDirectory(Settings.Instance.LogDirectoryPath);
 
             DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
