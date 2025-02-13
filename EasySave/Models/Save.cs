@@ -127,11 +127,29 @@ namespace EasySave.Models
                 {
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
-                    
-                    file.CopyTo(destFilePath, true);
-                    
+                    int cryptoTime = 0;
+
+                    if (Cryptography.ShouldEncrypt(file.FullName))
+                    {
+                        cryptoTime = Cryptography.Encrypt(file.FullName, destFilePath);
+                        if (cryptoTime < 0)
+                        {
+                            // Error occurred, copy the file without encryption
+                            cryptoTime = -1;
+                            file.CopyTo(destFilePath, true);
+                        }
+                        else if (cryptoTime == 0)
+                        {
+                            cryptoTime = 1; // Minimum encryption time
+                        }
+                    }
+                    else
+                    {
+                        file.CopyTo(destFilePath, true);
+                    }
+
                     stopwatch.Stop();
-                    Log(Name, file.FullName, destFilePath, file.Length, ((double) stopwatch.ElapsedMilliseconds) / 1000);
+                    Log(Name, file.FullName, destFilePath, file.Length, (int) stopwatch.ElapsedMilliseconds, cryptoTime);
                 }
                 
                 FilesRemaining--;
