@@ -48,11 +48,8 @@ namespace EasySave.Views
                 }
             }
         }
+     
 
-        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Vous pouvez ajouter du code ici si vous souhaitez effectuer une action lorsque la sélection change
-        }
 
         private void Window_Closed(object sender, EventArgs e)
         {

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:EasySave.ViewModels"
-        xmlns:local="clr-namespace:EasySave"
+        xmlns:models="clr-namespace:EasySave.Models"
         mc:Ignorable="d"
         Title="EasySave" Height="450" Width="800">
 
@@ -18,10 +18,10 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray">
-            <Button Command="{Binding OpenLanguageWindowCommand}" Content="Language"/>
+            <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" Content="Language"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
-            <DataGrid ItemsSource="{Binding Saves}" AutoGenerateColumns="False">
+            <DataGrid x:Name="DataGrid" ItemsSource="{Binding Saves}" AutoGenerateColumns="False" SelectionChanged="DataGrid_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                     <DataGridTextColumn Header="Source" Binding="{Binding RealDirectoryPath}"/>
