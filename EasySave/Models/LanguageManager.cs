@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,6 +17,8 @@ namespace EasySave.Models
         }
         private static Language currentLanguage = Language.EN;
 
+        public static event Action LanguageChanged;
+
         static LanguageManager()
         {
             LoadLanguages();
@@ -35,7 +32,7 @@ namespace EasySave.Models
 
                 if (File.Exists(jsonPath))
                 {
-                    string jsonText = File.ReadAllText(jsonPath, Encoding.UTF8);
+                    string jsonText = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
                     languages = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(jsonText);
                 }
                 else
@@ -56,11 +53,13 @@ namespace EasySave.Models
             if (languages.ContainsKey(language.ToString().ToLower()))
             {
                 currentLanguage = language;
+                LanguageChanged?.Invoke();
             }
             else
             {
                 Console.WriteLine("⚠️ Language not found! Defaulting to English.");
                 currentLanguage = Language.EN;
+                LanguageChanged?.Invoke();
             }
         }
 
@@ -95,6 +94,5 @@ namespace EasySave.Models
             }
             return new List<string> { "[MISSING]" };
         }
-
     }
 }

@@ -37,7 +37,10 @@
     ],
     "invalid_directory": "Invalid path",
     "save_not_found": "Save not found",
-    "no_save": "No save available"
+    "no_save": "No save available",
+    "choose_language_window": "Choose your language:",
+    "language_window_title": "Language Window",
+    "modify_language_button": "Modify Language"
   },
   "fr": {
     "choose_language": "Choisissez votre langue :",
@@ -77,7 +80,10 @@
     ],
     "invalid_directory": "Chemin invalide",
     "save_not_found": "Sauvegarde non trouvée",
-    "no_save": "Pas de sauvegarde disponible"
+    "no_save": "Pas de sauvegarde disponible",
+    "choose_language_window": "Choisissez votre langue :",
+    "language_window_title": "Fenêtre de Langue",
+    "modify_language_button": "Modifier la Langue"
   },
   "es": {
     "choose_language": "Eliga su idioma :",
@@ -117,6 +123,9 @@
     ],
     "invalid_directory": "Ruta incorrecta",
     "save_not_found": "Copia de seguridad no encontrada",
-    "no_save": "No hay copias de seguridad disponibles"
+    "no_save": "No hay copias de seguridad disponibles",
+    "choose_language_window": "Eliga su idioma :",
+    "language_window_title": "Ventana de Idioma",
+    "modify_language_button": "Modificar Idioma"
   }
 }
