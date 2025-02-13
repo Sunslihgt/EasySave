@@ -17,7 +17,7 @@ namespace EasySave.Models
 
         public LanguageManager.Language Language { get; set; } = LanguageManager.Language.EN;
         public string StateFilePath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "state.json");
-        public string LogDirectoryPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Logs");
+        public string LogDirectoryPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
         public string LogType { get; set; } = "JSON";
         public string[] EncryptExtensions { get; set; } = { ".txt", ".xls", ".xlsx" };
 
