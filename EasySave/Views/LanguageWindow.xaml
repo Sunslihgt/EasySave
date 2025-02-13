@@ -5,8 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EasySave.Views"
         mc:Ignorable="d"
-        Title="LanguageWindow" Height="450" Width="800">
+        Title="{Binding Path=Title}" Height="300" Width="400" Background="#f0f0f0">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Path=ChooseLanguageText}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20,0,10"/>
+
+        <ComboBox x:Name="LanguageComboBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Margin="0,0,0,20">
+            <ComboBoxItem Content="Français" Tag="FR"/>
+            <ComboBoxItem Content="English" Tag="EN"/>
+            <ComboBoxItem Content="Español" Tag="ES"/>
+        </ComboBox>
+
+        <Button x:Name="SubmitButton" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Path=ModifyLanguageButtonText}" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,20" Background="#007ACC" Foreground="White" FontWeight="Bold" Click="SubmitButton_Click"/>
     </Grid>
 </Window>
