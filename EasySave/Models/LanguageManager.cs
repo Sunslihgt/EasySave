@@ -37,13 +37,13 @@ namespace EasySave.Models
                 }
                 else
                 {
-                    Console.WriteLine("⚠️ Language file not found! Using default English.");
+                    Console.WriteLine("Language file not found! Using default English.");
                     languages = new Dictionary<string, Dictionary<string, object>>();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Error loading language file: {ex.Message}");
+                Console.WriteLine($"Error loading language file: {ex.Message}");
                 languages = new Dictionary<string, Dictionary<string, object>>();
             }
         }
@@ -57,7 +57,7 @@ namespace EasySave.Models
             }
             else
             {
-                Console.WriteLine("⚠️ Language not found! Defaulting to English.");
+                Console.WriteLine("Language not found! Defaulting to English.");
                 currentLanguage = Language.EN;
                 LanguageChanged?.Invoke();
             }
@@ -89,7 +89,7 @@ namespace EasySave.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"⚠️ Error parsing language key '{key}': {ex.Message}");
+                    Console.WriteLine($"Error parsing language key '{key}': {ex.Message}");
                 }
             }
             return new List<string> { "[MISSING]" };

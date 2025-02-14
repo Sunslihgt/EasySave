@@ -86,7 +86,6 @@ namespace EasySave.ViewModels
             {
                 Settings.Instance.UpdateLoggerSetting(logFormat, Settings.Instance.LogDirectoryPath);
             }
-            Console.WriteLine(Settings.Instance.LogFormat);
 
             Settings.Instance.GetType().GetMethod("SaveSettings", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, new object[] { Settings.Instance });
         }
