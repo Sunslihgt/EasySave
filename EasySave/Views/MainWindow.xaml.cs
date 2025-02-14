@@ -31,9 +31,10 @@ namespace EasySave.Views
                 dataGrid.Columns[2].Header = LanguageManager.GetText("destination_column");
                 dataGrid.Columns[3].Header = LanguageManager.GetText("type_column");
                 dataGrid.Columns[4].Header = LanguageManager.GetText("transfering_column");
-                dataGrid.Columns[5].Header = LanguageManager.GetText("load_column");
-                dataGrid.Columns[6].Header = LanguageManager.GetText("update_column");
-                dataGrid.Columns[7].Header = LanguageManager.GetText("delete_column");
+                
+                //dataGrid.Columns[5].Header = LanguageManager.GetText("load_column");
+                //dataGrid.Columns[6].Header = LanguageManager.GetText("update_column");
+                //dataGrid.Columns[7].Header = LanguageManager.GetText("delete_column");
             }
 
             var languageButton = this.FindName("LanguageButton") as Button;
@@ -46,6 +47,12 @@ namespace EasySave.Views
             {
                 SettingsButton.Content = LanguageManager.GetText("settings_button");
             }
+            var AddSaveButton = this.FindName("AddSaveButton") as Button;
+            if (AddSaveButton != null)
+            {
+                AddSaveButton.Content = LanguageManager.GetText("create_save");
+            }
+
         }
 
         private void Window_Closed(object sender, EventArgs e)
