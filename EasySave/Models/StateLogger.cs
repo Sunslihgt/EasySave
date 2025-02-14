@@ -101,7 +101,7 @@ namespace EasySave.Models
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e.Message); // TODO: replace with logger
+                                Console.WriteLine(e.Message);
                             }
                         }
                         return states;
