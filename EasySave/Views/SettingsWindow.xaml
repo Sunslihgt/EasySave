@@ -17,23 +17,26 @@
 
     <Grid x:Name="MainGrid">
 
-        <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Center" Margin="0,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="LanguageLabel"/><LineBreak/><Run Language="fr-fr"/></TextBlock>
+        <!-- Language -->
+        <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Center" Margin="0,50,390,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="LanguageLabel"/><LineBreak/><Run Language="fr-fr"/></TextBlock>
         <Button x:Name="LanguageButton"
         Content="LanguageButton"
         HorizontalAlignment="Center" 
-        Margin="0,74,0,0" 
+        Margin="0,71,390,0" 
         VerticalAlignment="Top"
         Command="{Binding OpenLanguageWindowCommand}"/>
 
-        <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Center" Margin="0,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
-        <ComboBox HorizontalAlignment="Center" Margin="0,157,0,0" VerticalAlignment="Top" Width="120"
+        <!-- Log Format -->
+        <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Center" Margin="407,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
+        <ComboBox HorizontalAlignment="Center" Margin="390,71,0,0" VerticalAlignment="Top" Width="120"
           ItemsSource="{Binding LogFormats}" 
           SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}">
         </ComboBox>
 
-        <TextBlock x:Name="BanListLabel" HorizontalAlignment="Center" Margin="0,217,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
+        <!-- BanList -->
+        <TextBlock x:Name="BanListLabel" HorizontalAlignment="Left" Margin="162,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
         <DataGrid ItemsSource="{Binding BannedSoftwares}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="0,238,0,0"
+          HorizontalAlignment="Left" Height="116" Margin="11,167,0,0"
           VerticalAlignment="Top" Width="368"
           IsReadOnly="True" 
           CanUserAddRows="False" 
@@ -54,13 +57,48 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-
-
-
-        <Button x:Name="AddSoftware" Content="AddSoftwareButton" HorizontalAlignment="Center" Height="30" Margin="0,359,0,0"
+        <!-- BanList - AddSoftware -->
+        <Button x:Name="AddSoftware" Content="AddSoftwareButton" HorizontalAlignment="Left" Height="30" Margin="11,288,0,0"
         VerticalAlignment="Top" Width="368"
         Click="OpenAddSoftwarePopup"/>
 
+        <!-- ExtensionList -->
+        <TextBlock x:Name="ExtensionList" HorizontalAlignment="Left" Margin="545,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="ExtensionListLabel"/></TextBlock>
+        <DataGrid ItemsSource="{Binding EncryptExtensions}" AutoGenerateColumns="False"
+          HorizontalAlignment="Left" Height="116" Margin="401,167,0,0"
+          VerticalAlignment="Top" Width="368"
+          IsReadOnly="True" 
+          CanUserAddRows="False" 
+          CanUserDeleteRows="False"
+          CanUserResizeColumns="False"
+          CanUserReorderColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="HeaderExtension" Header="HeaderExtensionLabel" Binding="{Binding}" Width="*" />
+                <DataGridTemplateColumn x:Name="HeaderActions2" Header="HeaderActionsLabel" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="❌" Foreground="Red" Width="50"
+                            Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!-- ExtensionList - AddExtension -->
+        <Button x:Name="AddExtension" Content="AddExtensionButton" HorizontalAlignment="Left" Height="30" Margin="402,288,0,0"
+        VerticalAlignment="Top" Width="368"
+        Click="OpenAddExtensionPopup"/>
+
+        <!-- Button Leave -->
+        <Button x:Name="BackToMenu"
+        Content="BackToMenuButton"
+        HorizontalAlignment="Center"
+        Margin="0,351,0,0"
+        VerticalAlignment="Top"
+        Command="{Binding CloseWindowCommand}"/>
+
+        <!-- BanList - Pop up -->
         <Popup x:Name="AddSoftwarePopup" IsOpen="False"
             Placement="Center" StaysOpen="False">
             <Border Width="300" Height="200">
@@ -79,11 +117,25 @@
             </Border>
         </Popup>
 
-        <Button x:Name="BackToMenu"
-        Content="BackToMenuButton"
-        HorizontalAlignment="Left"
-        Margin="648,364,0,0"
-        VerticalAlignment="Top"
-        Command="{Binding CloseWindowCommand}"/>
+        <!-- ExtensionList - Pop up -->
+        <Popup x:Name="AddExtensionPopup" IsOpen="False"
+            Placement="Center" StaysOpen="False">
+            <Border Width="300" Height="200">
+                <StackPanel>
+                    <TextBlock x:Name="AddExtensionDot" Text="AddExtensionDotLabel" Margin="10"/>
+                    <TextBox Text="{Binding NewExtensionName}" Margin="10"/>
+
+                    <Button x:Name="AddExtensionToEncrypt"
+                        Content="AddExtensionToEncryptButton" Margin="10"
+                        Command="{Binding AddExtensionCommand}"
+                        CommandParameter="{Binding NewExtensionName}"
+                        Click="ClosePopup"/>
+
+                    <Button x:Name="CancelExtensionToEncrypt"
+                        Content="CancelExtensionToEncryptButton" Margin="10"
+                        Click="ClosePopup"/>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

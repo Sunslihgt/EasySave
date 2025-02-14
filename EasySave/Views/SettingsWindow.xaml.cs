@@ -53,15 +53,27 @@ namespace EasySave.Views
             AddSoftwareExe.Text = LanguageManager.GetText("modify_banned_software");
             AddBannedSoftware.Content = LanguageManager.GetText("add_banned_software");
             CancelBannedSoftware.Content = LanguageManager.GetText("cancel_banned_software");
+
+            ExtensionList.Text = LanguageManager.GetText("extension_list");
+            HeaderExtension.Header = LanguageManager.GetText("header_name");
+            HeaderActions2.Header = LanguageManager.GetText("header_actions");
+            AddExtension.Content = LanguageManager.GetText("jsp");
+            AddExtensionDot.Text = LanguageManager.GetText("modify_extension");
+            AddExtensionToEncrypt.Content = LanguageManager.GetText("add_banned_software");
+            CancelExtensionToEncrypt.Content = LanguageManager.GetText("cancel_banned_software");
         }
         private void OpenAddSoftwarePopup(object sender, RoutedEventArgs e)
         {
             AddSoftwarePopup.IsOpen = true;
         }
-
+        private void OpenAddExtensionPopup(object sender, RoutedEventArgs e)
+        {
+            AddExtensionPopup.IsOpen = true;
+        }
         private void ClosePopup(object sender, RoutedEventArgs e)
         {
             AddSoftwarePopup.IsOpen = false;
+            AddExtensionPopup.IsOpen = false;
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
