@@ -15,6 +15,7 @@ namespace EasySave.ViewModels
         private readonly INavigationService _navigationService;
         private string _selectedLogFormat;
         private string _newSoftwareName = string.Empty;
+        private string _newExtensionName = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -22,10 +23,13 @@ namespace EasySave.ViewModels
         public ICommand ChooseLogFormatCommand { get; }
         public ICommand AddBannedSoftwareCommand { get; }
         public ICommand RemoveBannedSoftwareCommand { get; }
+        public ICommand AddExtensionCommand { get; }
+        public ICommand RemoveExtensionCommand { get; }
         public ICommand CloseWindowCommand { get; }
 
         public ObservableCollection<BannedSoftware> BannedSoftwares { get; private set; } = new ObservableCollection<BannedSoftware>();
         public ObservableCollection<string> LogFormats { get; } = new ObservableCollection<string> { "JSON", "XML" };
+        public ObservableCollection<string> EncryptExtensions { get; private set; } = new ObservableCollection<string>();
 
         public string SelectedLogFormat
         {
@@ -50,6 +54,15 @@ namespace EasySave.ViewModels
                 OnPropertyChanged(nameof(NewSoftwareName));
             }
         }
+        public string NewExtensionName
+        {
+            get => _newExtensionName;
+            set
+            {
+                _newExtensionName = value;
+                OnPropertyChanged(nameof(NewExtensionName));
+            }
+        }
 
         public SettingsWindowViewModel(INavigationService navigationService)
         {
@@ -59,10 +72,18 @@ namespace EasySave.ViewModels
             ChooseLogFormatCommand = new RelayCommand(ChooseLogFormat);
             AddBannedSoftwareCommand = new RelayCommand(AddBannedSoftware);
             RemoveBannedSoftwareCommand = new RelayCommand<BannedSoftware>(RemoveBannedSoftware);
+            AddExtensionCommand = new RelayCommand<string>(AddExtension);
+            RemoveExtensionCommand = new RelayCommand<string>(RemoveExtension);
             CloseWindowCommand = new RelayCommand(CloseWindow);
 
             BannedSoftwares.Clear();
             Settings.Instance.BannedSoftwares.ForEach((bannedSoftware) => BannedSoftwares.Add(bannedSoftware));
+
+            EncryptExtensions.Clear();
+            foreach (var extension in Settings.Instance.EncryptExtensions)
+            {
+                EncryptExtensions.Add(extension);
+            }
 
             _selectedLogFormat = Settings.Instance.LogFormat.ToString();
         }
@@ -91,8 +112,6 @@ namespace EasySave.ViewModels
             Settings.Instance.GetType().GetMethod("SaveSettings", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, new object[] { Settings.Instance });
         }
 
-
-        // Exemple de mise à jour dans le ViewModel
         private void AddBannedSoftware()
         {
             if (string.IsNullOrWhiteSpace(NewSoftwareName)) return;
@@ -109,8 +128,6 @@ namespace EasySave.ViewModels
 
             NewSoftwareName = string.Empty;
         }
-
-
 
         private void RemoveBannedSoftware(BannedSoftware bannedSoftware)
         {
@@ -131,6 +148,35 @@ namespace EasySave.ViewModels
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void AddExtension(string extensionName)
+        {
+            if (string.IsNullOrWhiteSpace(extensionName)) return;
+
+            EncryptExtensions.Add(extensionName);
+
+            var extensionsList = new List<string>(Settings.Instance.EncryptExtensions);
+            extensionsList.Add(extensionName);
+            Settings.Instance.EncryptExtensions = extensionsList.ToArray();
+
+            SaveSettings();
+
+            NewExtensionName = string.Empty; // Réinitialise le champ de texte
+        }
+
+
+        private void RemoveExtension(string extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension)) return;
+
+            EncryptExtensions.Remove(extension);
+
+            var extensionsList = new List<string>(Settings.Instance.EncryptExtensions);
+            extensionsList.Remove(extension);
+            Settings.Instance.EncryptExtensions = extensionsList.ToArray();
+
+            SaveSettings();
         }
     }
 }
