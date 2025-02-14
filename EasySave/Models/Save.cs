@@ -74,6 +74,7 @@ namespace EasySave.Models
                 return;
             }
             Copy(RealDirectoryPath, CopyDirectoryPath, true);
+            Console.WriteLine($"Uploaded save {Name}.");
         }
 
         public void UpdateSave()
@@ -89,6 +90,7 @@ namespace EasySave.Models
                 return;
             }
             Copy(CopyDirectoryPath, RealDirectoryPath, false);
+            Console.WriteLine($"Downloaded save {Name}.");
         }
 
         private void Copy(string source, string destination, bool createSave, bool rootSave = true)
