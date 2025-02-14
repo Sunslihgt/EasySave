@@ -45,8 +45,14 @@ namespace EasySave.Views
             LanguageLabel.Text = LanguageManager.GetText("modify_language_button");
             LogFormatLabel.Text = LanguageManager.GetText("modify_log_format");
             BanListLabel.Text = LanguageManager.GetText("ban_list");
-            AddSwoftware.Content = LanguageManager.GetText("add_software");
+            AddSoftware.Content = LanguageManager.GetText("add_software");
             BackToMenu.Content = LanguageManager.GetText("to_menu");
+            HeaderName.Header = LanguageManager.GetText("name_column");
+            HeaderSoftware.Header = LanguageManager.GetText("header_software");
+            HeaderActions.Header = LanguageManager.GetText("header_actions");
+            AddSoftwareExe.Text = LanguageManager.GetText("modify_banned_software");
+            AddBannedSoftware.Content = LanguageManager.GetText("add_banned_software");
+            CancelBannedSoftware.Content = LanguageManager.GetText("cancel_banned_software");
         }
         private void OpenAddSoftwarePopup(object sender, RoutedEventArgs e)
         {
