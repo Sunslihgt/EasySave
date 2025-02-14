@@ -37,7 +37,8 @@
     ],
     "invalid_directory": "Invalid path",
     "save_not_found": "Save not found",
-    "no_save": "No save available"
+    "no_save": "No save available",
+    "choose_format": "Choose the format"
   },
   "fr": {
     "choose_language": "Choisissez votre langue :",
@@ -77,7 +78,8 @@
     ],
     "invalid_directory": "Chemin invalide",
     "save_not_found": "Sauvegarde non trouvée",
-    "no_save": "Pas de sauvegarde disponible"
+    "no_save": "Pas de sauvegarde disponible",
+    "choose_format": "Choisir le format"
   },
   "es": {
     "choose_language": "Eliga su idioma :",
@@ -117,6 +119,7 @@
     ],
     "invalid_directory": "Ruta incorrecta",
     "save_not_found": "Copia de seguridad no encontrada",
-    "no_save": "No hay copias de seguridad disponibles"
+    "no_save": "No hay copias de seguridad disponibles",
+    "choose_format": "Escoger el formato"
   }
 }
