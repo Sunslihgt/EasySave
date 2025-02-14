@@ -23,7 +23,6 @@ namespace EasySave.ViewModels
         }
     }
 
-
     public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _execute;

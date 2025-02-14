@@ -20,6 +20,7 @@ namespace EasySave.Models
         public string LogDirectoryPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
         public string LogType { get; set; } = "JSON";
         public string[] EncryptExtensions { get; set; } = { ".txt", ".xls", ".xlsx" };
+        public List<string> BannedSoftwares { get; set; } = new List<string>();
 
         private Settings() { } // Default constructor (uses the default values)
 

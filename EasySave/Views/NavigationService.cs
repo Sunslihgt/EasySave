@@ -8,7 +8,6 @@ namespace EasySave.Views
         void OpenWindow<T>() where T : Window, new();
     }
 
-
     public class NavigationService : INavigationService
     {
         private Window? _currentWindow; // Current opened window (except MainWindow)

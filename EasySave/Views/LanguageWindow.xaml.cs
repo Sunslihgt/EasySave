@@ -48,8 +48,6 @@ namespace EasySave.Views
                 }
             }
         }
-     
-
 
         private void Window_Closed(object sender, EventArgs e)
         {

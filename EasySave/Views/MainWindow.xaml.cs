@@ -41,6 +41,11 @@ namespace EasySave.Views
             {
                 languageButton.Content = LanguageManager.GetText("language_button");
             }
+            var SettingsButton = this.FindName("SettingsButton") as Button;
+            if (SettingsButton != null)
+            {
+                SettingsButton.Content = LanguageManager.GetText("settings_button");
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
