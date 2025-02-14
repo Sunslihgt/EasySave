@@ -57,6 +57,5 @@ namespace EasySave.Views
         {
             AddSoftwarePopup.IsOpen = false;
         }
-
     }
 }

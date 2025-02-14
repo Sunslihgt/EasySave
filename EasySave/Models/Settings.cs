@@ -55,5 +55,17 @@ namespace EasySave.Models
             File.WriteAllText(CONFIG_FILE_PATH, json);
         }
     }
+    public class BannedSoftware
+    {
+        public string Name { get; set; }
+        public string Software { get; set; }
+
+        public BannedSoftware(string name, string software)
+        {
+            Name = name;
+            Software = software;
+        }
+    }
+
 }
 

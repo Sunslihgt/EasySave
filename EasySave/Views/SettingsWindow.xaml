@@ -36,7 +36,8 @@
           HorizontalAlignment="Center" Height="116" Margin="0,238,0,0"
           VerticalAlignment="Top" Width="368">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nom" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="*" />
+                <DataGridTextColumn Header="Logiciel" Binding="{Binding Software}" Width="*" />
                 <DataGridTemplateColumn Header="Actions" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -48,6 +49,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
 
         <Button x:Name="AddSwoftware" Content="AddSwoftwareButton" HorizontalAlignment="Center" Height="30" Margin="0,359,0,0"
         VerticalAlignment="Top" Width="368"

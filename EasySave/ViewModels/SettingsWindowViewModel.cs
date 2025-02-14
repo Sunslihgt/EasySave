@@ -23,7 +23,7 @@ namespace EasySave.ViewModels
         public ICommand RemoveBannedSoftwareCommand { get; }
         public ICommand CloseWindowCommand { get; }
 
-        public ObservableCollection<string> BannedSoftwares { get; } = new(Settings.Instance.BannedSoftwares);
+        public ObservableCollection<BannedSoftware> BannedSoftwares { get; } = new ObservableCollection<BannedSoftware>();
         public ObservableCollection<string> LogFormats { get; } = new ObservableCollection<string> { "JSON", "XML" };
 
         public string SelectedLogFormat
@@ -57,7 +57,7 @@ namespace EasySave.ViewModels
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
             ChooseLogTypeCommand = new RelayCommand(ChooseLogType);
             AddBannedSoftwareCommand = new RelayCommand(AddBannedSoftware);
-            RemoveBannedSoftwareCommand = new RelayCommand<string>(RemoveBannedSoftware);
+            RemoveBannedSoftwareCommand = new RelayCommand<BannedSoftware>(RemoveBannedSoftware);
             CloseWindowCommand = new RelayCommand(CloseWindow);
 
             _selectedLogFormat = Settings.Instance.LogType;
@@ -83,22 +83,32 @@ namespace EasySave.ViewModels
                 ?.Invoke(null, new object[] { Settings.Instance });
         }
 
+
+        // Exemple de mise à jour dans le ViewModel
         private void AddBannedSoftware()
         {
             if (string.IsNullOrWhiteSpace(NewSoftwareName)) return;
 
-            BannedSoftwares.Add(NewSoftwareName);
-            Settings.Instance.BannedSoftwares.Add(NewSoftwareName);
+            var bannedSoftware = new BannedSoftware(NewSoftwareName, $"{NewSoftwareName}.exe");
+
+            BannedSoftwares.Add(bannedSoftware);
+
+            Settings.Instance.BannedSoftwares.Add(bannedSoftware.Software);
             SaveSettings();
+
             NewSoftwareName = string.Empty;
         }
 
-        private void RemoveBannedSoftware(string software)
-        {
-            if (software == null) return;
 
-            BannedSoftwares.Remove(software);
-            Settings.Instance.BannedSoftwares.Remove(software);
+
+        private void RemoveBannedSoftware(BannedSoftware bannedSoftware)
+        {
+            if (bannedSoftware == null) return;
+
+            BannedSoftwares.Remove(bannedSoftware);
+
+            Settings.Instance.BannedSoftwares.Remove(bannedSoftware.Software);
+
             SaveSettings();
         }
 
