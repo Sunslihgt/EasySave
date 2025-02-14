@@ -35,13 +35,6 @@ namespace EasySave.ViewModels
             StateLogger.StateFilePath = Settings.Instance.StateFilePath;
             Saves.Clear();
             StateLogger.ReadState().ForEach(save => Saves.Add(save));
-
-            //Console.WriteLine(SaveManager.GetSaveInfos());
-            Console.WriteLine($"{Saves.Count()} saves found");
-            Saves.ToList().ForEach(save =>
-            {
-                Console.WriteLine($"{save.Name} {save.RealDirectoryPath} {save.CopyDirectoryPath} {save.Transfering}");
-            });
         }
 
         public void DeleteSave(Save save)
