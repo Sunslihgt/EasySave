@@ -53,5 +53,10 @@ namespace EasySave.Views
         {
             LanguageManager.LanguageChanged -= OnLanguageChanged;
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

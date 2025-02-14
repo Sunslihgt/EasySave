@@ -63,5 +63,10 @@ namespace EasySave.Views
         {
             AddSoftwarePopup.IsOpen = false;
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
