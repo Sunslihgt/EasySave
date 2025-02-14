@@ -37,10 +37,12 @@ namespace EasySave.ViewModels
 
         public void DeleteSave(Save save)
         {
-            Saves.Remove(save);
-            save.Dispose();
-
-            StateLogger.WriteState(Saves.ToList());
+            if (save.DeleteSave())
+            {
+                Saves.Remove(save);
+                save.Dispose();
+                StateLogger.WriteState(Saves.ToList());
+            }
         }
 
         public void OpenLanguageWindow()

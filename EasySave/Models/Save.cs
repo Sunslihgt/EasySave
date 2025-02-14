@@ -68,6 +68,11 @@ namespace EasySave.Models
 
         public void CreateSave()
         {
+            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            {
+                Console.WriteLine("Banned software detected. Cannot use save.");
+                return;
+            }
             Copy(RealDirectoryPath, CopyDirectoryPath, true);
         }
 
@@ -78,6 +83,11 @@ namespace EasySave.Models
 
         public void LoadSave()
         {
+            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            {
+                Console.WriteLine("Banned software detected. Cannot use save.");
+                return;
+            }
             Copy(CopyDirectoryPath, RealDirectoryPath, false);
         }
 
@@ -177,12 +187,18 @@ namespace EasySave.Models
             }
         }
 
-        private void DeleteSave()
+        public bool DeleteSave()
         {
             if (Directory.Exists(CopyDirectoryPath))
             {
+                if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+                {
+                    Console.WriteLine("Banned software detected. Cannot use save.");
+                    return false;
+                }
                 Directory.Delete(CopyDirectoryPath, true);
             }
+            return true;
         }
 
         private long GetDirectorySize(DirectoryInfo directoryInfo)

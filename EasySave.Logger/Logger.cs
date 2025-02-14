@@ -18,7 +18,7 @@ namespace EasySave.Logger
     }
 
 
-    public class Logger
+    public static class Logger
     {
         public enum LogFormat
         {

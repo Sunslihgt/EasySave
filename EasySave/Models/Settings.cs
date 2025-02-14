@@ -16,11 +16,11 @@ namespace EasySave.Models
 
         public LanguageManager.Language Language { get; set; } = LanguageManager.Language.EN;
         public string StateFilePath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "state.json");
-        public string LogDirectoryPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
+        public string LogDirectoryPath { get; private set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
         [JsonConverter(typeof(StringEnumConverter))] // Tell the serializer this property is an enum and not an int in the config file
-        public LogFormat LogFormat { get; set; } = LogFormat.JSON;
+        public LogFormat LogFormat { get; private set; } = LogFormat.JSON;
         public string[] EncryptExtensions { get; set; } = { ".txt", ".xls", ".xlsx" };
-        public List<string> BannedSoftwares { get; set; } = new List<string>();
+        public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
         public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
 
@@ -89,6 +89,18 @@ namespace EasySave.Models
             return string.Empty;
         }
 
+        public void UpdateLoggerSetting(LogFormat logFormat, string logDirectory)
+        {
+            LogFormat = logFormat;
+            LogDirectoryPath = logDirectory;
+
+            // Set the logger settings
+            SetLogDirectory(LogDirectoryPath);
+            SetLogFormat(LogFormat);
+
+            SaveSettings(Instance);
+        }
+
         private static string? SearchInSystemPath(string fileName)
         {
             var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator);
@@ -121,6 +133,7 @@ namespace EasySave.Models
             return null;
         }
     }
+
     public class BannedSoftware
     {
         public string Name { get; set; }

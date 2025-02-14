@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.ViewModels
 {
@@ -18,12 +19,12 @@ namespace EasySave.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand OpenLanguageWindowCommand { get; }
-        public ICommand ChooseLogTypeCommand { get; }
+        public ICommand ChooseLogFormatCommand { get; }
         public ICommand AddBannedSoftwareCommand { get; }
         public ICommand RemoveBannedSoftwareCommand { get; }
         public ICommand CloseWindowCommand { get; }
 
-        public ObservableCollection<BannedSoftware> BannedSoftwares { get; } = new ObservableCollection<BannedSoftware>();
+        public ObservableCollection<BannedSoftware> BannedSoftwares { get; private set; } = new ObservableCollection<BannedSoftware>();
         public ObservableCollection<string> LogFormats { get; } = new ObservableCollection<string> { "JSON", "XML" };
 
         public string SelectedLogFormat
@@ -35,7 +36,7 @@ namespace EasySave.ViewModels
                 {
                     _selectedLogFormat = value;
                     OnPropertyChanged(nameof(SelectedLogFormat));
-                    ChooseLogType();
+                    ChooseLogFormat();
                 }
             }
         }
@@ -55,12 +56,15 @@ namespace EasySave.ViewModels
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
-            ChooseLogTypeCommand = new RelayCommand(ChooseLogType);
+            ChooseLogFormatCommand = new RelayCommand(ChooseLogFormat);
             AddBannedSoftwareCommand = new RelayCommand(AddBannedSoftware);
             RemoveBannedSoftwareCommand = new RelayCommand<BannedSoftware>(RemoveBannedSoftware);
             CloseWindowCommand = new RelayCommand(CloseWindow);
 
-            _selectedLogFormat = Settings.Instance.LogType;
+            BannedSoftwares.Clear();
+            Settings.Instance.BannedSoftwares.ForEach((bannedSoftware) => BannedSoftwares.Add(bannedSoftware));
+
+            _selectedLogFormat = Settings.Instance.LogFormat.ToString();
         }
 
         private void CloseWindow()
@@ -76,11 +80,15 @@ namespace EasySave.ViewModels
             _navigationService.OpenWindow<LanguageWindow>();
         }
 
-        private void ChooseLogType()
+        private void ChooseLogFormat()
         {
-            Settings.Instance.LogType = _selectedLogFormat;
-            Settings.Instance.GetType().GetMethod("SaveSettings", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-                ?.Invoke(null, new object[] { Settings.Instance });
+            if (Enum.TryParse(_selectedLogFormat, out LogFormat logFormat))
+            {
+                Settings.Instance.UpdateLoggerSetting(logFormat, Settings.Instance.LogDirectoryPath);
+            }
+            Console.WriteLine(Settings.Instance.LogFormat);
+
+            Settings.Instance.GetType().GetMethod("SaveSettings", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, new object[] { Settings.Instance });
         }
 
 
@@ -89,11 +97,14 @@ namespace EasySave.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewSoftwareName)) return;
 
-            var bannedSoftware = new BannedSoftware(NewSoftwareName, $"{NewSoftwareName}.exe");
+            string softwareNameExe = (NewSoftwareName.EndsWith(".exe") ? NewSoftwareName : $"{NewSoftwareName}.exe");
+            string softwareName = softwareNameExe.Replace(".exe", "");
+
+            var bannedSoftware = new BannedSoftware(softwareName, softwareNameExe);
 
             BannedSoftwares.Add(bannedSoftware);
 
-            Settings.Instance.BannedSoftwares.Add(bannedSoftware.Software);
+            Settings.Instance.BannedSoftwares.Add(bannedSoftware);
             SaveSettings();
 
             NewSoftwareName = string.Empty;
@@ -106,8 +117,7 @@ namespace EasySave.ViewModels
             if (bannedSoftware == null) return;
 
             BannedSoftwares.Remove(bannedSoftware);
-
-            Settings.Instance.BannedSoftwares.Remove(bannedSoftware.Software);
+            Settings.Instance.BannedSoftwares.Remove(bannedSoftware);
 
             SaveSettings();
         }
