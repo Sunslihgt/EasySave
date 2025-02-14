@@ -3,7 +3,7 @@ using System.Windows.Input;
 using System;
 using EasySave.Models;
 using EasySave.Views;
-using System.Windows.Documents;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.ViewModels
 {
@@ -16,6 +16,13 @@ namespace EasySave.ViewModels
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand OpenSettingsWindowCommand { get; }
         public ICommand DeleteSaveCommand { get; }
+        public ICommand CreateSaveCommand { get; }
+
+        public string SaveName { get; set; } = String.Empty;
+        public string SaveSource { get; set; } = String.Empty;
+        public string SaveDestination { get; set; } = String.Empty;
+        public string MySaveType { get; set; } = String.Empty;
+        public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
@@ -29,12 +36,16 @@ namespace EasySave.ViewModels
             DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
             OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
+            CreateSaveCommand = new RelayCommand(CreateSave);
 
             StateLogger = new StateLogger(this);
             StateLogger.StateFilePath = Settings.Instance.StateFilePath;
             Saves.Clear();
             StateLogger.ReadState().ForEach(save => Saves.Add(save));
-            
+
+            SaveTypes.Add("Complete");
+            SaveTypes.Add("Differential");
+
             // CLI execution mode (-run:0 or -run:0;2 or -run:0-2)
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
@@ -96,6 +107,25 @@ namespace EasySave.ViewModels
                             Console.Error.WriteLine($"No save found at index {saveId}");
                         }
                     }
+                }
+            }
+        }
+
+        public void CreateSave()
+        {
+            if (String.IsNullOrEmpty(SaveName) || String.IsNullOrEmpty(SaveSource) || String.IsNullOrEmpty(SaveDestination))
+            {
+                return;
+            }
+            if (Enum.TryParse(MySaveType, out Save.SaveType saveType))
+            {
+                Save save = new Save(this, saveType, SaveName, SaveSource, SaveDestination);
+                if (save.IsRealDirectoryPathValid())
+                {
+                    Saves.Add(save);
+                    save.CreateSave();
+                    StateLogger.WriteState(Saves.ToList());
+                    Console.WriteLine("Created new save");
                 }
             }
         }

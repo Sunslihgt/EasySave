@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:EasySave.ViewModels"
         xmlns:models="clr-namespace:EasySave.Models"
         mc:Ignorable="d"
-        Title="EasySave" Height="450" Width="800"
+        Title="EasySave" Height="600" Width="1000"
         Background="#F4F4F4">
 
     <Grid>
@@ -26,76 +26,91 @@
 
         <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch"/>
 
-        <Grid Grid.Column="2" Background="White">
-            <DataGrid x:Name="DataGrid"
-                      ItemsSource="{Binding Saves}"
-                      AutoGenerateColumns="False"
-                      SelectionChanged="DataGrid_SelectionChanged"
-                      AlternatingRowBackground="#ecf0f1"
-                      RowBackground="White"
-                      GridLinesVisibility="None"
-                      BorderThickness="0"
-                      Margin="10">
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" >
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}"  />
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+            <Grid Grid.Row="0" Background="White">
+                <DataGrid x:Name="DataGrid"
+                          ItemsSource="{Binding Saves}"
+                          AutoGenerateColumns="False"
+                          SelectionChanged="DataGrid_SelectionChanged"
+                          AlternatingRowBackground="#ecf0f1"
+                          RowBackground="White"
+                          GridLinesVisibility="None"
+                          BorderThickness="0"
+                          Margin="10">
 
-                    <DataGridTextColumn Header="Source" Binding="{Binding RealDirectoryPath}" Width="2*" >
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}"  />
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Destination" Binding="{Binding CopyDirectoryPath}" Width="2*" >
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn Header="Source" Binding="{Binding RealDirectoryPath}" Width="2*" >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="1*" >
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn Header="Destination" Binding="{Binding CopyDirectoryPath}" Width="2*" >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Transfering" Binding="{Binding Transfering}" Width="1*" >
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="1*" >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
 
-                    <DataGridTemplateColumn Header="Load">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Command="{Binding UpdateSaveCommand}" Content="Update" Style="{StaticResource RoundedButtonStyle}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Transfering" Binding="{Binding Transfering}" Width="1*" >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
 
-                    <DataGridTemplateColumn Header="Update">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Command="{Binding LoadSaveCommand}" Content="Load" Style="{StaticResource RoundedButtonStyle}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding UpdateSaveCommand}" Content="Update" Style="{StaticResource RoundedButtonStyle}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="Delete">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding}"
-                                        Content="Delete"
-                                        Style="{StaticResource DeleteButtonStyle}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding LoadSaveCommand}" Content="Load" Style="{StaticResource RoundedButtonStyle}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Delete"
+                                            Style="{StaticResource DeleteButtonStyle}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
+                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
+                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
+                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
+                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
+                <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
