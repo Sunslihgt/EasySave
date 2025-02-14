@@ -27,8 +27,6 @@ namespace EasySave.ViewModels
 
             DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
-
-            DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
 
             StateLogger = new StateLogger(this);
