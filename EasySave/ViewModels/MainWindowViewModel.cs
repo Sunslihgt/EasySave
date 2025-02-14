@@ -13,6 +13,7 @@ namespace EasySave.ViewModels
         public Settings Settings { get; } = Settings.Instance;
 
         public ICommand OpenLanguageWindowCommand { get; }
+        public ICommand OpenSettingsWindowCommand { get; }
         public ICommand DeleteSaveCommand { get; }
 
         public StateLogger StateLogger { get; }
@@ -26,6 +27,7 @@ namespace EasySave.ViewModels
 
             DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
+            OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
 
             StateLogger = new StateLogger(this);
             StateLogger.StateFilePath = Settings.Instance.StateFilePath;
@@ -35,15 +37,21 @@ namespace EasySave.ViewModels
 
         public void DeleteSave(Save save)
         {
-            Saves.Remove(save);
-            save.Dispose();
-
-            StateLogger.WriteState(Saves.ToList());
+            if (save.DeleteSave())
+            {
+                Saves.Remove(save);
+                save.Dispose();
+                StateLogger.WriteState(Saves.ToList());
+            }
         }
 
         public void OpenLanguageWindow()
         {
             _navigationService.OpenWindow<LanguageWindow>();
+        }
+        public void OpenSettingsWindow()
+        {
+            _navigationService.OpenWindow<SettingsWindow>();
         }
     }
 }

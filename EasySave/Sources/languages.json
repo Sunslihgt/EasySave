@@ -16,9 +16,11 @@
       "Leave"
     ],
     "language_window_title": "Language Window",
+    "settings_window_title": "Settings Window",
     "modify_language_button": "Modify Language",
     "main_window_title": "Main Window",
     "language_button": "Language",
+    "settings_button": "Settings",
     "name_column": "Name",
     "source_column": "Source",
     "destination_column": "Destination",
@@ -54,6 +56,15 @@
     "save_not_found": "Save not found",
     "no_save": "No save available",
     "choose_language_window": "Choose your language:",
+    "modify_log_format": "Modify Format",
+    "ban_list": "List of Banned software",
+    "add_software": "Add software",
+    "to_menu": "Return to main",
+    "header_software": "Software",
+    "header_actions": "Actions",
+    "modify_banned_software": "Add software (must be .exe)",
+    "add_banned_software": "Add",
+    "cancel_banned_software":"Cancel"
   },
   "fr": {
     "choose_language": "Choisissez votre langue :",
@@ -72,9 +83,11 @@
       "Quitter"
     ],
     "language_window_title": "Fenêtre de Langue",
+    "settings_window_title": "Fenêtre de Paramètres",
     "modify_language_button": "Modifier la Langue",
     "main_window_title": "Fenêtre Principale",
     "language_button": "Langue",
+    "settings_button": "Paramètres",
     "name_column": "Nom",
     "source_column": "Source",
     "destination_column": "Destination",
@@ -110,6 +123,15 @@
     "save_not_found": "Sauvegarde non trouvée",
     "no_save": "Pas de sauvegarde disponible",
     "choose_language_window": "Choisissez votre langue :",
+    "modify_log_format": "Modifier le format",
+    "ban_list": "Liste des logiciels Banni",
+    "add_software": "Ajouter un logiciel",
+    "to_menu": "Retour à l'accueil",
+    "header_software": "Logiciel",
+    "header_actions": "Actions",
+    "modify_banned_software": "Ajouter un logiciel (doit être un .exe)",
+    "add_banned_software": "Ajouter",
+    "cancel_banned_software": "Annuler"
   },
   "es": {
     "choose_language": "Eliga su idioma :",
@@ -128,9 +150,11 @@
       "Salir"
     ],
     "language_window_title": "Ventana de Idioma",
+    "settings_window_title": "Ventana de Configuración",
     "modify_language_button": "Modificar Idioma",
     "main_window_title": "Ventana Principal",
     "language_button": "Idioma",
+    "settings_button": "Configuración",
     "name_column": "Nombre",
     "source_column": "Fuente",
     "destination_column": "Destino",
@@ -165,6 +189,15 @@
     "invalid_directory": "Ruta incorrecta",
     "save_not_found": "Copia de seguridad no encontrada",
     "no_save": "No hay copias de seguridad disponibles",
-    "choose_language_window": "Eliga su idioma :"
+    "choose_language_window": "Eliga su idioma :",
+    "modify_log_format": "Cambiar Formato",
+    "ban_list": "Lista de software prohibido",
+    "add_software": "Agregar software",
+    "to_menu": "Regresar a inicio",
+    "header_software": "Programas",
+    "header_actions": "Comportamiento",
+    "modify_banned_software": "Agregar software (debe ser un .exe)",
+    "add_banned_software": "Agregar",
+    "cancel_banned_software": "Cancelar"
   }
 }
