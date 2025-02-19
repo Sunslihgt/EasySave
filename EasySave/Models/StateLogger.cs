@@ -86,7 +86,7 @@ namespace EasySave.Models
                                         {
                                             save.Transfering = true;
                                             save.FilesRemaining = element.GetProperty("filesRemaining").GetInt32();
-                                            save.SizeRemaining = element.GetProperty("sizeRemaining").GetInt32();
+                                            save.SizeRemaining = element.GetProperty("sizeRemaining").GetInt64();
                                             save.CurrentSource = element.GetProperty("currentSource").GetString() ?? "";
                                             save.CurrentDestination = element.GetProperty("currentDestination").GetString() ?? "";
                                         }
