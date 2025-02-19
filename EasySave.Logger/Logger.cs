@@ -29,6 +29,8 @@ namespace EasySave.Logger
         private static LogFormat logFormat = LogFormat.JSON;  // Default log format
         private static string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Sources");
 
+        private static Mutex mutex = new Mutex();
+
         static Logger()
         {
             if (!Directory.Exists(logDirectory))
@@ -65,6 +67,7 @@ namespace EasySave.Logger
 
         public static void Log(LogEntry logEntry)
         {
+            mutex.WaitOne();
             string logFileName = $"{DateTime.Now:yyyy-MM-dd}.{logFormat.ToString().ToLower()}"; // File name format: yyyy-MM-dd.{json | xml}
             string logFilePath = Path.Combine(logDirectory, logFileName);
             if (!Directory.Exists(logDirectory))
@@ -83,6 +86,7 @@ namespace EasySave.Logger
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown log type {logFormat.ToString()}");
             }
+            mutex.ReleaseMutex();
         }
 
         private static void LogJson(string logFilePath, LogEntry logEntry)
