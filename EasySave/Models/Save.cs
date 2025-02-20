@@ -42,9 +42,9 @@ namespace EasySave.Models
 
         public MainWindowViewModel MainWindowViewModel { get; }
 
-        public Save(MainWindowViewModel MainWindowViewModel, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, long sizeRemaining = 0, string currentSource = "", string currentDestination = "")
+        public Save(MainWindowViewModel mainWindowViewModel, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, long sizeRemaining = 0, string currentSource = "", string currentDestination = "")
         {
-            this.MainWindowViewModel = MainWindowViewModel;
+            this.MainWindowViewModel = mainWindowViewModel;
             this.Type = saveType;
             this.Name = name;
             this.RealDirectoryPath = realDirectoryPath;
@@ -258,6 +258,7 @@ namespace EasySave.Models
         public void UpdateState(DateTime date, long size, string fileSourcePath, string fileDestinationPath)
         {
             updateStateMutex.WaitOne();
+            Progress = (int) (100 - (SizeRemaining - size) * 100 / TotalSize);
             Date = date;
             FilesRemaining--;
             SizeRemaining = long.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
@@ -311,7 +312,7 @@ namespace EasySave.Models
         public bool CanProcess(SaveProcess saveProcess)
         {
             // Check if save process is priorised or if there are no other priorised processes in all saves
-            if (saveProcess.Priorised || MainWindowViewModel.Saves.Any((save) => save.HasPriorisedProcessesRemaining()))
+            if (saveProcess.Priorised || !MainWindowViewModel.Saves.Any((save) => save.HasPriorisedProcessesRemaining()))
             {
                 return true;
             }

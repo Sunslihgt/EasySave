@@ -78,10 +78,10 @@ namespace EasySave.Models
 
             stopwatch.Stop();
 
-            Console.WriteLine($"File transfered: {FileSource.FullName} -> {FileDestinationPath} in {stopwatch.ElapsedMilliseconds} ms (encryption {cryptoTime} ms).");
-
             Log(Save.Name, FileSource.FullName, FileDestinationPath, Size, (int) stopwatch.ElapsedMilliseconds, cryptoTime);
             Save.UpdateState(DateTime.Now, Size, FileSource.FullName, FileDestinationPath);
+            
+            Console.WriteLine($"{Save.Progress}% - File transfered: {FileSource.FullName} -> {FileDestinationPath} in {stopwatch.ElapsedMilliseconds} ms (encryption in {cryptoTime} ms).");
 
             Transfering = false;
             Finished = true;
