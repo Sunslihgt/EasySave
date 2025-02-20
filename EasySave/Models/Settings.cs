@@ -19,7 +19,8 @@ namespace EasySave.Models
         public string LogDirectoryPath { get; private set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "Logs");
         [JsonConverter(typeof(StringEnumConverter))] // Tell the serializer this property is an enum and not an int in the config file
         public LogFormat LogFormat { get; private set; } = LogFormat.JSON;
-        public string[] EncryptExtensions { get; set; } = { ".txt", ".xls", ".xlsx" };
+        public string[] EncryptExtensions { get; set; } = { };
+        public string[] PriorisedExtensions { get; set; } = { };
         public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
         public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);

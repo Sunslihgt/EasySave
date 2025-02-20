@@ -1,8 +1,5 @@
 ﻿using EasySave.ViewModels;
-using System.Diagnostics;
 using System.IO;
-using System.Windows.Input;
-using static EasySave.Logger.Logger;
 
 namespace EasySave.Models
 {
@@ -14,28 +11,40 @@ namespace EasySave.Models
             Differential
         }
 
+        public readonly int MAX_CONCURRENT_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
+
+        // Dispose
         private bool _disposed = false;
 
+        // Save properties
         public SaveType Type { get; set; }
         public string Name { get; set; }
         public string RealDirectoryPath { get; set; }
         public string CopyDirectoryPath { get; set; }
 
+        // Transfer threads
+        private List<SaveProcess> saveProcesses = new List<SaveProcess>();
+        private Mutex updateStateMutex = new Mutex();
+        public Mutex LargeFileMutex = new Mutex();
+        private CountdownEvent CountdownEvent = new CountdownEvent(0);
+
+        // Transfer state
         public DateTime? Date { get; set; }
         public bool Transfering { get; set; } = false;
         public int FilesRemaining { get; set; } = 0;
-        public int SizeRemaining { get; set; } = 0;
+        public long SizeRemaining { get; set; } = 0;
+        public long TotalSize { get; set; } = 100;
         public string CurrentSource { get; set; } = "";
         public string CurrentDestination { get; set; } = "";
+        public int Progress { get; set; } = 100;
 
-        public ICommand UpdateSaveCommand { get; }
-        public ICommand LoadSaveCommand { get; }
+        public bool PauseTransfer { get; set; } = false;
 
         public MainWindowViewModel MainWindowViewModel { get; }
 
-        public Save(MainWindowViewModel MainWindowViewModel, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, int sizeRemaining = 0, string currentSource = "", string currentDestination = "")
+        public Save(MainWindowViewModel mainWindowViewModel, SaveType saveType, string name, string realDirectoryPath, string copyDirectoryPath, DateTime? date = null, bool transfering = false, int filesRemaining = 0, long sizeRemaining = 0, string currentSource = "", string currentDestination = "")
         {
-            this.MainWindowViewModel = MainWindowViewModel;
+            this.MainWindowViewModel = mainWindowViewModel;
             this.Type = saveType;
             this.Name = name;
             this.RealDirectoryPath = realDirectoryPath;
@@ -46,9 +55,6 @@ namespace EasySave.Models
             this.SizeRemaining = sizeRemaining;
             this.CurrentSource = currentSource;
             this.CurrentDestination = currentDestination;
-
-            UpdateSaveCommand = new RelayCommand(UpdateSave);
-            LoadSaveCommand = new RelayCommand(LoadSave);
         }
 
         public void Dispose()
@@ -56,6 +62,7 @@ namespace EasySave.Models
             if (!_disposed)
             {
                 DeleteSave();
+                saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt()); // Interrupt all threads
                 _disposed = true;
             }
             GC.SuppressFinalize(this);
@@ -66,34 +73,67 @@ namespace EasySave.Models
             Dispose();
         }
 
-        public void CreateSave()
+        public void CreateSave(bool upload = false)
         {
+            if (saveProcesses.Count > 0)
+            {
+                Console.Error.WriteLine("Save already in progress.");
+                return;
+            }
+
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
                 Console.WriteLine("Banned software detected. Cannot use save.");
                 return;
             }
+
             Copy(RealDirectoryPath, CopyDirectoryPath, true);
-            Console.WriteLine($"Uploaded save {Name}.");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (upload)
+            {
+                Console.WriteLine($"Uploaded save {Name}.");
+            }
+            else
+            {
+                Console.WriteLine($"Created save {Name}.");
+            }
+            Console.ResetColor();
         }
 
         public void UpdateSave()
         {
-            CreateSave();
+            if (saveProcesses.Count > 0)
+            {
+                Console.Error.WriteLine("Save already in progress");
+                return;
+            }
+
+            CreateSave(true);
         }
 
         public void LoadSave()
         {
-            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            if (saveProcesses.Count > 0)
             {
-                Console.WriteLine("Banned software detected. Cannot use save.");
+                Console.Error.WriteLine("Save already in progress");
                 return;
             }
+
+            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            {
+                Console.WriteLine("Banned software detected, cannot use save");
+                return;
+            }
+
             Copy(CopyDirectoryPath, RealDirectoryPath, false);
-            Console.WriteLine($"Downloaded save {Name}.");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Downloaded save {Name}");
+            Console.ResetColor();
         }
 
-        private void Copy(string source, string destination, bool createSave, bool rootSave = true)
+        private void Copy(string source, string destination, bool createSave, bool isRootDirectory = true)
         {
             DirectoryInfo sourceInfo = new DirectoryInfo(source);
             DirectoryInfo destinationInfo = new DirectoryInfo(destination);
@@ -104,18 +144,29 @@ namespace EasySave.Models
                 return;
             }
 
-            if (rootSave)
+            // Initialize transfer state parameters
+            if (isRootDirectory)
             {
                 Transfering = true;
+                PauseTransfer = false;
                 FilesRemaining = sourceInfo.GetFiles("*", SearchOption.AllDirectories).Length;
-                SizeRemaining = (int) GetDirectorySize(sourceInfo);
-                UpdateState();
+                SizeRemaining = TotalSize = GetDirectorySize(sourceInfo);
+                CountdownEvent.Reset(FilesRemaining);
+                Progress = 0;
+                UpdateState(DateTime.Now);
             }
 
             // Create destination directory if necessary
             if (!destinationInfo.Exists)
             {
                 destinationInfo.Create();
+            }
+
+            // Copy sub directories (recursive)
+            foreach (DirectoryInfo subDir in sourceInfo.GetDirectories())
+            {
+                string newDestinationDir = Path.Combine(destination, subDir.Name);
+                Copy(subDir.FullName, newDestinationDir, createSave, false);
             }
 
             // Copy files
@@ -137,55 +188,30 @@ namespace EasySave.Models
 
                 if (copyFile)
                 {
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    int cryptoTime = 0;
-
-                    if (Cryptography.ShouldEncrypt(file.FullName))
-                    {
-                        cryptoTime = Cryptography.Encrypt(file.FullName, destFilePath);
-                        if (cryptoTime < 0)
-                        {
-                            // Error occurred, copy the file without encryption
-                            cryptoTime = -1;
-                            file.CopyTo(destFilePath, true);
-                        }
-                        else if (cryptoTime == 0)
-                        {
-                            cryptoTime = 1; // Minimum encryption time
-                        }
-                    }
-                    else
-                    {
-                        file.CopyTo(destFilePath, true);
-                    }
-
-                    stopwatch.Stop();
-                    Log(Name, file.FullName, destFilePath, file.Length, (int) stopwatch.ElapsedMilliseconds, cryptoTime);
+                    // Create TransferProcess objects
+                    SaveProcess.TransferType transferType = SaveProcess.TransferType.Create;
+                    bool priorised = Settings.Instance.PriorisedExtensions.Any((extension) => file.Name.EndsWith(extension));
+                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int) file.Length, priorised);
+                    saveProcesses.Add(saveProcess);
                 }
-                
-                FilesRemaining--;
-                SizeRemaining -= (int) file.Length;
-                CurrentSource = file.FullName;
-                CurrentDestination = destFilePath;
-                UpdateState();
             }
 
-            // Copy sub directories (recursive)
-            foreach (DirectoryInfo subDir in sourceInfo.GetDirectories())
+            // Start transfer processes
+            if (isRootDirectory)
             {
-                string newDestinationDir = Path.Combine(destination, subDir.Name);
-                Copy(subDir.FullName, newDestinationDir, createSave, false);
-            }
+                saveProcesses.ForEach(saveProcess => saveProcess.Start());
 
-            if (rootSave)
-            {
+                // Wait for all transfers to finish
+                CountdownEvent.Wait(); // TODO: Do not wait in main thread
+
+                // Tranfer finished
+                saveProcesses.Clear();
                 Transfering = false;
                 FilesRemaining = 0;
                 SizeRemaining = 0;
                 CurrentSource = "";
                 CurrentDestination = "";
-                UpdateState();
+                UpdateState(DateTime.Now);
             }
         }
 
@@ -221,15 +247,81 @@ namespace EasySave.Models
             return size;
         }
 
-        public void UpdateState()
+        private void UpdateState(DateTime date)
         {
-            Date = DateTime.Now;
+            updateStateMutex.WaitOne();
+            Date = date;
             MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
+            updateStateMutex.ReleaseMutex();
+        }
+
+        public void UpdateState(DateTime date, long size, string fileSourcePath, string fileDestinationPath)
+        {
+            updateStateMutex.WaitOne();
+            Progress = (int) (100 - (SizeRemaining - size) * 100 / TotalSize);
+            Date = date;
+            FilesRemaining--;
+            SizeRemaining = long.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
+            CurrentSource = fileSourcePath;
+            CurrentDestination = fileDestinationPath;
+            updateStateMutex.ReleaseMutex();
+        }
+
+        public void PauseSaveTransfer()
+        {
+            if (!Transfering)
+            {
+                Console.Error.WriteLine("No transfer in progress.");
+                return;
+            }
+            else if (PauseTransfer)
+            {
+                Console.Error.WriteLine("Transfer is already paused.");
+                return;
+            }
+
+            PauseTransfer = true;
+        }
+
+        public void ResumeSaveTransfer()
+        {
+            if (!Transfering)
+            {
+                Console.Error.WriteLine("No transfer in progress.");
+                return;
+            }
+            else if (!PauseTransfer)
+            {
+                Console.Error.WriteLine("Transfer is not paused.");
+                return;
+            }
+
+            PauseTransfer = false;
+        }
+
+        public void AbortSaveTransfer()
+        {
+            saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt());
         }
 
         public bool IsRealDirectoryPathValid()
         {
             return Directory.Exists(RealDirectoryPath);
+        }
+
+        public bool CanProcess(SaveProcess saveProcess)
+        {
+            // Check if save process is priorised or if there are no other priorised processes in all saves
+            if (saveProcess.Priorised || !MainWindowViewModel.Saves.Any((save) => save.HasPriorisedProcessesRemaining()))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool HasPriorisedProcessesRemaining()
+        {
+            return saveProcesses.Any((process) => process.Priorised && !process.Finished);
         }
     }
 }

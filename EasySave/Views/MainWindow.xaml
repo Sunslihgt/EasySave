@@ -77,7 +77,10 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding UpdateSaveCommand}" Content="Update" Style="{StaticResource RoundedButtonStyle}"/>
+                                    <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Update"
+                                            Style="{StaticResource RoundedButtonStyle}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -85,7 +88,10 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding LoadSaveCommand}" Content="Load" Style="{StaticResource RoundedButtonStyle}"/>
+                                    <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Load"
+                                            Style="{StaticResource RoundedButtonStyle}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
