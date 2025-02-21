@@ -16,6 +16,9 @@ namespace EasySave.ViewModels
         public ICommand UpdateSaveCommand { get; }
         public ICommand LoadSaveCommand { get; }
         public ICommand CreateSaveCommand { get; }
+        public ICommand PauseSaveCommand { get; }
+        public ICommand StopSaveCommand { get; }
+        public ICommand PlaySaveCommand { get; }
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand OpenSettingsWindowCommand { get; }
 
@@ -43,6 +46,10 @@ namespace EasySave.ViewModels
             LoadSaveCommand = new RelayCommand<Save>(LoadSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
             OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
+            CreateSaveCommand = new RelayCommand(CreateSave);
+            PauseSaveCommand = new RelayCommand<Save>(PauseSave);
+            StopSaveCommand = new RelayCommand<Save>(StopSave);
+            PlaySaveCommand = new RelayCommand<Save>(PlaySave);
 
             // State logger
             StateLogger = new StateLogger(this);
@@ -69,7 +76,7 @@ namespace EasySave.ViewModels
         private void ParseArguments(string[] args)
         {
             string fullArg = String.Join("", args);
-            
+
             if (fullArg.Trim().Contains("-run:")) // -run:1-3 or -run:1;3
             {
                 string param = fullArg.Split("-run:")[1];
@@ -157,6 +164,21 @@ namespace EasySave.ViewModels
                 save.Dispose();
                 StateLogger.WriteState(Saves.ToList());
             }
+        }
+
+        public void PauseSave(Save save)
+        {
+            save.PauseSaveTransfer();
+        }
+
+        public void StopSave(Save save)
+        {
+            save.AbortSaveTransfer();
+        }
+
+        public void PlaySave(Save save)
+        {
+            save.ResumeSaveTransfer();
         }
 
         public void OpenLanguageWindow()

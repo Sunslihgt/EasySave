@@ -74,6 +74,15 @@ namespace EasySave.Models
             if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
             {
                 Save.MainWindowViewModel.LargeFileTransferMutex.WaitOne();
+                
+                while (Save.PauseTransfer || Save.CanProcess(this) == false)
+                {
+                    if (!Thread.Yield()) // Lets the OS know that the current thread is willing to yield execution to another thread
+                    {
+                        Thread.Sleep(100); // Sleep otherwise
+                    }
+                }
+
                 cryptoTime = CopyFile();
                 Save.MainWindowViewModel.LargeFileTransferMutex.ReleaseMutex();
             }

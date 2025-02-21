@@ -1,11 +1,20 @@
 ﻿using EasySave.ViewModels;
+using System.ComponentModel; // Ajout de la directive using
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using static EasySave.Logger.Logger;
 using static EasySave.Models.SaveProcess;
 
 namespace EasySave.Models
 {
-    public class Save : IDisposable
+    public class Save : INotifyPropertyChanged, IDisposable
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public enum SaveType
         {
             Complete,
@@ -37,8 +46,17 @@ namespace EasySave.Models
         public long TotalSize { get; set; } = 100;
         public string CurrentSource { get; set; } = "";
         public string CurrentDestination { get; set; } = "";
-        public int Progress { get; set; } = 100;
-        public SaveProcess.TransferType TransferType = SaveProcess.TransferType.Idle;
+        public TransferType TransferType { get; set; } = TransferType.Idle;
+        private double _progress = 100;
+        public double Progress
+        {
+            get => _progress;
+            set
+            {
+                _progress = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool PauseTransfer { get; set; } = false;
 
@@ -78,6 +96,7 @@ namespace EasySave.Models
 
         public void CreateSave(bool upload = false)
         {
+            Progress = 0.0; // Réinitialiser la progression
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress.");
@@ -95,6 +114,7 @@ namespace EasySave.Models
 
         public void UpdateSave()
         {
+            Progress = 0.0; // Réinitialiser la progression
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress");
@@ -112,6 +132,7 @@ namespace EasySave.Models
 
         public void LoadSave()
         {
+            Progress = 0.0; // Réinitialiser la progression
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.Log("Save already in progress");
@@ -127,7 +148,7 @@ namespace EasySave.Models
             Copy(CopyDirectoryPath, RealDirectoryPath, SaveProcess.TransferType.Download);
         }
 
-        private void Copy(string source, string destination, SaveProcess.TransferType transferType, bool isRootDirectory = true)
+        private async void Copy(string source, string destination, SaveProcess.TransferType transferType, bool isRootDirectory = true)
         {
             DirectoryInfo sourceInfo = new DirectoryInfo(source);
             DirectoryInfo destinationInfo = new DirectoryInfo(destination);
@@ -185,9 +206,12 @@ namespace EasySave.Models
                 {
                     // Create TransferProcess objects
                     bool priorised = Settings.Instance.PriorisedExtensions.Any((extension) => file.Name.EndsWith(extension));
-                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int) file.Length, priorised);
+                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int)file.Length, priorised);
                     saveProcesses.Add(saveProcess);
                 }
+
+                // Ajouter un délai pour simuler une vitesse de progression plus lente
+                await Task.Delay(100); // Délai de 100 ms entre chaque mise à jour
             }
 
             // Start transfer processes
@@ -211,13 +235,13 @@ namespace EasySave.Models
                 // Print
                 switch (TransferType)
                 {
-                    case TransferType.Create:
+                    case SaveProcess.TransferType.Create:
                         ConsoleLogger.Log($"Successfully created save {Name}.", ConsoleColor.Green);
                         break;
-                    case TransferType.Upload:
+                    case SaveProcess.TransferType.Upload:
                         ConsoleLogger.Log($"Successfully updated save {Name}.", ConsoleColor.Green);
                         break;
-                    case TransferType.Download:
+                    case SaveProcess.TransferType.Download:
                         ConsoleLogger.Log($"Successfully downloaded save {Name}.", ConsoleColor.Green);
                         break;
                 }
@@ -275,10 +299,10 @@ namespace EasySave.Models
         public void UpdateState(DateTime date, long size, string fileSourcePath, string fileDestinationPath)
         {
             updateStateMutex.WaitOne();
-            Progress = (int) (100 - (SizeRemaining - size) * 100 / TotalSize);
+            Progress = (100 - (SizeRemaining - size) * 100 / TotalSize);
             Date = date;
             FilesRemaining--;
-            SizeRemaining = long.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
+            SizeRemaining = Math.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
             CurrentSource = fileSourcePath;
             CurrentDestination = fileDestinationPath;
             MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
@@ -291,7 +315,7 @@ namespace EasySave.Models
             Date = date;
             Progress = 100;
             Transfering = false;
-            TransferType = TransferType.Idle;
+            TransferType = SaveProcess.TransferType.Idle;
             FilesRemaining = 0;
             SizeRemaining = 0;
             CurrentSource = "";
@@ -342,7 +366,7 @@ namespace EasySave.Models
             saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt());
             saveProcesses.Clear();
             transferFinishedThread?.Interrupt();
-            TransferType = TransferType.Idle;
+            TransferType = SaveProcess.TransferType.Idle;
 
             ConsoleLogger.Log("Aborted save transfer");
 
@@ -373,5 +397,12 @@ namespace EasySave.Models
         {
             return saveProcesses.Any((process) => process.Priorised && !process.Finished);
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }
+
+

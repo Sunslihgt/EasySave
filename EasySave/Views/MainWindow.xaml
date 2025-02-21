@@ -6,118 +6,92 @@
         xmlns:vm="clr-namespace:EasySave.ViewModels"
         xmlns:models="clr-namespace:EasySave.Models"
         mc:Ignorable="d"
-        Title="EasySave" Height="600" Width="1000"
-        Background="#F4F4F4">
+        Title="EasySave" Height="450" Width="984" Background="#f0f0f0" MinHeight="450" MinWidth="800">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
+            <!-- Sidebar with auto width -->
             <ColumnDefinition Width="*"/>
+            <!-- Main content takes remaining space -->
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header with auto height -->
+            <RowDefinition Height="*"/>
+            <!-- Main content stretches to available height -->
+            <RowDefinition Height="Auto"/>
+            <!-- Create Save Section with auto height -->
+        </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Background="#2C3E50">
-            <StackPanel VerticalAlignment="Center" Margin="10">
-                <TextBlock Text="EasySave" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0 20"/>
-                <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" Content="Language" Style="{StaticResource RoundedButtonStyle}"/>
-                <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" Content="Settings" Style="{StaticResource RoundedButtonStyle}"/>
-            </StackPanel>
-        </Border>
+        <!-- Header -->
+        <TextBlock Grid.ColumnSpan="2" Text="EasySave" FontSize="24" FontWeight="Bold" Foreground="#007ACC" HorizontalAlignment="Center" Margin="10"/>
 
-        <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch"/>
+        <!-- Sidebar -->
+        <StackPanel Grid.Column="0" Grid.Row="1" Background="#2D2D30" Margin="10" VerticalAlignment="Stretch">
+            <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" Content="Language" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
+            <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" Content="Settings" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
+        </StackPanel>
 
-        <Grid Grid.Column="2">
+        <!-- Main Content -->
+        <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="White">
-                <DataGrid x:Name="DataGrid"
-                          ItemsSource="{Binding Saves}"
-                          AutoGenerateColumns="False"
-                          SelectionChanged="DataGrid_SelectionChanged"
-                          AlternatingRowBackground="#ecf0f1"
-                          RowBackground="White"
-                          GridLinesVisibility="None"
-                          BorderThickness="0"
-                          Margin="10">
-
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}"  />
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Source" Binding="{Binding RealDirectoryPath}" Width="2*" >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Destination" Binding="{Binding CopyDirectoryPath}" Width="2*" >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="1*" >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Transfering" Binding="{Binding Transfering}" Width="1*" >
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource CenterAlignedTextCellStyle}" />
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTemplateColumn Header="">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
+            <!-- ListView with dynamic height -->
+            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" SelectionChanged="ListView_SelectionChanged" Margin="0,0,0,10">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Text="{Binding RealDirectoryPath}" FontSize="14"/>
+                                <TextBlock Text="{Binding CopyDirectoryPath}" FontSize="14"/>
+                                <TextBlock Text="{Binding Type}" FontSize="14"/>
+                                <TextBlock Text="{Binding Transfering}" FontSize="14"/>
+                                <ProgressBar Value="{Binding Progress}" Height="20" Margin="0,10,0,0"/>
+                                <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Update"
-                                            Style="{StaticResource RoundedButtonStyle}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <DataGridTemplateColumn Header="">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
+                                            Content="Update" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
                                     <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Load"
-                                            Style="{StaticResource RoundedButtonStyle}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <DataGridTemplateColumn Header="">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            Content="Load" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                    <Button x:Name = "LanguageButton" Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Delete"
-                                            Style="{StaticResource DeleteButtonStyle}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+                                            Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="5,0"/>
+                                    <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Pause" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                    <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Stop" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                    <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Play" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
-                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
-                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
-                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
-                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
+            <!-- Create Save Section -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15,10" HorizontalAlignment="Stretch">
+                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0,0,10,0"/>
+                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0,0,10,0"/>
+                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0,0,10,0"/>
+                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0,0,10,0"/>
                 <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
             </StackPanel>
+
         </Grid>
     </Grid>
 </Window>
+
+
+
 
