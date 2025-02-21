@@ -102,7 +102,7 @@ namespace EasySave.Models
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e.Message);
+                                ConsoleLogger.LogError(e.Message);
                             }
                         }
                         return states;

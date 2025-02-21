@@ -80,13 +80,13 @@ namespace EasySave.Models
         {
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
-                Console.Error.WriteLine("Save already in progress.");
+                ConsoleLogger.LogWarning("Save already in progress.");
                 return;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
-                Console.WriteLine("Banned software detected. Cannot use save.");
+                ConsoleLogger.Log("Banned software detected. Cannot use save.");
                 return;
             }
 
@@ -97,13 +97,13 @@ namespace EasySave.Models
         {
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
-                Console.Error.WriteLine("Save already in progress");
+                ConsoleLogger.LogWarning("Save already in progress");
                 return;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
-                Console.WriteLine("Banned software detected. Cannot use save.");
+                ConsoleLogger.Log("Banned software detected. Cannot use save.");
                 return;
             }
 
@@ -114,13 +114,13 @@ namespace EasySave.Models
         {
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
-                Console.Error.WriteLine("Save already in progress");
+                ConsoleLogger.Log("Save already in progress");
                 return;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
-                Console.WriteLine("Banned software detected, cannot use save");
+                ConsoleLogger.Log("Banned software detected, cannot use save");
                 return;
             }
 
@@ -134,7 +134,7 @@ namespace EasySave.Models
 
             if (!sourceInfo.Exists)
             {
-                Console.WriteLine($"Source directory '{source}' does not exist."); // TODO: Replace with logger
+                ConsoleLogger.LogWarning($"Source directory '{source}' does not exist.", true); // TODO: Replace with logger
                 return;
             }
 
@@ -209,20 +209,18 @@ namespace EasySave.Models
                 CountdownEvent.Wait();
 
                 // Print
-                Console.ForegroundColor = ConsoleColor.Green;
                 switch (TransferType)
                 {
-                    case SaveProcess.TransferType.Create:
-                        Console.WriteLine($"Successfully created save {Name}.");
+                    case TransferType.Create:
+                        ConsoleLogger.Log($"Successfully created save {Name}.", ConsoleColor.Green);
                         break;
-                    case SaveProcess.TransferType.Upload:
-                        Console.WriteLine($"Successfully updated save {Name}.");
+                    case TransferType.Upload:
+                        ConsoleLogger.Log($"Successfully updated save {Name}.", ConsoleColor.Green);
                         break;
-                    case SaveProcess.TransferType.Download:
-                        Console.WriteLine($"Successfully downloaded save {Name}.");
+                    case TransferType.Download:
+                        ConsoleLogger.Log($"Successfully downloaded save {Name}.", ConsoleColor.Green);
                         break;
                 }
-                Console.ResetColor();
 
                 // Update state
                 saveProcesses.ForEach((saveProcess) => saveProcess.Thread?.Interrupt());
@@ -240,7 +238,7 @@ namespace EasySave.Models
             {
                 if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
                 {
-                    Console.WriteLine("Banned software detected. Cannot use save.");
+                    ConsoleLogger.Log("Banned software detected. Cannot use save.", ConsoleColor.Blue);
                     return false;
                 }
                 Directory.Delete(CopyDirectoryPath, true);
@@ -307,40 +305,36 @@ namespace EasySave.Models
         {
             if (!Transfering)
             {
-                Console.Error.WriteLine("No transfer in progress.");
+                ConsoleLogger.LogWarning("No transfer in progress.");
                 return;
             }
             else if (PauseTransfer)
             {
-                Console.Error.WriteLine("Transfer is already paused.");
+                ConsoleLogger.LogWarning("Transfer is already paused.");
                 return;
             }
 
             PauseTransfer = true;
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Paused save transfer");
-            Console.ResetColor();
+            ConsoleLogger.Log("Paused save transfer", ConsoleColor.Blue);
         }
 
         public void ResumeSaveTransfer()
         {
             if (!Transfering || saveProcesses.Count == 0)
             {
-                Console.Error.WriteLine("No transfer in progress.");
+                ConsoleLogger.LogWarning("No transfer in progress.");
                 return;
             }
             else if (!PauseTransfer)
             {
-                Console.Error.WriteLine("Transfer is not paused.");
+                ConsoleLogger.LogWarning("Transfer is not paused.");
                 return;
             }
 
             PauseTransfer = false;
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Resumed save transfer");
-            Console.ResetColor();
+            ConsoleLogger.Log("Resumed save transfer", ConsoleColor.Yellow);
         }
 
         public void AbortSaveTransfer()
@@ -350,9 +344,7 @@ namespace EasySave.Models
             transferFinishedThread?.Interrupt();
             TransferType = TransferType.Idle;
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Aborted save transfer");
-            Console.ResetColor();
+            ConsoleLogger.Log("Aborted save transfer");
 
             UpdateStateFinished(DateTime.Now);
         }

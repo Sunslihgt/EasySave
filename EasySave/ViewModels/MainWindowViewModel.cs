@@ -85,7 +85,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -100,7 +100,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -135,7 +135,6 @@ namespace EasySave.ViewModels
                     Saves.Add(save);
                     save.CreateSave();
                     StateLogger.WriteState(Saves.ToList());
-                    Console.WriteLine("Created new save");
                 }
             }
         }
