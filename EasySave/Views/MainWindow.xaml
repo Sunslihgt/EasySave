@@ -28,7 +28,7 @@
         <TextBlock Grid.ColumnSpan="2" Text="EasySave" FontSize="24" FontWeight="Bold" Foreground="#007ACC" HorizontalAlignment="Center" Margin="10"/>
 
         <!-- Sidebar -->
-        <StackPanel Grid.Column="0" Grid.Row="1" Background="#2D2D30" Margin="10" VerticalAlignment="Stretch">
+        <StackPanel Grid.Column="0" Grid.Row="1" Background="#2D2D30" Margin="10,10,7,10">
             <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" Content="Language" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
             <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" Content="Settings" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
         </StackPanel>
@@ -60,7 +60,7 @@
                                     <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
                                             Content="Load" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                                    <Button x:Name = "LanguageButton" Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
                                             Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="5,0"/>
                                     <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -91,6 +91,8 @@
         </Grid>
     </Grid>
 </Window>
+
+
 
 
 
