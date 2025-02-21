@@ -56,43 +56,50 @@ namespace EasySave.Models
 
         private void Transfer()
         {
-            Transfering = true;
-
-            // Wait for the process to be ready
-            while (Save.PauseTransfer || Save.CanProcess(this) == false)
+            try
             {
-                if (!Thread.Yield()) // Lets the OS know that the current thread is willing to yield execution to another thread
+                Transfering = true;
+
+                // Wait for the process to be ready
+                while (Save.PauseTransfer || Save.CanProcess(this) == false)
                 {
-                    Thread.Sleep(100); // Sleep otherwise
+                    if (!Thread.Yield()) // Lets the OS know that the current thread is willing to yield execution to another thread
+                    {
+                        Thread.Sleep(100); // Sleep otherwise
+                    }
                 }
+
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                int cryptoTime = 0;
+                if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
+                {
+                    Save.MainWindowViewModel.LargeFileTransferMutex.WaitOne();
+                    cryptoTime = CopyFile();
+                    Save.MainWindowViewModel.LargeFileTransferMutex.ReleaseMutex();
+                }
+                else
+                {
+                    cryptoTime = CopyFile();
+                }
+
+                stopwatch.Stop();
+
+                Log(Save.Name, FileSource.FullName, FileDestinationPath, Size, (int)stopwatch.ElapsedMilliseconds, cryptoTime);
+                Save.UpdateState(DateTime.Now, Size, FileSource.FullName, FileDestinationPath);
+
+                ConsoleLogger.Log($"{Save.Progress}% - File transfered: {FileSource.FullName} -> {FileDestinationPath} in {stopwatch.ElapsedMilliseconds} ms (encryption in {cryptoTime} ms).", ConsoleColor.Magenta);
+
+                Transfering = false;
+                Finished = true;
+
+                CountdownEvent.Signal();
             }
-
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            int cryptoTime = 0;
-            if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
+            catch (Exception e)
             {
-                Save.MainWindowViewModel.LargeFileTransferMutex.WaitOne();
-                cryptoTime = CopyFile();
-                Save.MainWindowViewModel.LargeFileTransferMutex.ReleaseMutex();
+                ConsoleLogger.LogError(e.Message);
             }
-            else
-            {
-                cryptoTime = CopyFile();
-            }
-
-            stopwatch.Stop();
-
-            Log(Save.Name, FileSource.FullName, FileDestinationPath, Size, (int) stopwatch.ElapsedMilliseconds, cryptoTime);
-            Save.UpdateState(DateTime.Now, Size, FileSource.FullName, FileDestinationPath);
-            
-            ConsoleLogger.Log($"{Save.Progress}% - File transfered: {FileSource.FullName} -> {FileDestinationPath} in {stopwatch.ElapsedMilliseconds} ms (encryption in {cryptoTime} ms).", ConsoleColor.Magenta);
-
-            Transfering = false;
-            Finished = true;
-
-            CountdownEvent.Signal();
         }
 
         private int CopyFile()
