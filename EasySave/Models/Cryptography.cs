@@ -16,7 +16,7 @@ namespace EasySave.Models
         {
             if (string.IsNullOrEmpty(Settings.Instance.CryptoSoftPath))
             {
-                Console.Error.WriteLine("CryptoSoft path not set! Cannot encrypt file.");
+                ConsoleLogger.LogError("CryptoSoft path not set! Cannot encrypt file.");
                 return -1;
             }
             try
@@ -35,7 +35,7 @@ namespace EasySave.Models
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                ConsoleLogger.LogError(e.Message);
             }
             return -1;
         }

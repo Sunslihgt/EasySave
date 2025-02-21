@@ -1,5 +1,6 @@
 ﻿using EasySave.ViewModels;
 using System.IO;
+using static EasySave.Models.SaveProcess;
 
 namespace EasySave.Models
 {
@@ -25,8 +26,8 @@ namespace EasySave.Models
         // Transfer threads
         private List<SaveProcess> saveProcesses = new List<SaveProcess>();
         private Mutex updateStateMutex = new Mutex();
-        public Mutex LargeFileMutex = new Mutex();
         private CountdownEvent CountdownEvent = new CountdownEvent(0);
+        private Thread? transferFinishedThread; // Thread to check if transfer is finished
 
         // Transfer state
         public DateTime? Date { get; set; }
@@ -37,6 +38,7 @@ namespace EasySave.Models
         public string CurrentSource { get; set; } = "";
         public string CurrentDestination { get; set; } = "";
         public int Progress { get; set; } = 100;
+        public SaveProcess.TransferType TransferType = SaveProcess.TransferType.Idle;
 
         public bool PauseTransfer { get; set; } = false;
 
@@ -63,6 +65,7 @@ namespace EasySave.Models
             {
                 DeleteSave();
                 saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt()); // Interrupt all threads
+                transferFinishedThread?.Interrupt(); // Interrupt transfer finished thread
                 _disposed = true;
             }
             GC.SuppressFinalize(this);
@@ -75,72 +78,63 @@ namespace EasySave.Models
 
         public void CreateSave(bool upload = false)
         {
-            if (saveProcesses.Count > 0)
+            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
-                Console.Error.WriteLine("Save already in progress.");
+                ConsoleLogger.LogWarning("Save already in progress.");
                 return;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
-                Console.WriteLine("Banned software detected. Cannot use save.");
+                ConsoleLogger.Log("Banned software detected. Cannot use save.");
                 return;
             }
 
-            Copy(RealDirectoryPath, CopyDirectoryPath, true);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            if (upload)
-            {
-                Console.WriteLine($"Uploaded save {Name}.");
-            }
-            else
-            {
-                Console.WriteLine($"Created save {Name}.");
-            }
-            Console.ResetColor();
+            Copy(RealDirectoryPath, CopyDirectoryPath, SaveProcess.TransferType.Create);
         }
 
         public void UpdateSave()
         {
-            if (saveProcesses.Count > 0)
+            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
-                Console.Error.WriteLine("Save already in progress");
-                return;
-            }
-
-            CreateSave(true);
-        }
-
-        public void LoadSave()
-        {
-            if (saveProcesses.Count > 0)
-            {
-                Console.Error.WriteLine("Save already in progress");
+                ConsoleLogger.LogWarning("Save already in progress");
                 return;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
-                Console.WriteLine("Banned software detected, cannot use save");
+                ConsoleLogger.Log("Banned software detected. Cannot use save.");
                 return;
             }
 
-            Copy(CopyDirectoryPath, RealDirectoryPath, false);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Downloaded save {Name}");
-            Console.ResetColor();
+            Copy(RealDirectoryPath, CopyDirectoryPath, SaveProcess.TransferType.Upload);
         }
 
-        private void Copy(string source, string destination, bool createSave, bool isRootDirectory = true)
+        public void LoadSave()
+        {
+            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
+            {
+                ConsoleLogger.Log("Save already in progress");
+                return;
+            }
+
+            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            {
+                ConsoleLogger.Log("Banned software detected, cannot use save");
+                return;
+            }
+
+            Copy(CopyDirectoryPath, RealDirectoryPath, SaveProcess.TransferType.Download);
+        }
+
+        private void Copy(string source, string destination, SaveProcess.TransferType transferType, bool isRootDirectory = true)
         {
             DirectoryInfo sourceInfo = new DirectoryInfo(source);
             DirectoryInfo destinationInfo = new DirectoryInfo(destination);
 
             if (!sourceInfo.Exists)
             {
-                Console.WriteLine($"Source directory '{source}' does not exist."); // TODO: Replace with logger
+                ConsoleLogger.LogWarning($"Source directory '{source}' does not exist.", true); // TODO: Replace with logger
                 return;
             }
 
@@ -148,6 +142,7 @@ namespace EasySave.Models
             if (isRootDirectory)
             {
                 Transfering = true;
+                TransferType = transferType;
                 PauseTransfer = false;
                 FilesRemaining = sourceInfo.GetFiles("*", SearchOption.AllDirectories).Length;
                 SizeRemaining = TotalSize = GetDirectorySize(sourceInfo);
@@ -166,7 +161,7 @@ namespace EasySave.Models
             foreach (DirectoryInfo subDir in sourceInfo.GetDirectories())
             {
                 string newDestinationDir = Path.Combine(destination, subDir.Name);
-                Copy(subDir.FullName, newDestinationDir, createSave, false);
+                Copy(subDir.FullName, newDestinationDir, transferType, false);
             }
 
             // Copy files
@@ -174,7 +169,7 @@ namespace EasySave.Models
             {
                 string destFilePath = Path.Combine(destination, file.Name);
                 bool copyFile = true;
-                if (!createSave && File.Exists(destFilePath)) // Loading save and file exists
+                if (transferType == SaveProcess.TransferType.Download && File.Exists(destFilePath)) // Loading save and file exists
                 {
                     if (Type == SaveType.Differential) // Differential file load
                     {
@@ -189,7 +184,6 @@ namespace EasySave.Models
                 if (copyFile)
                 {
                     // Create TransferProcess objects
-                    SaveProcess.TransferType transferType = SaveProcess.TransferType.Create;
                     bool priorised = Settings.Instance.PriorisedExtensions.Any((extension) => file.Name.EndsWith(extension));
                     SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int) file.Length, priorised);
                     saveProcesses.Add(saveProcess);
@@ -201,18 +195,41 @@ namespace EasySave.Models
             {
                 saveProcesses.ForEach(saveProcess => saveProcess.Start());
 
-                // Wait for all transfers to finish
-                CountdownEvent.Wait(); // TODO: Do not wait in main thread
-
-                // Tranfer finished
-                saveProcesses.Clear();
-                Transfering = false;
-                FilesRemaining = 0;
-                SizeRemaining = 0;
-                CurrentSource = "";
-                CurrentDestination = "";
-                UpdateState(DateTime.Now);
+                // Wait for all transfers to finish in a separate Thread
+                TransferFinishedTask();
             }
+        }
+
+        // Start a Thread and wait for the transfers to finish
+        public void TransferFinishedTask()
+        {
+            transferFinishedThread = new Thread(() =>
+            {
+                // Wait for all transfers to finish
+                CountdownEvent.Wait();
+
+                // Print
+                switch (TransferType)
+                {
+                    case TransferType.Create:
+                        ConsoleLogger.Log($"Successfully created save {Name}.", ConsoleColor.Green);
+                        break;
+                    case TransferType.Upload:
+                        ConsoleLogger.Log($"Successfully updated save {Name}.", ConsoleColor.Green);
+                        break;
+                    case TransferType.Download:
+                        ConsoleLogger.Log($"Successfully downloaded save {Name}.", ConsoleColor.Green);
+                        break;
+                }
+
+                // Update state
+                saveProcesses.ForEach((saveProcess) => saveProcess.Thread?.Interrupt());
+                saveProcesses.Clear();
+                UpdateStateFinished(DateTime.Now);
+
+            });
+
+            transferFinishedThread.Start();
         }
 
         public bool DeleteSave()
@@ -221,7 +238,7 @@ namespace EasySave.Models
             {
                 if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
                 {
-                    Console.WriteLine("Banned software detected. Cannot use save.");
+                    ConsoleLogger.Log("Banned software detected. Cannot use save.", ConsoleColor.Blue);
                     return false;
                 }
                 Directory.Delete(CopyDirectoryPath, true);
@@ -264,6 +281,23 @@ namespace EasySave.Models
             SizeRemaining = long.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
             CurrentSource = fileSourcePath;
             CurrentDestination = fileDestinationPath;
+            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
+            updateStateMutex.ReleaseMutex();
+        }
+
+        public void UpdateStateFinished(DateTime date)
+        {
+            updateStateMutex.WaitOne();
+            Date = date;
+            Progress = 100;
+            Transfering = false;
+            TransferType = TransferType.Idle;
+            FilesRemaining = 0;
+            SizeRemaining = 0;
+            CurrentSource = "";
+            CurrentDestination = "";
+            PauseTransfer = false;
+            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
             updateStateMutex.ReleaseMutex();
         }
 
@@ -271,37 +305,48 @@ namespace EasySave.Models
         {
             if (!Transfering)
             {
-                Console.Error.WriteLine("No transfer in progress.");
+                ConsoleLogger.LogWarning("No transfer in progress.");
                 return;
             }
             else if (PauseTransfer)
             {
-                Console.Error.WriteLine("Transfer is already paused.");
+                ConsoleLogger.LogWarning("Transfer is already paused.");
                 return;
             }
 
             PauseTransfer = true;
+
+            ConsoleLogger.Log("Paused save transfer", ConsoleColor.Blue);
         }
 
         public void ResumeSaveTransfer()
         {
-            if (!Transfering)
+            if (!Transfering || saveProcesses.Count == 0)
             {
-                Console.Error.WriteLine("No transfer in progress.");
+                ConsoleLogger.LogWarning("No transfer in progress.");
                 return;
             }
             else if (!PauseTransfer)
             {
-                Console.Error.WriteLine("Transfer is not paused.");
+                ConsoleLogger.LogWarning("Transfer is not paused.");
                 return;
             }
 
             PauseTransfer = false;
+
+            ConsoleLogger.Log("Resumed save transfer", ConsoleColor.Yellow);
         }
 
         public void AbortSaveTransfer()
         {
             saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt());
+            saveProcesses.Clear();
+            transferFinishedThread?.Interrupt();
+            TransferType = TransferType.Idle;
+
+            ConsoleLogger.Log("Aborted save transfer");
+
+            UpdateStateFinished(DateTime.Now);
         }
 
         public bool IsRealDirectoryPathValid()
@@ -311,6 +356,11 @@ namespace EasySave.Models
 
         public bool CanProcess(SaveProcess saveProcess)
         {
+            if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+            {
+                return false; // Banned software detected
+            }
+
             // Check if save process is priorised or if there are no other priorised processes in all saves
             if (saveProcess.Priorised || !MainWindowViewModel.Saves.Any((save) => save.HasPriorisedProcessesRemaining()))
             {

@@ -10,9 +10,9 @@ namespace EasySave.Models
         private static readonly Lazy<Settings> _instance = new(() => LoadSettings());
         public static Settings Instance => _instance.Value;
 
+        public static readonly bool DEBUG_MODE = false;
         private static readonly string CONFIG_FILE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "config.json");
-
-        private static readonly string CryptoSoftExeName = "CryptoSoft.exe";
+        private static readonly string CRYPTO_SOFT_EXE_NAME = "CryptoSoft.exe";
 
         public LanguageManager.Language Language { get; set; } = LanguageManager.Language.EN;
         public string StateFilePath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "state.json");
@@ -73,19 +73,19 @@ namespace EasySave.Models
         private static string FindCryptoSoftExe()
         {
             // Check if it's in the same folder as the app
-            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CryptoSoftExeName);
+            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CRYPTO_SOFT_EXE_NAME);
             if (File.Exists(localPath)) return localPath;
 
             // Search in system PATH
-            string? pathSearch = SearchInSystemPath(CryptoSoftExeName);
+            string? pathSearch = SearchInSystemPath(CRYPTO_SOFT_EXE_NAME);
             if (!string.IsNullOrEmpty(pathSearch)) return pathSearch;
 
             // Search the entire C: drive
             // (slow and might not work if not enough rights)
-            string? diskSearch = SearchForExe(CryptoSoftExeName, @"C:\");
+            string? diskSearch = SearchForExe(CRYPTO_SOFT_EXE_NAME, @"C:\");
             if (!string.IsNullOrEmpty(diskSearch)) return diskSearch;
 
-            Console.Error.WriteLine($"{CryptoSoftExeName} not found.");
+            ConsoleLogger.LogError($"{CRYPTO_SOFT_EXE_NAME} not found.");
 
             return string.Empty;
         }

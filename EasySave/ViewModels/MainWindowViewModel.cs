@@ -24,6 +24,7 @@ namespace EasySave.ViewModels
         public string SaveDestination { get; set; } = String.Empty;
         public string MySaveType { get; set; } = String.Empty;
         public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
+        public Mutex LargeFileTransferMutex { get; } = new Mutex();
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
@@ -84,7 +85,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -99,7 +100,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -113,7 +114,7 @@ namespace EasySave.ViewModels
                         }
                         catch
                         {
-                            Console.Error.WriteLine($"No save found at index {saveId}");
+                            ConsoleLogger.LogError($"No save found at index {saveId}");
                         }
                     }
                 }
@@ -134,7 +135,6 @@ namespace EasySave.ViewModels
                     Saves.Add(save);
                     save.CreateSave();
                     StateLogger.WriteState(Saves.ToList());
-                    Console.WriteLine("Created new save");
                 }
             }
         }
