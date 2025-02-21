@@ -24,6 +24,7 @@ namespace EasySave.ViewModels
         public string SaveDestination { get; set; } = String.Empty;
         public string MySaveType { get; set; } = String.Empty;
         public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
+        public Mutex LargeFileTransferMutex { get; } = new Mutex();
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();

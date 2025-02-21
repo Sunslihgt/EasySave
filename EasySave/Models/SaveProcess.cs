@@ -8,6 +8,7 @@ namespace EasySave.Models
     {
         public enum TransferType
         {
+            Idle,
             Create,
             Upload,
             Download,
@@ -34,6 +35,11 @@ namespace EasySave.Models
             FileDestinationPath = fileDestinationPath;
             Size = size;
             Priorised = priorised;
+
+            if (Type == TransferType.Idle)
+            {
+                throw new ArgumentException("Transfer type cannot be idle.");
+            }
         }
 
         public void Start()
@@ -67,9 +73,9 @@ namespace EasySave.Models
             int cryptoTime = 0;
             if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
             {
-                Save.LargeFileMutex.WaitOne();
+                Save.MainWindowViewModel.LargeFileTransferMutex.WaitOne();
                 cryptoTime = CopyFile();
-                Save.LargeFileMutex.ReleaseMutex();
+                Save.MainWindowViewModel.LargeFileTransferMutex.ReleaseMutex();
             }
             else
             {
