@@ -36,7 +36,6 @@
                 <DataGrid x:Name="DataGrid"
                           ItemsSource="{Binding Saves}"
                           AutoGenerateColumns="False"
-                          SelectionChanged="DataGrid_SelectionChanged"
                           AlternatingRowBackground="#ecf0f1"
                           RowBackground="White"
                           GridLinesVisibility="None"
@@ -112,11 +111,23 @@
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
                 <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
-                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
-                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0 0 10 0"/>
+
+                <!-- Champ Source en lecture seule avec bouton de sélection -->
+                <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                    <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+                    <Button Content="..." Height="30" Width="30" Command="{Binding OpenSourceFolderCommand}" />
+                </StackPanel>
+
+                <!-- Champ Destination en lecture seule avec bouton de sélection -->
+                <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                    <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+                    <Button Content="..." Height="30" Width="30" Command="{Binding OpenDestinationFolderCommand}" />
+                </StackPanel>
+
                 <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
                 <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
             </StackPanel>
+
         </Grid>
     </Grid>
 </Window>

@@ -59,10 +59,5 @@ namespace EasySave.Views
         {
             LanguageManager.LanguageChanged -= OnLanguageChanged;
         }
-
-        private void DataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }
