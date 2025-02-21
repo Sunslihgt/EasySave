@@ -16,6 +16,7 @@ namespace EasySave.ViewModels
         private string _selectedLogFormat;
         private string _newSoftwareName = string.Empty;
         private string _newExtensionName = string.Empty;
+        private string _newPriorityName = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -25,11 +26,14 @@ namespace EasySave.ViewModels
         public ICommand RemoveBannedSoftwareCommand { get; }
         public ICommand AddExtensionCommand { get; }
         public ICommand RemoveExtensionCommand { get; }
+        public ICommand AddPriorityCommand { get; }
+        public ICommand RemovePriorityCommand { get; }
         public ICommand CloseWindowCommand { get; }
 
         public ObservableCollection<BannedSoftware> BannedSoftwares { get; private set; } = new ObservableCollection<BannedSoftware>();
         public ObservableCollection<string> LogFormats { get; } = new ObservableCollection<string> { "JSON", "XML" };
         public ObservableCollection<string> EncryptExtensions { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> PriorisedExtensions { get; private set; } = new ObservableCollection<string>();
 
         public string SelectedLogFormat
         {
@@ -54,6 +58,7 @@ namespace EasySave.ViewModels
                 OnPropertyChanged(nameof(NewSoftwareName));
             }
         }
+
         public string NewExtensionName
         {
             get => _newExtensionName;
@@ -61,6 +66,16 @@ namespace EasySave.ViewModels
             {
                 _newExtensionName = value;
                 OnPropertyChanged(nameof(NewExtensionName));
+            }
+        }
+
+        public string NewPriorityName
+        {
+            get => _newPriorityName;
+            set
+            {
+                _newPriorityName = value;
+                OnPropertyChanged(nameof(NewPriorityName));
             }
         }
 
@@ -74,6 +89,8 @@ namespace EasySave.ViewModels
             RemoveBannedSoftwareCommand = new RelayCommand<BannedSoftware>(RemoveBannedSoftware);
             AddExtensionCommand = new RelayCommand<string>(AddExtension);
             RemoveExtensionCommand = new RelayCommand<string>(RemoveExtension);
+            AddPriorityCommand = new RelayCommand<string>(AddPriority);
+            RemovePriorityCommand = new RelayCommand<string>(RemovePriority);
             CloseWindowCommand = new RelayCommand(CloseWindow);
 
             BannedSoftwares.Clear();
@@ -83,6 +100,12 @@ namespace EasySave.ViewModels
             foreach (var extension in Settings.Instance.EncryptExtensions)
             {
                 EncryptExtensions.Add(extension);
+            }
+
+            PriorisedExtensions.Clear();
+            foreach (var priority in Settings.Instance.PriorisedExtensions)
+            {
+                PriorisedExtensions.Add(priority);
             }
 
             _selectedLogFormat = Settings.Instance.LogFormat.ToString();
@@ -152,6 +175,7 @@ namespace EasySave.ViewModels
         private void AddExtension(string extensionName)
         {
             if (string.IsNullOrWhiteSpace(extensionName)) return;
+            if (!(extensionName[0] == '.')) return;
 
             EncryptExtensions.Add(extensionName);
 
@@ -161,9 +185,8 @@ namespace EasySave.ViewModels
 
             SaveSettings();
 
-            NewExtensionName = string.Empty; // Réinitialise le champ de texte
+            NewExtensionName = string.Empty; // Reset Field for next time
         }
-
 
         private void RemoveExtension(string extension)
         {
@@ -174,6 +197,35 @@ namespace EasySave.ViewModels
             var extensionsList = new List<string>(Settings.Instance.EncryptExtensions);
             extensionsList.Remove(extension);
             Settings.Instance.EncryptExtensions = extensionsList.ToArray();
+
+            SaveSettings();
+        }
+
+        private void AddPriority(string priorityName)
+        {
+            if (string.IsNullOrWhiteSpace(priorityName)) return;
+            if (!(priorityName[0] == '.')) return;
+
+            PriorisedExtensions.Add(priorityName);
+
+            var priorisedList = new List<string>(Settings.Instance.PriorisedExtensions);
+            priorisedList.Add(priorityName);
+            Settings.Instance.PriorisedExtensions = priorisedList.ToArray();
+
+            SaveSettings();
+
+            NewPriorityName = string.Empty; // Reset Field for next time
+        }
+
+        private void RemovePriority(string priority)
+        {
+            if (string.IsNullOrWhiteSpace(priority)) return;
+
+            PriorisedExtensions.Remove(priority);
+
+            var priorisedList = new List<string>(Settings.Instance.PriorisedExtensions);
+            priorisedList.Remove(priority);
+            Settings.Instance.PriorisedExtensions = priorisedList.ToArray();
 
             SaveSettings();
         }

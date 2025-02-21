@@ -146,6 +146,5 @@ namespace EasySave.Models
             Software = software;
         }
     }
-
 }
 

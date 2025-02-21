@@ -37,48 +37,64 @@ namespace EasySave.Views
         private void UpdateTexts()
         {
             Title = LanguageManager.GetText("settings_window_title");
-            var languageButton = this.FindName("LanguageButton") as Button;
-            if (languageButton != null)
-            {
-                languageButton.Content = LanguageManager.GetText("language_button");
-            }
-            LanguageLabel.Text = LanguageManager.GetText("modify_language_button");
-            LogFormatLabel.Text = LanguageManager.GetText("modify_log_format");
-            BanListLabel.Text = LanguageManager.GetText("ban_list");
-            AddSoftware.Content = LanguageManager.GetText("add_software");
             BackToMenu.Content = LanguageManager.GetText("to_menu");
+
+            // Language :
+            LanguageLabel.Text = LanguageManager.GetText("modify_language_button");
+            LanguageButton.Content = LanguageManager.GetText("language_button");
+
+            // Format
+            LogFormatLabel.Text = LanguageManager.GetText("modify_log_format");
+
+            // Ban Software :
+            BanListLabel.Text = LanguageManager.GetText("ban_list");
+            AddSoftwareExe.Text = LanguageManager.GetText("modify_banned_software");
+            AddBannedSoftware.Content = LanguageManager.GetText("add");
+            CancelBannedSoftware.Content = LanguageManager.GetText("cancel");
+            AddSoftware.Content = LanguageManager.GetText("add_software");
             HeaderName.Header = LanguageManager.GetText("name_column");
             HeaderSoftware.Header = LanguageManager.GetText("header_software");
             HeaderActions.Header = LanguageManager.GetText("header_actions");
-            AddSoftwareExe.Text = LanguageManager.GetText("modify_banned_software");
-            AddBannedSoftware.Content = LanguageManager.GetText("add_banned_software");
-            CancelBannedSoftware.Content = LanguageManager.GetText("cancel_banned_software");
 
+            // Ban Extension :
             ExtensionList.Text = LanguageManager.GetText("extension_list");
-            HeaderExtension.Header = LanguageManager.GetText("header_name");
+            HeaderExtension.Header = LanguageManager.GetText("header_extension");
             HeaderActions2.Header = LanguageManager.GetText("header_actions");
-            AddExtension.Content = LanguageManager.GetText("jsp");
+            AddExtension.Content = LanguageManager.GetText("add_extension");
             AddExtensionDot.Text = LanguageManager.GetText("modify_extension");
-            AddExtensionToEncrypt.Content = LanguageManager.GetText("add_banned_software");
-            CancelExtensionToEncrypt.Content = LanguageManager.GetText("cancel_banned_software");
+            AddExtensionToEncrypt.Content = LanguageManager.GetText("add");
+            CancelExtensionToEncrypt.Content = LanguageManager.GetText("cancel");
+
+            // Priority Extension :
+            PriorityList.Text = LanguageManager.GetText("priority_list");
+            HeaderExtension2.Header = LanguageManager.GetText("header_extension");
+            HeaderActions3.Header = LanguageManager.GetText("header_actions");
+            AddPriority.Content = LanguageManager.GetText("add_extension");
+            AddPriorityDot.Text = LanguageManager.GetText("modify_extension");
+            AddExtensionPriority.Content = LanguageManager.GetText("add");
+            CancelExtensionPriority.Content = LanguageManager.GetText("cancel");
         }
+
         private void OpenAddSoftwarePopup(object sender, RoutedEventArgs e)
         {
             AddSoftwarePopup.IsOpen = true;
         }
+
         private void OpenAddExtensionPopup(object sender, RoutedEventArgs e)
         {
             AddExtensionPopup.IsOpen = true;
         }
+
+        private void OpenAddPriorityPopup(object sender, RoutedEventArgs e)
+        {
+            AddPriorityPopup.IsOpen = true;
+        }
+
         private void ClosePopup(object sender, RoutedEventArgs e)
         {
             AddSoftwarePopup.IsOpen = false;
             AddExtensionPopup.IsOpen = false;
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            AddPriorityPopup.IsOpen = false;
         }
     }
 }
