@@ -94,22 +94,23 @@ namespace EasySave.Models
             Dispose();
         }
 
-        public void CreateSave(bool upload = false)
+        public bool CreateSave(bool upload = false)
         {
             Progress = 0.0; // Réinitialiser la progression
             if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress.");
-                return;
+                return false;
             }
 
             if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
             {
                 ConsoleLogger.Log("Banned software detected. Cannot use save.");
-                return;
+                return false;
             }
 
             Copy(RealDirectoryPath, CopyDirectoryPath, SaveProcess.TransferType.Create);
+            return true;
         }
 
         public void UpdateSave()

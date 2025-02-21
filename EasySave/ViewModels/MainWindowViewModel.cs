@@ -1,14 +1,20 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using EasySave.Models;
 using EasySave.Views;
 using static EasySave.Logger.Logger;
+using System.ComponentModel;
 
 namespace EasySave.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly INavigationService _navigationService;
+        private string _saveName = string.Empty;
+        private string _saveSource;
+        private string _saveDestination;
+        private string _mySaveType = string.Empty;
 
         public Settings Settings { get; } = Settings.Instance;
 
@@ -21,11 +27,49 @@ namespace EasySave.ViewModels
         public ICommand PlaySaveCommand { get; }
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand OpenSettingsWindowCommand { get; }
+        public ICommand OpenSourceFolderCommand { get; }
+        public ICommand OpenDestinationFolderCommand { get; }
 
-        public string SaveName { get; set; } = String.Empty;
-        public string SaveSource { get; set; } = String.Empty;
-        public string SaveDestination { get; set; } = String.Empty;
-        public string MySaveType { get; set; } = String.Empty;
+        public string SaveName
+        {
+            get => _saveName;
+            set
+            {
+                _saveName = value;
+                OnPropertyChanged(nameof(SaveName));
+            }
+        }
+
+        public string SaveSource
+        {
+            get => _saveSource;
+            set
+            {
+                _saveSource = value;
+                OnPropertyChanged(nameof(SaveSource));
+            }
+        }
+
+        public string SaveDestination
+        {
+            get => _saveDestination;
+            set
+            {
+                _saveDestination = value;
+                OnPropertyChanged(nameof(SaveDestination));
+            }
+        }
+
+        public string MySaveType
+        {
+            get => _mySaveType;
+            set
+            {
+                _mySaveType = value;
+                OnPropertyChanged(nameof(MySaveType));
+            }
+        }
+
         public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
         public Mutex LargeFileTransferMutex { get; } = new Mutex();
 
@@ -46,6 +90,8 @@ namespace EasySave.ViewModels
             LoadSaveCommand = new RelayCommand<Save>(LoadSave);
             OpenLanguageWindowCommand = new RelayCommand(OpenLanguageWindow);
             OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
+            OpenSourceFolderCommand = new RelayCommand(OpenSourceFolder);
+            OpenDestinationFolderCommand = new RelayCommand(OpenDestinationFolder);
             CreateSaveCommand = new RelayCommand(CreateSave);
             PauseSaveCommand = new RelayCommand<Save>(PauseSave);
             StopSaveCommand = new RelayCommand<Save>(StopSave);
@@ -140,8 +186,15 @@ namespace EasySave.ViewModels
                 if (save.IsRealDirectoryPathValid())
                 {
                     Saves.Add(save);
-                    save.CreateSave();
+                    var stateSave = save.CreateSave();
                     StateLogger.WriteState(Saves.ToList());
+                    if (stateSave)
+                    {
+                        SaveName = string.Empty;
+                        SaveDestination = string.Empty;
+                        SaveSource = string.Empty;
+                        MySaveType = null;
+                    }
                 }
             }
         }
@@ -185,9 +238,43 @@ namespace EasySave.ViewModels
         {
             _navigationService.OpenWindow<LanguageWindow>();
         }
+
         public void OpenSettingsWindow()
         {
             _navigationService.OpenWindow<SettingsWindow>();
         }
+
+        private void OpenSourceFolder()
+        {
+            var folderDialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true
+            };
+            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                Console.WriteLine(folderDialog.FileName);
+                SaveSource = folderDialog.FileName;
+            }
+        }
+
+        private void OpenDestinationFolder()
+        {
+            var folderDialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true
+            };
+
+            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                SaveDestination = folderDialog.FileName;
+            }
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

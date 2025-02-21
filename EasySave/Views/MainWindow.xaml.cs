@@ -38,11 +38,5 @@ namespace EasySave.Views
         {
             LanguageManager.LanguageChanged -= OnLanguageChanged;
         }
-
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Ajoutez le code ici pour gérer le changement de sélection dans le ListView
-        }
     }
 }
-
