@@ -58,17 +58,18 @@
         "choose_language_window": "Choose your language:",
         "modify_log_format": "Modify Format",
         "ban_list": "List of Banned software",
-        "add_software": "Add software",
+        "add_software": "Add Software",
         "to_menu": "Return to main",
         "header_software": "Software",
         "header_actions": "Actions",
         "modify_banned_software": "Add software (must be .exe)",
-        "add_banned_software": "Add",
-        "cancel_banned_software": "Cancel",
+        "add": "Add",
+        "cancel": "Cancel",
         "extension_list": "List of Extension to encrypt",
-        "header_name": "Extension",
-        "jsp": "Add Extension",
-        "modify_extension": "Add extension (must be . in front of)"
+        "header_extension": "Extension",
+        "add_extension": "Add Extension",
+        "modify_extension": "Add extension (must be . in front of)",
+        "priority_list": "List of priority Extensions"
     },
     "fr": {
         "choose_language": "Choisissez votre langue :",
@@ -134,12 +135,13 @@
         "header_software": "Logiciel",
         "header_actions": "Actions",
         "modify_banned_software": "Ajouter un logiciel (doit être un .exe)",
-        "add_banned_software": "Ajouter",
-        "cancel_banned_software": "Annuler",
+        "add": "Ajouter",
+        "cancel": "Annuler",
         "extension_list": "Liste des extensions à chiffrer",
-        "header_name": "Extension",
-        "jsp": "Ajouter une extension",
-        "modify_extension": "Ajouter une extension (doit commencer par un point)"
+        "header_extension": "Extension",
+        "add_extension": "Ajouter une extension",
+        "modify_extension": "Ajouter une extension (doit commencer par un point)",
+        "priority_list": "Liste des extensions prioritaires"
     },
     "es": {
         "choose_language": "Eliga su idioma :",
@@ -205,11 +207,12 @@
         "header_software": "Programas",
         "header_actions": "Comportamiento",
         "modify_banned_software": "Agregar software (debe ser un .exe)",
-        "add_banned_software": "Agregar",
-        "cancel_banned_software": "Cancelar",
+        "add": "Agregar",
+        "cancel": "Cancelar",
         "extension_list": "Lista de extensiones para cifrar",
-        "header_name": "Extensión",
-        "jsp": "Agregar extensión",
-        "modify_extension": "Agregar extensión (debe comenzar con un punto)"
+        "header_extension": "Extensión",
+        "add_extension": "Agregar extensión",
+        "modify_extension": "Agregar extensión (debe comenzar con un punto)",
+        "priority_list": "Lista de extensiones prioritarias"
     }
 }

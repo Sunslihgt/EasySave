@@ -18,6 +18,7 @@ namespace EasySave.Models
         }
 
         private FileInfo stateFile;
+        private Mutex writeMutex = new Mutex();
 
         private MainWindowViewModel mainWindowViewModel;
 
@@ -86,7 +87,7 @@ namespace EasySave.Models
                                         {
                                             save.Transfering = true;
                                             save.FilesRemaining = element.GetProperty("filesRemaining").GetInt32();
-                                            save.SizeRemaining = element.GetProperty("sizeRemaining").GetInt32();
+                                            save.SizeRemaining = element.GetProperty("sizeRemaining").GetInt64();
                                             save.CurrentSource = element.GetProperty("currentSource").GetString() ?? "";
                                             save.CurrentDestination = element.GetProperty("currentDestination").GetString() ?? "";
                                         }
@@ -101,7 +102,7 @@ namespace EasySave.Models
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e.Message);
+                                ConsoleLogger.LogError(e.Message);
                             }
                         }
                         return states;
@@ -145,6 +146,7 @@ namespace EasySave.Models
                 }
             }).ToList();
 
+            writeMutex.WaitOne();
             using (var stream = stateFile.OpenWrite())
             {
                 stream.SetLength(0); // Clear the file before writing
@@ -153,6 +155,7 @@ namespace EasySave.Models
                     writer.Write(JsonSerializer.Serialize(savesToStore, new JsonSerializerOptions { WriteIndented = true }));
                 }
             }
+            writeMutex.ReleaseMutex();
         }
     }
 }
