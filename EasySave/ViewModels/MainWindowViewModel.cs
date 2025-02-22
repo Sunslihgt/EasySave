@@ -22,6 +22,9 @@ namespace EasySave.ViewModels
         public ICommand UpdateSaveCommand { get; }
         public ICommand LoadSaveCommand { get; }
         public ICommand CreateSaveCommand { get; }
+        public ICommand PauseSaveCommand { get; }
+        public ICommand StopSaveCommand { get; }
+        public ICommand PlaySaveCommand { get; }
         public ICommand OpenLanguageWindowCommand { get; }
         public ICommand OpenSettingsWindowCommand { get; }
         public ICommand OpenSourceFolderCommand { get; }
@@ -68,7 +71,7 @@ namespace EasySave.ViewModels
         }
 
         public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
-        public Mutex LargeFileTransferMutex { get; } = new Mutex();
+        public object LargeFileTransferLock { get; } = new object();
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
@@ -89,6 +92,10 @@ namespace EasySave.ViewModels
             OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
             OpenSourceFolderCommand = new RelayCommand(OpenSourceFolder);
             OpenDestinationFolderCommand = new RelayCommand(OpenDestinationFolder);
+            CreateSaveCommand = new RelayCommand(CreateSave);
+            PauseSaveCommand = new RelayCommand<Save>(PauseSave);
+            StopSaveCommand = new RelayCommand<Save>(StopSave);
+            PlaySaveCommand = new RelayCommand<Save>(PlaySave);
 
             // State logger
             StateLogger = new StateLogger(this);
@@ -210,6 +217,21 @@ namespace EasySave.ViewModels
                 save.Dispose();
                 StateLogger.WriteState(Saves.ToList());
             }
+        }
+
+        public void PauseSave(Save save)
+        {
+            save.PauseSaveTransfer();
+        }
+
+        public void StopSave(Save save)
+        {
+            save.AbortSaveTransfer();
+        }
+
+        public void PlaySave(Save save)
+        {
+            save.ResumeSaveTransfer();
         }
 
         public void OpenLanguageWindow()

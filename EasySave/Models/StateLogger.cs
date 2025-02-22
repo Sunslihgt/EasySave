@@ -18,7 +18,7 @@ namespace EasySave.Models
         }
 
         private FileInfo stateFile;
-        private Mutex writeMutex = new Mutex();
+        private object writeLock = new object();
 
         private MainWindowViewModel mainWindowViewModel;
 
@@ -146,16 +146,17 @@ namespace EasySave.Models
                 }
             }).ToList();
 
-            writeMutex.WaitOne();
-            using (var stream = stateFile.OpenWrite())
+            lock (writeLock)
             {
-                stream.SetLength(0); // Clear the file before writing
-                using (var writer = new StreamWriter(stream))
+                using (var stream = stateFile.OpenWrite())
                 {
-                    writer.Write(JsonSerializer.Serialize(savesToStore, new JsonSerializerOptions { WriteIndented = true }));
+                    stream.SetLength(0); // Clear the file before writing
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        writer.Write(JsonSerializer.Serialize(savesToStore, new JsonSerializerOptions { WriteIndented = true }));
+                    }
                 }
             }
-            writeMutex.ReleaseMutex();
         }
     }
 }

@@ -33,6 +33,7 @@ namespace EasySave.Models
 
                 return myProcess?.ExitCode ?? -1;
             }
+            catch (ThreadInterruptedException) { }
             catch (Exception e)
             {
                 ConsoleLogger.LogError(e.Message);

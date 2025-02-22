@@ -75,9 +75,18 @@ namespace EasySave.Models
                 int cryptoTime = 0;
                 if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
                 {
-                    Save.MainWindowViewModel.LargeFileTransferMutex.WaitOne();
-                    cryptoTime = CopyFile();
-                    Save.MainWindowViewModel.LargeFileTransferMutex.ReleaseMutex();
+                    lock (Save.MainWindowViewModel.LargeFileTransferLock)
+                    {
+                        //Wait for the process to be ready since large files might have been waiting and not listening to pause
+                        while (Save.PauseTransfer || Save.CanProcess(this) == false)
+                        {
+                            if (!Thread.Yield()) // Lets the OS know that the current thread is willing to yield execution to another thread
+                            {
+                                Thread.Sleep(100); // Sleep otherwise
+                            }
+                        }
+                        cryptoTime = CopyFile();
+                    }
                 }
                 else
                 {
@@ -85,6 +94,16 @@ namespace EasySave.Models
                 }
 
                 stopwatch.Stop();
+
+                if (cryptoTime < 0) // Failed
+                {
+                    Transfering = false;
+                    Finished = true;
+
+                    CountdownEvent.Signal();
+
+                    return;
+                }
 
                 Log(Save.Name, FileSource.FullName, FileDestinationPath, Size, (int)stopwatch.ElapsedMilliseconds, cryptoTime);
                 Save.UpdateState(DateTime.Now, Size, FileSource.FullName, FileDestinationPath);
@@ -96,6 +115,7 @@ namespace EasySave.Models
 
                 CountdownEvent.Signal();
             }
+            catch (ThreadInterruptedException) { }
             catch (Exception e)
             {
                 ConsoleLogger.LogError(e.Message);
@@ -106,23 +126,30 @@ namespace EasySave.Models
         {
             int cryptoTime = 0;
 
-            if (Cryptography.ShouldEncrypt(FileSource.FullName))
+            try
             {
-                cryptoTime = Cryptography.Encrypt(FileSource.FullName, FileDestinationPath);
-                if (cryptoTime < 0)
+                if (Cryptography.ShouldEncrypt(FileSource.FullName))
                 {
-                    // Error occurred, copy the file without encryption
-                    cryptoTime = -1;
+                    cryptoTime = Cryptography.Encrypt(FileSource.FullName, FileDestinationPath);
+                    if (cryptoTime < 0)
+                    {
+                        // Error occurred, copy the file without encryption
+                        cryptoTime = -1;
+                        ConsoleLogger.LogError($"Couldn't encrypt file {FileSource.FullName}, file won't be transferred");
+                    }
+                    else if (cryptoTime == 0)
+                    {
+                        cryptoTime = int.Min(cryptoTime, 1); // Minimum encryption time
+                    }
+                }
+                else
+                {
                     FileSource.CopyTo(FileDestinationPath, true);
                 }
-                else if (cryptoTime == 0)
-                {
-                    cryptoTime = 1; // Minimum encryption time
-                }
             }
-            else
+            catch
             {
-                FileSource.CopyTo(FileDestinationPath, true);
+                cryptoTime = -1;
             }
 
             return cryptoTime;

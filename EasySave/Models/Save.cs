@@ -1,11 +1,20 @@
 ﻿using EasySave.ViewModels;
+using System.ComponentModel; // Ajout de la directive using
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using static EasySave.Logger.Logger;
 using static EasySave.Models.SaveProcess;
 
 namespace EasySave.Models
 {
-    public class Save : IDisposable
+    public class Save : INotifyPropertyChanged, IDisposable
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public enum SaveType
         {
             Complete,
@@ -25,7 +34,7 @@ namespace EasySave.Models
 
         // Transfer threads
         private List<SaveProcess> saveProcesses = new List<SaveProcess>();
-        private Mutex updateStateMutex = new Mutex();
+        private object updtateStateLock = new object();
         private CountdownEvent CountdownEvent = new CountdownEvent(0);
         private Thread? transferFinishedThread; // Thread to check if transfer is finished
 
@@ -37,8 +46,17 @@ namespace EasySave.Models
         public long TotalSize { get; set; } = 100;
         public string CurrentSource { get; set; } = "";
         public string CurrentDestination { get; set; } = "";
-        public int Progress { get; set; } = 100;
-        public SaveProcess.TransferType TransferType = SaveProcess.TransferType.Idle;
+        public TransferType TransferType { get; set; } = TransferType.Idle;
+        private double _progress = 100;
+        public double Progress
+        {
+            get => _progress;
+            set
+            {
+                _progress = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool PauseTransfer { get; set; } = false;
 
@@ -78,7 +96,8 @@ namespace EasySave.Models
 
         public bool CreateSave(bool upload = false)
         {
-            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
+            Progress = 0.0; // Réinitialiser la progression
+            if (TransferType != TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress.");
                 return false;
@@ -90,13 +109,13 @@ namespace EasySave.Models
                 return false;
             }
 
-            Copy(RealDirectoryPath, CopyDirectoryPath, SaveProcess.TransferType.Create);
+            Copy(RealDirectoryPath, CopyDirectoryPath, TransferType.Create);
             return true;
         }
 
         public void UpdateSave()
         {
-            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
+            if (TransferType != TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress");
                 return;
@@ -108,14 +127,15 @@ namespace EasySave.Models
                 return;
             }
 
-            Copy(RealDirectoryPath, CopyDirectoryPath, SaveProcess.TransferType.Upload);
+            Progress = 0.0; // Réinitialiser la progression
+            Copy(RealDirectoryPath, CopyDirectoryPath, TransferType.Upload);
         }
 
         public void LoadSave()
         {
-            if (TransferType != SaveProcess.TransferType.Idle || saveProcesses.Count > 0)
+            if (TransferType != TransferType.Idle || saveProcesses.Count > 0)
             {
-                ConsoleLogger.Log("Save already in progress");
+                ConsoleLogger.LogWarning("Save already in progress");
                 return;
             }
 
@@ -125,10 +145,31 @@ namespace EasySave.Models
                 return;
             }
 
-            Copy(CopyDirectoryPath, RealDirectoryPath, SaveProcess.TransferType.Download);
+            Progress = 0.0; // Réinitialiser la progression
+            Copy(CopyDirectoryPath, RealDirectoryPath, TransferType.Download);
         }
 
-        private void Copy(string source, string destination, SaveProcess.TransferType transferType, bool isRootDirectory = true)
+        public bool DeleteSave()
+        {
+            if (TransferType != TransferType.Idle || saveProcesses.Count > 0)
+            {
+                ConsoleLogger.LogWarning("Save already in progress");
+                return false;
+            }
+
+            if (Directory.Exists(CopyDirectoryPath))
+            {
+                if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
+                {
+                    ConsoleLogger.Log("Banned software detected. Cannot use save.", ConsoleColor.Blue);
+                    return false;
+                }
+                Directory.Delete(CopyDirectoryPath, true);
+            }
+            return true;
+        }
+
+        private void Copy(string source, string destination, TransferType transferType, bool isRootDirectory = true)
         {
             DirectoryInfo sourceInfo = new DirectoryInfo(source);
             DirectoryInfo destinationInfo = new DirectoryInfo(destination);
@@ -170,7 +211,7 @@ namespace EasySave.Models
             {
                 string destFilePath = Path.Combine(destination, file.Name);
                 bool copyFile = true;
-                if (transferType == SaveProcess.TransferType.Download && File.Exists(destFilePath)) // Loading save and file exists
+                if (transferType == TransferType.Download && File.Exists(destFilePath)) // Loading save and file exists
                 {
                     if (Type == SaveType.Differential) // Differential file load
                     {
@@ -186,7 +227,7 @@ namespace EasySave.Models
                 {
                     // Create TransferProcess objects
                     bool priorised = Settings.Instance.PriorisedExtensions.Any((extension) => file.Name.EndsWith(extension));
-                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int) file.Length, priorised);
+                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int)file.Length, priorised);
                     saveProcesses.Add(saveProcess);
                 }
             }
@@ -206,45 +247,38 @@ namespace EasySave.Models
         {
             transferFinishedThread = new Thread(() =>
             {
-                // Wait for all transfers to finish
-                CountdownEvent.Wait();
-
-                // Print
-                switch (TransferType)
+                try
                 {
-                    case TransferType.Create:
-                        ConsoleLogger.Log($"Successfully created save {Name}.", ConsoleColor.Green);
-                        break;
-                    case TransferType.Upload:
-                        ConsoleLogger.Log($"Successfully updated save {Name}.", ConsoleColor.Green);
-                        break;
-                    case TransferType.Download:
-                        ConsoleLogger.Log($"Successfully downloaded save {Name}.", ConsoleColor.Green);
-                        break;
+                    // Wait for all transfers to finish
+                    CountdownEvent.Wait();
+
+                    // Print
+                    switch (TransferType)
+                    {
+                        case TransferType.Create:
+                            ConsoleLogger.Log($"Successfully created save {Name}.", ConsoleColor.Green);
+                            break;
+                        case TransferType.Upload:
+                            ConsoleLogger.Log($"Successfully updated save {Name}.", ConsoleColor.Green);
+                            break;
+                        case TransferType.Download:
+                            ConsoleLogger.Log($"Successfully downloaded save {Name}.", ConsoleColor.Green);
+                            break;
+                    }
+
+                    // Update state
+                    saveProcesses.ForEach((saveProcess) => saveProcess.Thread?.Interrupt());
+                    saveProcesses.Clear();
+                    UpdateStateFinished(DateTime.Now);
                 }
-
-                // Update state
-                saveProcesses.ForEach((saveProcess) => saveProcess.Thread?.Interrupt());
-                saveProcesses.Clear();
-                UpdateStateFinished(DateTime.Now);
-
+                catch (ThreadInterruptedException) { }
+                catch (Exception e)
+                {
+                    ConsoleLogger.LogError(e.Message);
+                }
             });
 
             transferFinishedThread.Start();
-        }
-
-        public bool DeleteSave()
-        {
-            if (Directory.Exists(CopyDirectoryPath))
-            {
-                if (ProcessChecker.AreProcessesRunning(Settings.Instance.BannedSoftwares))
-                {
-                    ConsoleLogger.Log("Banned software detected. Cannot use save.", ConsoleColor.Blue);
-                    return false;
-                }
-                Directory.Delete(CopyDirectoryPath, true);
-            }
-            return true;
         }
 
         private long GetDirectorySize(DirectoryInfo directoryInfo)
@@ -267,39 +301,42 @@ namespace EasySave.Models
 
         private void UpdateState(DateTime date)
         {
-            updateStateMutex.WaitOne();
-            Date = date;
-            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
-            updateStateMutex.ReleaseMutex();
+            lock (updtateStateLock)
+            {
+                Date = date;
+                MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
+            }
         }
 
         public void UpdateState(DateTime date, long size, string fileSourcePath, string fileDestinationPath)
         {
-            updateStateMutex.WaitOne();
-            Progress = (int) (100 - (SizeRemaining - size) * 100 / TotalSize);
-            Date = date;
-            FilesRemaining--;
-            SizeRemaining = long.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
-            CurrentSource = fileSourcePath;
-            CurrentDestination = fileDestinationPath;
-            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
-            updateStateMutex.ReleaseMutex();
+            lock (updtateStateLock)
+            {
+                Progress = (100 - (SizeRemaining - size) * 100 / TotalSize);
+                Date = date;
+                FilesRemaining--;
+                SizeRemaining = Math.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
+                CurrentSource = fileSourcePath;
+                CurrentDestination = fileDestinationPath;
+                MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
+            }
         }
 
         public void UpdateStateFinished(DateTime date)
         {
-            updateStateMutex.WaitOne();
-            Date = date;
-            Progress = 100;
-            Transfering = false;
-            TransferType = TransferType.Idle;
-            FilesRemaining = 0;
-            SizeRemaining = 0;
-            CurrentSource = "";
-            CurrentDestination = "";
-            PauseTransfer = false;
-            MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
-            updateStateMutex.ReleaseMutex();
+            lock (updtateStateLock)
+            {
+                Date = date;
+                Progress = 100;
+                Transfering = false;
+                TransferType = TransferType.Idle;
+                FilesRemaining = 0;
+                SizeRemaining = 0;
+                CurrentSource = "";
+                CurrentDestination = "";
+                PauseTransfer = false;
+                MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
+            }
         }
 
         public void PauseSaveTransfer()
@@ -335,17 +372,23 @@ namespace EasySave.Models
 
             PauseTransfer = false;
 
-            ConsoleLogger.Log("Resumed save transfer", ConsoleColor.Yellow);
+            ConsoleLogger.Log("Resumed save transfer", ConsoleColor.Blue);
         }
 
         public void AbortSaveTransfer()
         {
+            if (!Transfering || saveProcesses.Count == 0 || TransferType == TransferType.Idle)
+            {
+                ConsoleLogger.LogWarning("No transfer in progress.");
+                return;
+            }
+
+            transferFinishedThread?.Interrupt();
             saveProcesses.ForEach(saveProcess => saveProcess.Thread?.Interrupt());
             saveProcesses.Clear();
-            transferFinishedThread?.Interrupt();
             TransferType = TransferType.Idle;
 
-            ConsoleLogger.Log("Aborted save transfer");
+            ConsoleLogger.Log("Aborted save transfer", ConsoleColor.Blue);
 
             UpdateStateFinished(DateTime.Now);
         }
@@ -374,5 +417,12 @@ namespace EasySave.Models
         {
             return saveProcesses.Any((process) => process.Priorised && !process.Finished);
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }
+
+
