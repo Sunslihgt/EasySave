@@ -71,7 +71,7 @@ namespace EasySave.ViewModels
         }
 
         public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
-        public Mutex LargeFileTransferMutex { get; } = new Mutex();
+        public object LargeFileTransferLock { get; } = new object();
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
