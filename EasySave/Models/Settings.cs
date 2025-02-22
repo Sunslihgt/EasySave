@@ -91,6 +91,11 @@ namespace EasySave.Models
             return string.Empty;
         }
 
+        public void SaveSettings()
+        {
+            SaveSettings(Instance);
+        }
+
         public void UpdateLoggerSetting(LogFormat logFormat, string logDirectory)
         {
             LogFormat = logFormat;

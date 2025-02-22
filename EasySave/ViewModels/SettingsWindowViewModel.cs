@@ -89,7 +89,7 @@ namespace EasySave.ViewModels
                 {
                     Settings.Instance.MaxFileSize = value;
                     OnPropertyChanged(nameof(MaxFileSize));
-                    Settings.Instance.UpdateLoggerSetting(Settings.Instance.LogFormat, Settings.Instance.LogDirectoryPath);
+                    Settings.Instance.SaveSettings();
                 }
             }
         }
