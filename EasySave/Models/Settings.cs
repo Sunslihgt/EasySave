@@ -24,6 +24,7 @@ namespace EasySave.Models
         public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
         public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
+        public int MaxFileSize { get; set; } = 4; // Default 4 MB
 
         private Settings() { } // Default constructor (uses the default values)
 
@@ -88,6 +89,11 @@ namespace EasySave.Models
             ConsoleLogger.LogError($"{CRYPTO_SOFT_EXE_NAME} not found.");
 
             return string.Empty;
+        }
+
+        public void SaveSettings()
+        {
+            SaveSettings(Instance);
         }
 
         public void UpdateLoggerSetting(LogFormat logFormat, string logDirectory)
