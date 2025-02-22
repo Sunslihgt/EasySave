@@ -29,8 +29,8 @@
         <!-- Log Format -->
         <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Left" Margin="456,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
         <ComboBox HorizontalAlignment="Center" Margin="0,73,0,0" VerticalAlignment="Top" Width="120"
-          ItemsSource="{Binding LogFormats}" 
-          SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}">
+            ItemsSource="{Binding LogFormats}" 
+            SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}">
         </ComboBox>
 
         <!-- Size File -->
@@ -38,11 +38,8 @@
             <Run Language="fr-fr" Text="SizeLabel"/>
         </TextBlock>
         <TextBox Text="{Binding MaxFileSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-         HorizontalAlignment="Left" Margin="706,76,0,0" 
-         Width="80" VerticalAlignment="Top"/>
-
-
-
+            HorizontalAlignment="Left" Margin="706,76,0,0" 
+            Width="80" VerticalAlignment="Top"/>
 
         <!-- BanList -->
         <TextBlock x:Name="BanListLabel" HorizontalAlignment="Center" Margin="0,146,631,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>

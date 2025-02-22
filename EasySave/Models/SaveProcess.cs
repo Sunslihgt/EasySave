@@ -75,7 +75,6 @@ namespace EasySave.Models
                 int cryptoTime = 0;
                 if (Size >= Settings.Instance.MaxFileSize * 1024 * 1024) // Only one thread can process large files
                 {
-                    Console.WriteLine("C'est trop tropico");
                     lock (Save.MainWindowViewModel.LargeFileTransferLock)
                     {
                         //Wait for the process to be ready since large files might have been waiting and not listening to pause
@@ -91,7 +90,6 @@ namespace EasySave.Models
                 }
                 else
                 {
-                    Console.WriteLine("ça passe mon boeuf");
                     cryptoTime = CopyFile();
                 }
 

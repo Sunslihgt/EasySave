@@ -69,7 +69,8 @@
         "header_extension": "Extension",
         "add_extension": "Add Extension",
         "modify_extension": "Add extension (must be . in front of)",
-        "priority_list": "List of priority Extensions"
+        "priority_list": "List of priority Extensions",
+        "modify_max_size": "Change the maximum file size (in MB)"
     },
     "fr": {
         "choose_language": "Choisissez votre langue :",
@@ -141,7 +142,8 @@
         "header_extension": "Extension",
         "add_extension": "Ajouter une extension",
         "modify_extension": "Ajouter une extension (doit commencer par un point)",
-        "priority_list": "Liste des extensions prioritaires"
+        "priority_list": "Liste des extensions prioritaires",
+        "modify_max_size": "Modifier la taille maximale du fichier (en Mo)"
     },
     "es": {
         "choose_language": "Eliga su idioma :",
@@ -213,6 +215,7 @@
         "header_extension": "Extensión",
         "add_extension": "Agregar extensión",
         "modify_extension": "Agregar extensión (debe comenzar con un punto)",
-        "priority_list": "Lista de extensiones prioritarias"
+        "priority_list": "Lista de extensiones prioritarias",
+        "modify_max_size": "Cambiar el tamaño máximo de archivo (en MB)"
     }
 }
