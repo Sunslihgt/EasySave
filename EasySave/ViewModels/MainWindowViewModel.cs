@@ -75,6 +75,7 @@ namespace EasySave.ViewModels
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
+        public Server Server { get; }
 
         public MainWindowViewModel(INavigationService navigationService)
         {
@@ -96,6 +97,9 @@ namespace EasySave.ViewModels
             PauseSaveCommand = new RelayCommand<Save>(PauseSave);
             StopSaveCommand = new RelayCommand<Save>(StopSave);
             PlaySaveCommand = new RelayCommand<Save>(PlaySave);
+
+            // Server
+            Server = new Server(this);
 
             // State logger
             StateLogger = new StateLogger(this);

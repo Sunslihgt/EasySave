@@ -10,7 +10,7 @@ namespace EasySave.Models
         private static readonly Lazy<Settings> _instance = new(() => LoadSettings());
         public static Settings Instance => _instance.Value;
 
-        public static readonly bool DEBUG_MODE = false;
+        public static readonly bool DEBUG_MODE = true;
         private static readonly string CONFIG_FILE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "config.json");
         private static readonly string CRYPTO_SOFT_EXE_NAME = "CryptoSoft.exe";
 

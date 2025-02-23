@@ -1,0 +1,73 @@
+﻿<Window x:Class="EasySave.Monitoring.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:EasySave.Monitoring.ViewModels"
+        xmlns:models="clr-namespace:EasySave.Monitoring.Models"
+        mc:Ignorable="d"
+        Title="EasySave Monitoring" Height="500" Width="950" Background="#cccccc" MinHeight="450" MinWidth="800">
+    <!-- Main Content -->
+    <Grid Background="White" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ListView with dynamic height -->
+        <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="0,0,0,10">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding RealDirectoryPath}" FontSize="14"/>
+                            <TextBlock Text="{Binding CopyDirectoryPath}" FontSize="14"/>
+                            <TextBlock Text="{Binding Type}" FontSize="14"/>
+                            <TextBlock Text="{Binding Transfering}" FontSize="14"/>
+                            <ProgressBar Value="{Binding Progress}" Height="20" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Update" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Load" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="5,0"/>
+                                <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Pause" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Stop" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Play" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
+            <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
+
+            <!-- Champ Source en lecture seule avec bouton de sélection -->
+            <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+            </StackPanel>
+
+            <!-- Champ Destination en lecture seule avec bouton de sélection -->
+            <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+            </StackPanel>
+
+            <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
+            <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>
