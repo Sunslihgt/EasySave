@@ -4,11 +4,12 @@
     <Application.Resources>
 
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="Padding" Value="10,5"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="#3498db"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Background" Value="#00A8E8"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -16,9 +17,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="15"
-                                Padding="{TemplateBinding Padding}">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -26,10 +25,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#2980b9"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+
 
         <Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource RoundedButtonStyle}">
             <Setter Property="Background" Value="#E74C3C"/>
@@ -40,21 +39,20 @@
             </Style.Triggers>
         </Style>
 
-
         <Style x:Key="LanguageWindowTextBlockStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,20,0,10"/>
+            <Setter Property="Margin" Value="0,15,0,8"/>
         </Style>
 
         <Style x:Key="LanguageComboBoxStyle" TargetType="ComboBox">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Width" Value="200"/>
-            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Width" Value="180"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
-        
+
         <Style x:Key="CenterAlignedTextCellStyle" TargetType="DataGridCell">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -62,3 +60,5 @@
 
     </Application.Resources>
 </Application>
+
+
