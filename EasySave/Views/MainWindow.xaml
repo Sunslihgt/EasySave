@@ -89,27 +89,76 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch">
+            <Grid Grid.Row="1" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <!-- NameTextBox -->
+                    <ColumnDefinition Width="3*" />
+                    <!-- Source -->
+                    <ColumnDefinition Width="3*" />
+                    <!-- Destination -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Type -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Add Button -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Name TextBox -->
                 <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" 
-                         Width="92" Margin="5" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
-                <StackPanel Orientation="Horizontal" Margin="5">
+             MinWidth="100" Padding="5" Background="#333333" Foreground="#FFFFFF" 
+             BorderBrush="#444444" VerticalAlignment="Center" Grid.Column="0" Margin="5,0,5,0"/>
+
+                <!-- Source Folder Selection -->
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" 
-                             IsReadOnly="True" Width="170" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
+                        IsReadOnly="True" MinWidth="170" Padding="5" Background="#333333" 
+                        Foreground="#FFFFFF" BorderBrush="#444444" VerticalAlignment="Center"
+                        Grid.Column="0" Margin="5,0,0,0" Focusable="True">
+                        <TextBox.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding OpenSourceFolderCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <!-- Source Button -->
                     <Button Content="📂" Height="35" Width="45" Command="{Binding OpenSourceFolderCommand}" 
-                            Margin="5,0,0,0" VerticalAlignment="Center" Style="{StaticResource RoundedButtonStyle}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5">
+                        Margin="0,0,5,0" VerticalAlignment="Center" 
+                        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1"/>
+                </Grid>
+
+                <!-- Destination Folder Selection -->
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" 
-                             IsReadOnly="True" Width="170" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
+                        IsReadOnly="True" MinWidth="170" Padding="5" Background="#333333" 
+                        Foreground="#FFFFFF" BorderBrush="#444444" VerticalAlignment="Center"
+                        Grid.Column="0" Margin="5,0,0,0">
+                        <TextBox.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding OpenDestinationFolderCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <Button Content="📂" Height="35" Width="45" Command="{Binding OpenDestinationFolderCommand}" 
-                            Margin="5,0,0,0" VerticalAlignment="Center" Style="{StaticResource RoundedButtonStyle}"/>
-                </StackPanel>
+                        Margin="0,0,5,0" VerticalAlignment="Center" 
+                        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1"/>
+                </Grid>
+
+                <!-- Save Type ComboBox -->
                 <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}"
-                          SelectedItem="{Binding MySaveType}" Width="95" Margin="5" VerticalAlignment="Center"
-                          Background="#333333" Foreground="Black" BorderBrush="#444444"/>
+                    SelectedItem="{Binding MySaveType}" MinWidth="95" 
+                    Background="#333333" Foreground="Black" BorderBrush="#444444"
+                    VerticalAlignment="Center" Grid.Column="3"/>
+
+                <!-- Add Save Button -->
                 <Button x:Name="AddSaveButton" Height="35" Command="{Binding CreateSaveCommand}" 
-                        Content="➕" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
-            </StackPanel>
+                    Content="➕" Style="{StaticResource RoundedButtonStyle}" Margin="5" 
+                    Grid.Column="4"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
