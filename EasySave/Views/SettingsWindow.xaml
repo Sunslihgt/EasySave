@@ -21,28 +21,32 @@
     </Window.Resources>
 
     <Grid x:Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="231*"/>
+            <ColumnDefinition Width="269*"/>
+        </Grid.ColumnDefinitions>
         <!-- Language -->
-        <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Center" Margin="0,50,390,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"><Run Language="fr-fr" Text="LanguageLabel"/><LineBreak/><Run Language="fr-fr"/></TextBlock>
+        <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Left" Margin="265,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"><Run Language="fr-fr" Text="LanguageLabel"/><LineBreak/><Run Language="fr-fr"/></TextBlock>
         <Button x:Name="LanguageButton"
         Content="LanguageButton"
-        HorizontalAlignment="Center" 
-        Margin="0,71,390,0" 
+        HorizontalAlignment="Left" 
+        Margin="240,71,0,0" 
         VerticalAlignment="Top"
         Command="{Binding OpenLanguageWindowCommand}"
         Style="{StaticResource RoundedButtonStyle}"/>
 
         <!-- Log Format -->
-        <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Center" Margin="407,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
-        <ComboBox HorizontalAlignment="Center" Margin="390,71,0,0" VerticalAlignment="Top" Width="120"
+        <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Left" Margin="199,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White" Grid.Column="1"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
+        <ComboBox HorizontalAlignment="Left" Margin="173,71,0,0" VerticalAlignment="Top" Width="120"
           ItemsSource="{Binding LogFormats}" 
           SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}"
-          Style="{StaticResource LanguageComboBoxStyle}">
+          Style="{StaticResource LanguageComboBoxStyle}" Grid.Column="1">
         </ComboBox>
 
         <!-- BanList -->
-        <TextBlock x:Name="BanListLabel" HorizontalAlignment="Center" Margin="0,146,631,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="white"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
+        <TextBlock x:Name="BanListLabel" HorizontalAlignment="Left" Margin="152,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="white"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
         <DataGrid ItemsSource="{Binding BannedSoftwares}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="0,167,631,0"
+          HorizontalAlignment="Left" Height="116" Margin="10,167,0,0"
           VerticalAlignment="Top" Width="350"
           IsReadOnly="True" 
           CanUserAddRows="False" 
@@ -74,22 +78,22 @@
         </DataGrid>
 
         <!-- BanList - AddSoftware -->
-        <Button x:Name="AddSoftware" Content="Ajouter un logiciel" HorizontalAlignment="Center" Height="38" Margin="0,288,631,0"
+        <Button x:Name="AddSoftware" Content="Ajouter un logiciel" HorizontalAlignment="Left" Height="38" Margin="84,288,0,0"
         VerticalAlignment="Top" Width="200"
         Click="OpenAddSoftwarePopup"
         Style="{StaticResource RoundedButtonStyle}"/>
 
         <!-- ExtensionList -->
-        <TextBlock x:Name="ExtensionList" HorizontalAlignment="Center" Margin="0,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"><Run Language="fr-fr" Text="ExtensionListLabel"/></TextBlock>
+        <TextBlock x:Name="ExtensionList" HorizontalAlignment="Left" Margin="452,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White" Grid.ColumnSpan="2"><Run Language="fr-fr" Text="ExtensionListLabel"/></TextBlock>
         <DataGrid ItemsSource="{Binding EncryptExtensions}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="0,167,10,0"
+          HorizontalAlignment="Left" Height="116" Margin="375,167,0,0"
           VerticalAlignment="Top" Width="240"
           IsReadOnly="True" 
           CanUserAddRows="False" 
           CanUserDeleteRows="False"
           CanUserResizeColumns="False"
           CanUserReorderColumns="False"
-          Background="#2D2D30" Foreground="White" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30">
+          Background="#2D2D30" Foreground="White" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="HeaderExtension" Header="Extension" Binding="{Binding}" Width="*" Foreground="White"/>
                 <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="50">
@@ -104,22 +108,22 @@
             </DataGrid.Columns>
         </DataGrid>
         <!-- ExtensionList - AddExtension -->
-        <Button x:Name="AddExtension" Content="Ajouter une extension" HorizontalAlignment="Center" Height="38" Margin="0,288,10,0"
+        <Button x:Name="AddExtension" Content="Ajouter une extension" HorizontalAlignment="Left" Height="38" Margin="375,288,0,0"
         VerticalAlignment="Top" Width="240"
         Click="OpenAddExtensionPopup"
-        Style="{StaticResource RoundedButtonStyle}"/>
+        Style="{StaticResource RoundedButtonStyle}" Grid.ColumnSpan="2"/>
 
         <!-- PriorityList -->
-        <TextBlock x:Name="PriorityList" HorizontalAlignment="Center" Margin="551,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"><Run Language="fr-fr" Text="PriorityListLabel"/></TextBlock>
+        <TextBlock x:Name="PriorityList" HorizontalAlignment="Left" Margin="272,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White" Grid.Column="1"><Run Language="fr-fr" Text="PriorityListLabel"/></TextBlock>
         <DataGrid ItemsSource="{Binding PriorisedExtensions}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="558,167,0,0" FontSize="12"
+          HorizontalAlignment="Left" Height="116" Margin="197,167,0,0" FontSize="12"
           VerticalAlignment="Top" Width="240"
           IsReadOnly="True" 
           CanUserAddRows="False" 
           CanUserDeleteRows="False"
           CanUserResizeColumns="False"
           CanUserReorderColumns="False"
-          Background="#2D2D30" Foreground="black" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30">
+          Background="#2D2D30" Foreground="black" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.Column="1">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="HeaderExtension2" Header="Extension" Binding="{Binding}" Width="*" Foreground="black" FontSize="20"/>
                 <DataGridTemplateColumn x:Name="HeaderActions3" Header="Actions" Width="50">
@@ -134,23 +138,23 @@
             </DataGrid.Columns>
         </DataGrid>
         <!-- PriorityList - AddPriority -->
-        <Button x:Name="AddPriority" Content="Ajouter une priorité" HorizontalAlignment="Center" Height="38" Margin="559,288,0,0"
+        <Button x:Name="AddPriority" Content="Ajouter une priorité" HorizontalAlignment="Left" Height="38" Margin="198,288,0,0"
         VerticalAlignment="Top" Width="240"
         Click="OpenAddPriorityPopup"
-        Style="{StaticResource RoundedButtonStyle}"/>
+        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1"/>
 
         <!-- Button Leave -->
         <Button x:Name="BackToMenu"
         Content="Retour au menu"
-        HorizontalAlignment="Center"
-        Margin="0,351,0,0"
+        HorizontalAlignment="Left"
+        Margin="437,351,0,0"
         VerticalAlignment="Top"
         Command="{Binding CloseWindowCommand}"
-        Style="{StaticResource RoundedButtonStyle}"/>
+        Style="{StaticResource RoundedButtonStyle}" Grid.ColumnSpan="2"/>
 
         <!-- BanList - Pop up -->
         <Popup x:Name="AddSoftwarePopup" IsOpen="False"
-            Placement="Center" StaysOpen="False">
+            Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
             <Border Width="300" Height="250">
                 <StackPanel>
                     <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10"/>
@@ -171,7 +175,7 @@
 
         <!-- ExtensionList - Pop up -->
         <Popup x:Name="AddExtensionPopup" IsOpen="False"
-            Placement="Center" StaysOpen="False">
+            Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
             <Border Width="300" Height="250">
                 <StackPanel>
                     <TextBlock x:Name="AddExtensionDot" Text="Ajouter une extension" Margin="10"/>
@@ -194,7 +198,7 @@
 
         <!-- PriorityList - Pop up -->
         <Popup x:Name="AddPriorityPopup" IsOpen="False"
-            Placement="Center" StaysOpen="False">
+            Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
             <Border Width="300" Height="250">
                 <StackPanel>
                     <TextBlock x:Name="AddPriorityDot" Text="Ajouter une priorité" Margin="10"/>
