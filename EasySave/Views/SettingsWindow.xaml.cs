@@ -46,6 +46,9 @@ namespace EasySave.Views
             // Format
             LogFormatLabel.Text = LanguageManager.GetText("modify_log_format");
 
+            // MaxSize
+            SizeLabel.Text = LanguageManager.GetText("modify_max_size");
+
             // Ban Software :
             BanListLabel.Text = LanguageManager.GetText("ban_list");
             AddSoftwareExe.Text = LanguageManager.GetText("modify_banned_software");

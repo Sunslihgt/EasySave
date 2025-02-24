@@ -21,8 +21,6 @@ namespace EasySave.Models
             Differential
         }
 
-        public readonly int MAX_CONCURRENT_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
-
         // Dispose
         private bool _disposed = false;
 
@@ -424,5 +422,3 @@ namespace EasySave.Models
         }
     }
 }
-
-

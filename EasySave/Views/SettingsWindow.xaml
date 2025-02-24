@@ -43,6 +43,14 @@
           Style="{StaticResource LanguageComboBoxStyle}" Grid.Column="1">
         </ComboBox>
 
+        <!-- Size File -->
+        <TextBlock x:Name="SizeLabel" HorizontalAlignment="Left" Margin="741,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            <Run Language="fr-fr" Text="SizeLabel"/>
+        </TextBlock>
+        <TextBox Text="{Binding MaxFileSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+            HorizontalAlignment="Left" Margin="706,76,0,0" 
+            Width="80" VerticalAlignment="Top"/>
+
         <!-- BanList -->
         <TextBlock x:Name="BanListLabel" HorizontalAlignment="Left" Margin="152,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="white"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
         <DataGrid ItemsSource="{Binding BannedSoftwares}" AutoGenerateColumns="False"

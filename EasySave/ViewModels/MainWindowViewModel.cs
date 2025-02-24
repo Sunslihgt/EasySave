@@ -180,6 +180,10 @@ namespace EasySave.ViewModels
             {
                 return;
             }
+            if (Saves.Any(s => s.Name.Equals(SaveName, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
             if (Enum.TryParse(MySaveType, out Save.SaveType saveType))
             {
                 Save save = new Save(this, saveType, SaveName, SaveSource, SaveDestination);

@@ -73,7 +73,7 @@ namespace EasySave.Models
                 stopwatch.Start();
 
                 int cryptoTime = 0;
-                if (Size >= Save.MAX_CONCURRENT_FILE_SIZE) // Only one thread can processe large files
+                if (Size >= Settings.Instance.MaxFileSize * 1024 * 1024) // Only one thread can process large files
                 {
                     lock (Save.MainWindowViewModel.LargeFileTransferLock)
                     {
