@@ -70,7 +70,7 @@
         "add_extension": "Add Extension",
         "modify_extension": "Add extension (must be . in front of)",
         "priority_list": "List of priority Extensions",
-        "modify_max_size": "Change the maximum file size (in MB)"
+        "modify_max_size": "Change the maximum file size (in KB)"
     },
     "fr": {
         "choose_language": "Choisissez votre langue :",
@@ -143,7 +143,7 @@
         "add_extension": "Ajouter une extension",
         "modify_extension": "Ajouter une extension (doit commencer par un point)",
         "priority_list": "Liste des extensions prioritaires",
-        "modify_max_size": "Modifier la taille maximale du fichier (en Mo)"
+        "modify_max_size": "Modifier la taille maximale du fichier (en Ko)"
     },
     "es": {
         "choose_language": "Eliga su idioma :",
@@ -216,6 +216,6 @@
         "add_extension": "Agregar extensión",
         "modify_extension": "Agregar extensión (debe comenzar con un punto)",
         "priority_list": "Lista de extensiones prioritarias",
-        "modify_max_size": "Cambiar el tamaño máximo de archivo (en MB)"
+        "modify_max_size": "Cambiar el tamaño máximo de archivo (en KB)"
     }
 }
