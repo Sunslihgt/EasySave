@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EasySave.Views"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="500" Width="1000" Background="#1E1E1E" MinHeight="450" MinWidth="800">
+        Title="SettingsWindow" Height="500" Width="1000" Background="#282b30" MinHeight="450" MinWidth="800">
 
     <Window.Resources>
         <Style TargetType="DataGridColumnHeader">
@@ -44,12 +44,12 @@
         </ComboBox>
 
         <!-- Size File -->
-        <TextBlock x:Name="SizeLabel" HorizontalAlignment="Left" Margin="741,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+        <TextBlock x:Name="SizeLabel" HorizontalAlignment="Left" Margin="0,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="white" Grid.Column="1">
             <Run Language="fr-fr" Text="SizeLabel"/>
         </TextBlock>
         <TextBox Text="{Binding MaxFileSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-            HorizontalAlignment="Left" Margin="706,76,0,0" 
-            Width="80" VerticalAlignment="Top"/>
+            HorizontalAlignment="Left" Margin="446,74,0,0" 
+            Width="80" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
 
         <!-- BanList -->
         <TextBlock x:Name="BanListLabel" HorizontalAlignment="Left" Margin="152,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="white"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
@@ -61,19 +61,18 @@
           CanUserDeleteRows="False"
           CanUserResizeColumns="False"
           CanUserReorderColumns="False"
-          Background="#1E1E1E" BorderBrush="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444">
+          Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                    <Setter Property="Foreground" Value="Black"/>
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderName" Header="Nom" Binding="{Binding Name}" Width="*" Foreground="white" FontSize="15"/>
-                <DataGridTextColumn x:Name="HeaderSoftware" Header="Logiciel" Binding="{Binding Software}" Width="*" Foreground="white" FontSize="15"/>
-                <DataGridTemplateColumn x:Name="HeaderActions" Header="Actions" Width="80">
+                <DataGridTextColumn x:Name="HeaderName" Header="Nom" Binding="{Binding Name}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
+                <DataGridTextColumn x:Name="HeaderSoftware" Header="Logiciel" Binding="{Binding Software}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
+                <DataGridTemplateColumn x:Name="HeaderActions" Header="Actions" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
@@ -101,13 +100,21 @@
           CanUserDeleteRows="False"
           CanUserResizeColumns="False"
           CanUserReorderColumns="False"
-          Background="#2D2D30" Foreground="White" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.ColumnSpan="2">
+          Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444" Grid.ColumnSpan="2">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderExtension" Header="Extension" Binding="{Binding}" Width="*" Foreground="White"/>
-                <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="50">
+                <DataGridTextColumn x:Name="HeaderExtension" Header="Extension" Binding="{Binding}" Width="*" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="🚮" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
+                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
                             Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"/>
                         </DataTemplate>
@@ -131,13 +138,21 @@
           CanUserDeleteRows="False"
           CanUserResizeColumns="False"
           CanUserReorderColumns="False"
-          Background="#2D2D30" Foreground="black" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.Column="1">
+          Background="#1E1E1E" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.Column="1">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderExtension2" Header="Extension" Binding="{Binding}" Width="*" Foreground="black" FontSize="20"/>
+                <DataGridTextColumn x:Name="HeaderExtension2" Header="Extension" Binding="{Binding}" Width="*" Foreground="white" FontSize="15" FontWeight="SemiBold"/>
                 <DataGridTemplateColumn x:Name="HeaderActions3" Header="Actions" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="🚮" FontSize="20" Width="40" Height="35" Background="Red" Style="{StaticResource DeleteButtonStyle}"
+                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
                             Command="{Binding DataContext.RemovePriorityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"/>
                         </DataTemplate>
@@ -165,7 +180,7 @@
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
             <Border Width="300" Height="250">
                 <StackPanel>
-                    <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10"/>
+                    <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10" Foreground="White"/>
                     <TextBox Text="{Binding NewSoftwareName, Mode=TwoWay}" Margin="10"/>
 
                     <Button x:Name="AddBannedSoftware"
