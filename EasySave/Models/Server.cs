@@ -62,10 +62,13 @@ namespace EasySave.Models
                     if (request == "") continue;
 
                     ConsoleLogger.Log($"[Client]: {request}", ConsoleColor.Cyan);
-                    ProcessCommand(request);
+                    ProcessCommand(client, request);
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                ConsoleLogger.LogError(ex.ToString());
+            }
             finally
             {
                 lock (clients) {
@@ -77,19 +80,44 @@ namespace EasySave.Models
             }
         }
 
-        private void ProcessCommand(string command)
+        private void ProcessCommand(TcpClient client, string command)
         {
-            if (string.IsNullOrEmpty(command) || !command.Contains("|") || command.IndexOf('|') + 1 > command.Length)
+            if (string.IsNullOrEmpty(command) || !command.Contains('|') || command.IndexOf('|') + 1 > command.Length)
             {
                 ConsoleLogger.LogError($"Invalid command: {command}");
                 return;
             }
 
-            string operation = command.Substring(0, command.IndexOf('|')).Trim().ToUpper();
-            string data = command.Substring(command.IndexOf('|') + 1).Trim();
+            string operation = command[0..command.IndexOf('|')].Trim().ToUpper();
+            string data = command[(command.IndexOf('|') + 1)..].Trim();
 
             switch (operation)
             {
+                case "CREATE":
+                    ConsoleLogger.Log(data, ConsoleColor.DarkCyan);
+                    if (data.Length > 0 && data.Count(c => c == '|') == 3)
+                    {
+                        string name = data.Split('|')[0];
+                        string source = data.Split('|')[1];
+                        string destination = data.Split('|')[2];
+                        string typeString = data.Split('|')[3];
+
+                        ConsoleLogger.Log($"{name} {source} {destination} {typeString}", ConsoleColor.DarkCyan);
+                        if (Enum.TryParse(typeString, out Save.SaveType saveType))
+                        {
+                            ConsoleLogger.Log($"{saveType}", ConsoleColor.DarkCyan);
+                            if (name.Length > 0 && source.Length > 0 && destination.Length > 0)
+                            {
+                                bool createSuccess = mainWindowViewModel.CreateSave(name, source, destination, saveType);
+                                ConsoleLogger.Log($"CreateSucess={createSuccess}", ConsoleColor.DarkCyan);
+                                if (createSuccess)
+                                {
+                                    SendClient(client, $"RESETCREATE|");
+                                }
+                            }
+                        }
+                    }
+                    break;
                 case "UPLOAD":
                     if (data.Length > 0 && mainWindowViewModel.Saves.Any((save) => save.Name == data))
                     {
@@ -147,7 +175,7 @@ namespace EasySave.Models
             SendClient(client, $"STATE|{state}");
         }
 
-        private void Broadcast(string message)
+        public void Broadcast(string message)
         {
             lock (clients)
             {
@@ -166,7 +194,7 @@ namespace EasySave.Models
                 StreamWriter writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
                 writer.WriteLine(message + "\n");
 
-                if (message.Length > 70) ConsoleLogger.Log($"Sent {client.Client.RemoteEndPoint}: {message.Substring(0, 70)}...", ConsoleColor.Cyan);
+                if (message.Length > 70) ConsoleLogger.Log($"Sent {client.Client.RemoteEndPoint}: {message[0..70]}...", ConsoleColor.Cyan);
                 else ConsoleLogger.Log($"Sent {client.Client.RemoteEndPoint}: {message}", ConsoleColor.Cyan);
             }
             catch (Exception ex)

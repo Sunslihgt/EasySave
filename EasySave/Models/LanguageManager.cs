@@ -17,7 +17,7 @@ namespace EasySave.Models
         }
         private static Language currentLanguage = Language.EN;
 
-        public static event Action LanguageChanged;
+        public static event Action? LanguageChanged;
 
         static LanguageManager()
         {
@@ -33,7 +33,7 @@ namespace EasySave.Models
                 if (File.Exists(jsonPath))
                 {
                     string jsonText = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
-                    languages = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(jsonText);
+                    languages = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(jsonText) ?? new Dictionary<string, Dictionary<string, object>>();
                 }
                 else
                 {
@@ -84,7 +84,7 @@ namespace EasySave.Models
                     var value = languages[langKey][key];
                     if (value is JArray jsonArray)
                     {
-                        return jsonArray.ToObject<List<string>>();
+                        return jsonArray.ToObject<List<string>>() ?? new List<string>();
                     }
                 }
                 catch (Exception ex)

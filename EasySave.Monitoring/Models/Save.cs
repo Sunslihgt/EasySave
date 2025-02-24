@@ -81,7 +81,7 @@ namespace EasySave.Monitoring.Models
         {
             if (!Transfering)
             {
-                Progress = 0.0;
+                Progress = 0;
                 MainWindowViewModel?.Client.SendMessage($"UPLOAD|{Name}");
             }
         }
@@ -90,7 +90,7 @@ namespace EasySave.Monitoring.Models
         {
             if (!Transfering)
             {
-                Progress = 0.0;
+                Progress = 0;
                 MainWindowViewModel?.Client.SendMessage($"DOWNLOAD|{Name}");
             }
         }

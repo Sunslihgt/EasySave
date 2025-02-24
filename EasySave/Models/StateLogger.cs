@@ -163,8 +163,6 @@ namespace EasySave.Models
 
         public void WriteState(List<Save> saves, bool sendServerUpdate = true)
         {
-            var savesToStore = GetStateObjects(saves);
-
             if (sendServerUpdate)
             {
                 mainWindowViewModel.Server.SendState(GetStateString(saves, false));

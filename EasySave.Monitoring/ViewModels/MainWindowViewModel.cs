@@ -1,14 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using EasySave.Monitoring.Models;
 using System.Windows;
@@ -71,6 +62,7 @@ namespace EasySave.Monitoring.ViewModels
         }
         
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
+        public ObservableCollection<string> SaveTypes { get; } = new ObservableCollection<string>();
 
         public Client Client { get; set; }
 
@@ -86,6 +78,13 @@ namespace EasySave.Monitoring.ViewModels
             StopSaveCommand = new RelayCommand<Save>(StopSave);
             PlaySaveCommand = new RelayCommand<Save>(PlaySave);
 
+            // Save types
+            for (int i = 0; i < Enum.GetNames(typeof(Save.SaveType)).Length; i++)
+            {
+                SaveTypes.Add(Enum.GetNames(typeof(Save.SaveType))[i]);
+            }
+
+            // Client
             Client = new Client(this);
         }
 
@@ -119,37 +118,48 @@ namespace EasySave.Monitoring.ViewModels
 
         public void CreateSave()
         {
-            throw new NotImplementedException();
+            if (SaveName != "" && SaveSource != "" && SaveDestination != "" && MySaveType != "")
+            {
+                Client.CreateSave(SaveName, SaveSource, SaveDestination, MySaveType);
+            }
         }
 
-        public void UpdateSave(Save save)
+        public static void UpdateSave(Save save)
         {
             save.UpdateSave();
         }
 
-        public void LoadSave(Save save)
+        public static void LoadSave(Save save)
         {
             save.LoadSave();
         }
 
-        public void DeleteSave(Save save)
+        public static void DeleteSave(Save save)
         {
             save.DeleteSave();
         }
 
-        public void PauseSave(Save save)
+        public static void PauseSave(Save save)
         {
             save.PauseSaveTransfer();
         }
 
-        public void StopSave(Save save)
+        public static void StopSave(Save save)
         {
             save.AbortSaveTransfer();
         }
 
-        public void PlaySave(Save save)
+        public static void PlaySave(Save save)
         {
             save.ResumeSaveTransfer();
+        }
+
+        public void ResetCreateSaveForm()
+        {
+            SaveName = string.Empty;
+            SaveSource = string.Empty;
+            SaveDestination = string.Empty;
+            MySaveType = string.Empty;
         }
 
         private void OnPropertyChanged(string propertyName)

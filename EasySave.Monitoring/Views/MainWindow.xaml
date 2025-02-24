@@ -58,12 +58,12 @@
 
             <!-- Champ Source en lecture seule avec bouton de sélection -->
             <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource}" Width="200"/>
             </StackPanel>
 
             <!-- Champ Destination en lecture seule avec bouton de sélection -->
             <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" IsReadOnly="True" Width="200"/>
+                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination}" Width="200"/>
             </StackPanel>
 
             <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>

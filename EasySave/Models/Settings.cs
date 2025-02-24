@@ -22,7 +22,7 @@ namespace EasySave.Models
         public string[] EncryptExtensions { get; set; } = { };
         public string[] PriorisedExtensions { get; set; } = { };
         public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
-        public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
+        public string CryptoSoftPath { get; set; } = string.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
         public int MaxFileSize { get; set; } = 4; // Default 4 MB
 

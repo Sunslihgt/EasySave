@@ -74,7 +74,7 @@ namespace EasySave.Monitoring.Models
                     message = message.Trim().TrimStart('?');
                     if (message == "") continue;
 
-                    if (message.Length > 70) Console.WriteLine($"[Server]: {message.Substring(0, 70)}...");
+                    if (message.Length > 70) Console.WriteLine($"[Server]: {message[0..70]}...");
                     else Console.WriteLine($"[Server]: {message}");
 
                     ProcessCommand(message);
@@ -116,6 +116,10 @@ namespace EasySave.Monitoring.Models
                     Console.WriteLine($"Error parsing state: {ex.Message}");
                 }
             }
+            else if (command.StartsWith("RESETCREATE|"))
+            {
+                mainWindowViewModel.ResetCreateSaveForm();
+            }
         }
 
         public void SendMessage(string message)
@@ -135,6 +139,11 @@ namespace EasySave.Monitoring.Models
         public bool IsConnected()
         {
             return client.Connected;
+        }
+
+        public void CreateSave(string SaveName, string SaveSource, string SaveDestination, string MySaveType)
+        {
+            SendMessage($"CREATE|{SaveName}|{SaveSource}|{SaveDestination}|{MySaveType}");
         }
     }
 }

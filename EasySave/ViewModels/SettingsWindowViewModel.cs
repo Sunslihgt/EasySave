@@ -17,7 +17,6 @@ namespace EasySave.ViewModels
         private string _newSoftwareName = string.Empty;
         private string _newExtensionName = string.Empty;
         private string _newPriorityName = string.Empty;
-        private int _maxFileSize;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

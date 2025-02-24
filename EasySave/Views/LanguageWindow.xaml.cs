@@ -28,7 +28,7 @@ namespace EasySave.Views
         {
             if (LanguageComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
-                string selectedLanguage = selectedItem.Tag.ToString();
+                string selectedLanguage = selectedItem.Tag.ToString() ?? "";
                 MessageBox.Show($"Current Language : {selectedLanguage}");
 
                 switch (selectedLanguage)
