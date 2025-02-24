@@ -6,99 +6,110 @@
         xmlns:vm="clr-namespace:EasySave.ViewModels"
         xmlns:models="clr-namespace:EasySave.Models"
         mc:Ignorable="d"
-        Title="EasySave" Height="450" Width="984" Background="#f0f0f0" MinHeight="450" MinWidth="800">
+        Title="EasySave" Height="600" Width="1000" Background="#1E1E1E" MinHeight="450" MinWidth="800">
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <!-- Sidebar with auto width -->
             <ColumnDefinition Width="*"/>
-            <!-- Main content takes remaining space -->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Header with auto height -->
             <RowDefinition Height="*"/>
-            <!-- Main content stretches to available height -->
             <RowDefinition Height="Auto"/>
-            <!-- Create Save Section with auto height -->
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Grid.ColumnSpan="2" Text="EasySave" FontSize="24" FontWeight="Bold" Foreground="#007ACC" HorizontalAlignment="Center" Margin="10"/>
+        <TextBlock Grid.ColumnSpan="2" Text="EasySave" FontSize="28" FontWeight="Bold" Foreground="#00A8E8" 
+                   HorizontalAlignment="Center" Margin="10" VerticalAlignment="Center"/>
 
-        <!-- Sidebar -->
-        <StackPanel Grid.Column="0" Grid.Row="1" Background="#2D2D30" Margin="10,10,7,10">
-            <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" Content="Language" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
-            <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" Content="Settings" Style="{StaticResource RoundedButtonStyle}" Margin="0,10,0,0"/>
-        </StackPanel>
+        <Border Grid.Column="0" Grid.Row="1" Background="#252526" Margin="10" Width="180" Padding="10" 
+        CornerRadius="15" BorderBrush="#444444" BorderThickness="1">
+            <StackPanel HorizontalAlignment="Center">
+                <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" 
+                Content="🌍 Language" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
+                <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" 
+                Content="⚙️ Settings" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
+            </StackPanel>
+        </Border>
 
-        <!-- Main Content -->
-        <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="10">
+
+        <Grid Grid.Column="1" Grid.Row="1" Background="#2D2D30" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- ListView with dynamic height -->
-            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="0,0,0,10">
+            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10" BorderThickness="0" Background="Transparent">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                                <TextBlock Text="{Binding RealDirectoryPath}" FontSize="14"/>
-                                <TextBlock Text="{Binding CopyDirectoryPath}" FontSize="14"/>
-                                <TextBlock Text="{Binding Type}" FontSize="14"/>
-                                <TextBlock Text="{Binding Transfering}" FontSize="14"/>
-                                <ProgressBar Value="{Binding Progress}" Height="20" Margin="0,10,0,0"/>
-                                <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Right" Margin="0,10,0,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Border BorderBrush="#444444" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10" Background="#333333">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF"/>
+                                <TextBlock Grid.Row="1" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC"/>
+                                <TextBlock Grid.Row="2" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC"/>
+                                <TextBlock Grid.Row="3" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC"/>
+
+                                <Grid Grid.Row="4" Margin="0,10,0,0">
+                                    <ProgressBar Value="{Binding Progress}" Height="20" Foreground="#00A8E8" Background="#444444"/>
+                                    <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke"/>
+                                </Grid>
+
+                                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                     <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Update" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                            Content="🔁" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
                                     <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Load" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                            Content="⏬" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
                                     <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="5,0"/>
+                                            Content="❌" Style="{StaticResource DeleteButtonStyle}" Margin="5"/>
                                     <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Pause" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                            Content="⏯️" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
                                     <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Stop" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                            Content="⏹️" Style="{StaticResource DeleteButtonStyle}" Margin="5"/>
                                     <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
-                                            Content="Play" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
+                                            Content="⏩" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
                                 </StackPanel>
-                            </StackPanel>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
-                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
-
-                <!-- Champ Source en lecture seule avec bouton de sélection -->
-                <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                    <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" IsReadOnly="True" Width="200"/>
-                    <Button Content="..." Height="30" Width="30" Command="{Binding OpenSourceFolderCommand}" />
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch">
+                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" 
+                         Width="92" Margin="5" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" 
+                             IsReadOnly="True" Width="170" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
+                    <Button Content="📂" Height="35" Width="45" Command="{Binding OpenSourceFolderCommand}" 
+                            Margin="5,0,0,0" VerticalAlignment="Center" Style="{StaticResource RoundedButtonStyle}"/>
                 </StackPanel>
-
-                <!-- Champ Destination en lecture seule avec bouton de sélection -->
-                <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                    <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" IsReadOnly="True" Width="200"/>
-                    <Button Content="..." Height="30" Width="30" Command="{Binding OpenDestinationFolderCommand}" />
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" 
+                             IsReadOnly="True" Width="170" VerticalAlignment="Center" Padding="5" Background="#333333" Foreground="#FFFFFF" BorderBrush="#444444"/>
+                    <Button Content="📂" Height="35" Width="45" Command="{Binding OpenDestinationFolderCommand}" 
+                            Margin="5,0,0,0" VerticalAlignment="Center" Style="{StaticResource RoundedButtonStyle}"/>
                 </StackPanel>
-
-                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
-                <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
+                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}"
+                          SelectedItem="{Binding MySaveType}" Width="95" Margin="5" VerticalAlignment="Center"
+                          Background="#333333" Foreground="Black" BorderBrush="#444444"/>
+                <Button x:Name="AddSaveButton" Height="35" Command="{Binding CreateSaveCommand}" 
+                        Content="➕" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
             </StackPanel>
-
         </Grid>
     </Grid>
 </Window>
-

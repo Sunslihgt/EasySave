@@ -96,5 +96,10 @@ namespace EasySave.Views
             AddExtensionPopup.IsOpen = false;
             AddPriorityPopup.IsOpen = false;
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
