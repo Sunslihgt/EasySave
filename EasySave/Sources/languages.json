@@ -14,8 +14,8 @@
             "Load Save",
             "Leave"
         ],
-        "language_window_title": "EasySave language",
-        "settings_window_title": "EasySave settings",
+        "language_window_title": "EasySave Language",
+        "settings_window_title": "EasySave Settings",
         "modify_language_button": "Modify Language",
         "main_window_title": "EasySave",
         "language_button": "Language",
@@ -79,7 +79,7 @@
             "Charger une Sauvegarde",
             "Quitter"
         ],
-        "language_window_title": "EasySave langue",
+        "language_window_title": "EasySave Langue",
         "settings_window_title": "EasySave Paramêtres",
         "modify_language_button": "Modifier la Langue",
         "main_window_title": "EasySave",
