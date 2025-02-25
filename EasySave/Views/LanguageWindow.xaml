@@ -18,8 +18,7 @@
         <!-- Conteneur avec effet carte -->
         <Border Grid.Row="1" Margin="20" Padding="20"
                 Background="#252526" CornerRadius="15"
-                BorderBrush="#444444" BorderThickness="1"
-                Effect="{DynamicResource ShadowEffect}">
+                BorderBrush="#444444" BorderThickness="1">
 
             <StackPanel HorizontalAlignment="Center">
                 <!-- Titre -->
@@ -28,7 +27,7 @@
                            Foreground="White"/>
 
                 <!-- ComboBox -->
-                <ComboBox x:Name="LanguageComboBox" Style="{StaticResource LanguageComboBoxStyle}" Margin="10">
+                <ComboBox Template="{DynamicResource ComboBoxTemplate}" x:Name="LanguageComboBox" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}" Margin="10">
                     <ComboBoxItem Content="Français" Tag="FR"/>
                     <ComboBoxItem Content="English" Tag="EN"/>
                     <ComboBoxItem Content="Español" Tag="ES"/>
@@ -36,8 +35,8 @@
 
                 <!-- Bouton -->
                 <Button x:Name="SubmitButton" Content="{Binding Path=ModifyLanguageButtonText}" 
-                        Width="150" Height="35" Margin="10"
-                        Style="{StaticResource RoundedButtonStyle}" 
+                        Margin="10"
+                        Style="{StaticResource PrimaryButtonStyle}" 
                         Click="SubmitButton_Click"/>
             </StackPanel>
         </Border>

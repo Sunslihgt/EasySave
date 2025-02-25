@@ -112,9 +112,9 @@ namespace EasySave.Models
             }
         }
 
-        public void WriteState(List<Save> saves)
+        private List<object> GetStateObjects(List<Save> saves)
         {
-            var savesToStore = saves.Select<Save, object>(save =>
+            return saves.Select<Save, object>(save =>
             {
                 if (save.Transfering)
                 {
@@ -129,7 +129,9 @@ namespace EasySave.Models
                         filesRemaining = save.FilesRemaining,
                         sizeRemaining = save.SizeRemaining,
                         currentSource = save.CurrentSource,
-                        currentDestination = save.CurrentDestination
+                        currentDestination = save.CurrentDestination,
+                        progress = save.Progress,
+                        pauseTransfer = save.PauseTransfer ? 1 : 0
                     };
                 }
                 else
@@ -145,6 +147,26 @@ namespace EasySave.Models
                     };
                 }
             }).ToList();
+        }
+
+        public string GetStateString(List<Save> saves, bool indent = false)
+        {
+            if (indent)
+            {
+                return JsonSerializer.Serialize(GetStateObjects(saves), new JsonSerializerOptions { WriteIndented = true });
+            }
+            else
+            {
+                return JsonSerializer.Serialize(GetStateObjects(saves));
+            }
+        }
+
+        public void WriteState(List<Save> saves, bool sendServerUpdate = true)
+        {
+            if (sendServerUpdate)
+            {
+                mainWindowViewModel.Server.SendState(GetStateString(saves, false));
+            }
 
             lock (writeLock)
             {
@@ -153,7 +175,7 @@ namespace EasySave.Models
                     stream.SetLength(0); // Clear the file before writing
                     using (var writer = new StreamWriter(stream))
                     {
-                        writer.Write(JsonSerializer.Serialize(savesToStore, new JsonSerializerOptions { WriteIndented = true }));
+                        writer.Write(GetStateString(saves, true));
                     }
                 }
             }

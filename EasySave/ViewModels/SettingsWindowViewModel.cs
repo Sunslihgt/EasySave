@@ -17,7 +17,6 @@ namespace EasySave.ViewModels
         private string _newSoftwareName = string.Empty;
         private string _newExtensionName = string.Empty;
         private string _newPriorityName = string.Empty;
-        private int _maxFileSize;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -82,12 +81,12 @@ namespace EasySave.ViewModels
 
         public int MaxFileSize
         {
-            get => Settings.Instance.MaxFileSize;
+            get => Settings.Instance.MaxFileSizeKo;
             set
             {
-                if (Settings.Instance.MaxFileSize != value)
+                if (Settings.Instance.MaxFileSizeKo != value)
                 {
-                    Settings.Instance.MaxFileSize = value;
+                    Settings.Instance.MaxFileSizeKo = value;
                     OnPropertyChanged(nameof(MaxFileSize));
                     Settings.Instance.SaveSettings();
                 }

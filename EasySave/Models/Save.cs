@@ -1,12 +1,7 @@
 ﻿using EasySave.ViewModels;
-using System.ComponentModel; // Ajout de la directive using
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using static EasySave.Logger.Logger;
 using static EasySave.Models.SaveProcess;
 
 namespace EasySave.Models
@@ -41,7 +36,7 @@ namespace EasySave.Models
         public bool Transfering { get; set; } = false;
         public int FilesRemaining { get; set; } = 0;
         public long SizeRemaining { get; set; } = 0;
-        public long TotalSize { get; set; } = 100;
+        public long TotalSize { get; set; } = 0;
         public string CurrentSource { get; set; } = "";
         public string CurrentDestination { get; set; } = "";
         public TransferType TransferType { get; set; } = TransferType.Idle;
@@ -94,7 +89,7 @@ namespace EasySave.Models
 
         public bool CreateSave(bool upload = false)
         {
-            Progress = 0.0; // Réinitialiser la progression
+            Progress = 0.0;
             if (TransferType != TransferType.Idle || saveProcesses.Count > 0)
             {
                 ConsoleLogger.LogWarning("Save already in progress.");
@@ -125,7 +120,7 @@ namespace EasySave.Models
                 return;
             }
 
-            Progress = 0.0; // Réinitialiser la progression
+            Progress = 0.0;
             Copy(RealDirectoryPath, CopyDirectoryPath, TransferType.Upload);
         }
 
@@ -143,7 +138,7 @@ namespace EasySave.Models
                 return;
             }
 
-            Progress = 0.0; // Réinitialiser la progression
+            Progress = 0.0;
             Copy(CopyDirectoryPath, RealDirectoryPath, TransferType.Download);
         }
 
@@ -174,7 +169,7 @@ namespace EasySave.Models
 
             if (!sourceInfo.Exists)
             {
-                ConsoleLogger.LogWarning($"Source directory '{source}' does not exist.", true); // TODO: Replace with logger
+                ConsoleLogger.LogWarning($"Source directory '{source}' does not exist."); // TODO: Replace with logger
                 return;
             }
 
@@ -416,7 +411,7 @@ namespace EasySave.Models
             return saveProcesses.Any((process) => process.Priorised && !process.Finished);
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

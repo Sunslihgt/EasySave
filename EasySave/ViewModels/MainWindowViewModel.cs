@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using EasySave.Models;
 using EasySave.Views;
-using static EasySave.Logger.Logger;
 using System.ComponentModel;
+using System.Windows;
+using static EasySave.Logger.Logger;
 
 namespace EasySave.ViewModels
 {
@@ -12,8 +13,8 @@ namespace EasySave.ViewModels
     {
         private readonly INavigationService _navigationService;
         private string _saveName = string.Empty;
-        private string _saveSource;
-        private string _saveDestination;
+        private string _saveSource = string.Empty;
+        private string _saveDestination = string.Empty;
         private string _mySaveType = string.Empty;
 
         public Settings Settings { get; } = Settings.Instance;
@@ -75,6 +76,7 @@ namespace EasySave.ViewModels
 
         public StateLogger StateLogger { get; }
         public ObservableCollection<Save> Saves { get; } = new ObservableCollection<Save>();
+        public Server Server { get; }
 
         public MainWindowViewModel(INavigationService navigationService)
         {
@@ -96,6 +98,9 @@ namespace EasySave.ViewModels
             PauseSaveCommand = new RelayCommand<Save>(PauseSave);
             StopSaveCommand = new RelayCommand<Save>(StopSave);
             PlaySaveCommand = new RelayCommand<Save>(PlaySave);
+
+            // Server
+            Server = new Server(this);
 
             // State logger
             StateLogger = new StateLogger(this);
@@ -121,7 +126,7 @@ namespace EasySave.ViewModels
         // Analyze arguments to load saves from CLI
         private void ParseArguments(string[] args)
         {
-            string fullArg = String.Join("", args);
+            string fullArg = string.Join("", args);
 
             if (fullArg.Trim().Contains("-run:")) // -run:1-3 or -run:1;3
             {
@@ -176,7 +181,7 @@ namespace EasySave.ViewModels
 
         public void CreateSave()
         {
-            if (String.IsNullOrEmpty(SaveName) || String.IsNullOrEmpty(SaveSource) || String.IsNullOrEmpty(SaveDestination))
+            if (string.IsNullOrEmpty(SaveName) || SaveName.Contains('|') || string.IsNullOrEmpty(SaveSource) || string.IsNullOrEmpty(SaveDestination))
             {
                 return;
             }
@@ -190,17 +195,45 @@ namespace EasySave.ViewModels
                 if (save.IsRealDirectoryPathValid())
                 {
                     Saves.Add(save);
-                    var stateSave = save.CreateSave();
-                    StateLogger.WriteState(Saves.ToList());
-                    if (stateSave)
+                    bool createSuccess = save.CreateSave();
+                    if (createSuccess)
                     {
+                        StateLogger.WriteState(Saves.ToList());
                         SaveName = string.Empty;
                         SaveDestination = string.Empty;
                         SaveSource = string.Empty;
-                        MySaveType = null;
+                        MySaveType = string.Empty;
                     }
                 }
             }
+        }
+
+        public bool CreateSaveThreaded(string saveName, string saveSource, string saveDestination, Save.SaveType saveType)
+        {
+            // Use dispatcher to avoid cross-threading issues
+            return Application.Current.Dispatcher.Invoke(new Func<bool>(() =>
+            {
+                if (string.IsNullOrEmpty(saveName) || saveName.Contains('|') || string.IsNullOrEmpty(saveSource) || string.IsNullOrEmpty(saveDestination))
+                {
+                    return false;
+                }
+                if (Saves.Any(s => s.Name.Equals(saveName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return false;
+                }
+                Save save = new Save(this, saveType, saveName, saveSource, saveDestination);
+                if (save.IsRealDirectoryPathValid())
+                {
+                    Saves.Add(save);
+                    bool createSuccess = save.CreateSave();
+                    if (createSuccess)
+                    {
+                        StateLogger.WriteState(Saves.ToList());
+                    }
+                    return createSuccess;
+                }
+                return false;
+            }));
         }
 
         public void UpdateSave(Save save)
@@ -221,6 +254,20 @@ namespace EasySave.ViewModels
                 save.Dispose();
                 StateLogger.WriteState(Saves.ToList());
             }
+        }
+
+        public void DeleteSaveThreaded(Save save)
+        {
+            // Use dispatcher to avoid cross-threading issues
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (save.DeleteSave())
+                {
+                    Saves.Remove(save);
+                    save.Dispose();
+                    StateLogger.WriteState(Saves.ToList());
+                }
+            }));
         }
 
         public void PauseSave(Save save)
@@ -254,10 +301,10 @@ namespace EasySave.ViewModels
             {
                 IsFolderPicker = true
             };
-            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (folderDialog?.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                Console.WriteLine(folderDialog.FileName);
-                SaveSource = folderDialog.FileName;
+                Console.WriteLine(folderDialog?.FileName);
+                SaveSource = folderDialog?.FileName ?? "";
             }
         }
 
@@ -268,9 +315,9 @@ namespace EasySave.ViewModels
                 IsFolderPicker = true
             };
 
-            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (folderDialog?.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                SaveDestination = folderDialog.FileName;
+                SaveDestination = folderDialog?.FileName ?? "";
             }
         }
 
@@ -279,6 +326,6 @@ namespace EasySave.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

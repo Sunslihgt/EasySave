@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:EasySave.Views"
         mc:Ignorable="d"
         Title="SettingsWindow" Height="600" Width="1200" Background="#282b30" MinHeight="500" MinWidth="1100">
@@ -20,234 +21,251 @@
 
     </Window.Resources>
 
-    <Grid x:Name="MainGrid">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300*"/>
-            <ColumnDefinition Width="300*"/>
-            <ColumnDefinition Width="300*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="150*"/>
-            <RowDefinition Height="250*"/>
-            <RowDefinition Height="100*"/>
-        </Grid.RowDefinitions>
 
-        <!-- Language -->
-        <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"><Run Language="fr-fr" Text="LanguageLabel"/></TextBlock>
-        <Button x:Name="LanguageButton"
-        Content="LanguageButton"
-        HorizontalAlignment="Center" 
-        Margin="10,71,0,0" 
-        VerticalAlignment="Center"
-        Command="{Binding OpenLanguageWindowCommand}"
-        Style="{StaticResource RoundedButtonStyle}"/>
+        <Grid x:Name="MainGrid" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="270"/>
+                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="270"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="220"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
 
-        <!-- Log Format -->
-        <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Grid.Column="1"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
-        <ComboBox HorizontalAlignment="Center" Margin="10,49.7,0,0" VerticalAlignment="Center" Width="120"
-          ItemsSource="{Binding LogFormats}" 
-          SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}"
-          Style="{StaticResource LanguageComboBoxStyle}" Grid.Column="1">
-        </ComboBox>
+            <!-- Language -->
+            <TextBlock x:Name="LanguageLabel" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Foreground="White" Grid.Row="0"><Run Language="fr-fr" Text="LanguageLabel"/></TextBlock>
+            <Button x:Name="LanguageButton"
+            Content="LanguageButton"
+            HorizontalAlignment="Center" 
+            Margin="0,0,0,0" 
+            VerticalAlignment="Center"
+            Grid.Row="1"
+            Command="{Binding OpenLanguageWindowCommand}"
+            Style="{StaticResource PrimaryButtonStyle}"/>
 
-        <!-- Size File -->
-        <TextBlock x:Name="SizeLabel" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="white" Grid.Column="2">
-            <Run Language="fr-fr" Text="SizeLabel"/>
-        </TextBlock>
-        <TextBox Text="{Binding MaxFileSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-            HorizontalAlignment="Center" Margin="10,45.7,0,0" 
-            Width="80" VerticalAlignment="Center" Grid.Column="2"/>
+            <!-- Log Format -->
+            <TextBlock x:Name="LogFormatLabel" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Foreground="White" Grid.Column="1"><Run Language="fr-fr" Text="LogFormatLabel"/></TextBlock>
+            <ComboBox Template="{DynamicResource ComboBoxTemplate}" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="120"
+                ItemsSource="{Binding LogFormats}"
+                SelectedItem="{Binding SelectedLogFormat, Mode=TwoWay}"
+                Grid.Row="1" Grid.Column="1">
+            </ComboBox>
 
-        <!-- BanList -->
-        <TextBlock x:Name="BanListLabel" HorizontalAlignment="Center" Margin="0,0,0,125.7" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="white" Grid.Row="1"><Run Language="fr-fr" Text="BanListLabel"/></TextBlock>
-        <DataGrid ItemsSource="{Binding BannedSoftwares}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="0,10,0,0"
-          VerticalAlignment="Center" Width="350"
-          IsReadOnly="True" 
-          CanUserAddRows="False" 
-          CanUserDeleteRows="False"
-          CanUserResizeColumns="False"
-          CanUserReorderColumns="False"
-          Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444" Grid.Row="1">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderName" Header="Nom" Binding="{Binding Name}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
-                <DataGridTextColumn x:Name="HeaderSoftware" Header="Logiciel" Binding="{Binding Software}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
-                <DataGridTemplateColumn x:Name="HeaderActions" Header="Actions" Width="120">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
-                            Command="{Binding DataContext.RemoveBannedSoftwareCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <!-- BanList - AddSoftware -->
-        <Button x:Name="AddSoftware" Content="Ajouter un logiciel" HorizontalAlignment="Center" Height="38" Margin="0,165,0,0"
-        VerticalAlignment="Center" Width="200"
-        Click="OpenAddSoftwarePopup"
-        Style="{StaticResource RoundedButtonStyle}" Grid.Row="1"/>
+            <!-- Size File -->
+            <TextBlock x:Name="SizeLabel" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Foreground="white" Grid.Column="2">
+                <Run Language="fr-fr" Text="SizeLabel"/>
+            </TextBlock>
+            <TextBox Text="{Binding MaxFileSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Background="{StaticResource TextBoxColor}" Foreground="{StaticResource TextColor}"
+                HorizontalAlignment="Center" Margin="0,0,0,0" 
+                Width="80" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
 
-        <!-- ExtensionList -->
-        <TextBlock x:Name="ExtensionList" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Grid.Column="1" Grid.Row="1" Margin="0,0,0,125"><Run Language="fr-fr" Text="ExtensionListLabel"/></TextBlock>
-        <DataGrid ItemsSource="{Binding EncryptExtensions}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" Margin="0,10,0,0"
-          VerticalAlignment="Center" Width="240"
-          IsReadOnly="True" 
-          CanUserAddRows="False" 
-          CanUserDeleteRows="False"
-          CanUserResizeColumns="False"
-          CanUserReorderColumns="False"
-          Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444" Grid.Column="1" Grid.Row="1">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderExtension" Header="Extension" Binding="{Binding}" Width="*" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
-                <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="120">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
-                            Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <!-- ExtensionList - AddExtension -->
-        <Button x:Name="AddExtension" Content="Ajouter une extension" HorizontalAlignment="Center" Height="38" Margin="0,155,0,0"
-        VerticalAlignment="Center" Width="240"
-        Click="OpenAddExtensionPopup"
-        Style="{StaticResource RoundedButtonStyle}" Grid.Column="2" Grid.Row="1"/>
+            <!-- BanList -->
+            <TextBlock x:Name="BanListLabel" HorizontalAlignment="Center" Margin="0,0,0,125.7" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="white" Grid.Row="2" Grid.Column="1">
+            <Run Language="fr-fr" Text="BanListLabel"/>
+            </TextBlock>
+            <DataGrid ItemsSource="{Binding BannedSoftwares}" AutoGenerateColumns="False"
+            HorizontalAlignment="Center" Height="116" Margin="0,10,0,0"
+            VerticalAlignment="Center" Width="350"
+            IsReadOnly="True" 
+            CanUserAddRows="False" 
+            CanUserDeleteRows="False"
+            CanUserResizeColumns="False"
+            CanUserReorderColumns="False"
+            Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444" Grid.Row="2" Grid.Column="1">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="HeaderName" Header="Nom" Binding="{Binding Name}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
+                    <DataGridTextColumn x:Name="HeaderSoftware" Header="Logiciel" Binding="{Binding Software}" Width="*" Foreground="white" FontSize="15" FontWeight="Bold"/>
+                    <DataGridTemplateColumn x:Name="HeaderActions" Header="Actions" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
+                                Command="{Binding DataContext.RemoveBannedSoftwareCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!-- BanList - AddSoftware -->
+            <Button x:Name="AddSoftware" Content="Ajouter un logiciel" HorizontalAlignment="Center" Margin="0,172,0,0"
+                VerticalAlignment="Center"
+                Click="OpenAddSoftwarePopup"
+                Style="{StaticResource PrimaryButtonStyle}" Grid.Row="2" Grid.Column="1"/>
 
-        <!-- PriorityList -->
-        <TextBlock x:Name="PriorityList" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Grid.Column="2" Grid.Row="1" Margin="0,0,0,135"><Run Language="fr-fr" Text="PriorityListLabel"/></TextBlock>
-        <DataGrid ItemsSource="{Binding PriorisedExtensions}" AutoGenerateColumns="False"
-          HorizontalAlignment="Center" Height="116" FontSize="12"
-          VerticalAlignment="Center" Width="240"
-          IsReadOnly="True" 
-          CanUserAddRows="False" 
-          CanUserDeleteRows="False"
-          CanUserResizeColumns="False"
-          CanUserReorderColumns="False"
-          Background="#1E1E1E" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.Column="2" Grid.Row="1">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="HeaderExtension2" Header="Extension" Binding="{Binding}" Width="*" Foreground="white" FontSize="15" FontWeight="SemiBold"/>
-                <DataGridTemplateColumn x:Name="HeaderActions3" Header="Actions" Width="50">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
-                            Command="{Binding DataContext.RemovePriorityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <!-- PriorityList - AddPriority -->
-        <Button x:Name="AddPriority" Content="Ajouter une priorité" HorizontalAlignment="Center" Height="38" Margin="0,164.9,0,0"
-        VerticalAlignment="Center" Width="240"
-        Click="OpenAddPriorityPopup"
-        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1" Grid.Row="1"/>
+            <!-- PriorityList -->
+            <TextBlock x:Name="PriorityList" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Grid.Column="2" Grid.Row="2" Margin="0,0,0,125"><Run Language="fr-fr" Text="PriorityListLabel"/></TextBlock>
+            <DataGrid ItemsSource="{Binding PriorisedExtensions}" AutoGenerateColumns="False"
+            HorizontalAlignment="Center" Height="116" Margin="0,10,0,0"
+            VerticalAlignment="Center" Width="240"
+            IsReadOnly="True" 
+            CanUserAddRows="False" 
+            CanUserDeleteRows="False"
+            CanUserResizeColumns="False"
+            CanUserReorderColumns="False"
+            Background="#1E1E1E" BorderBrush="#444444" RowBackground="#333333" AlternatingRowBackground="#2D2D30" Grid.Column="2" Grid.Row="2">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="HeaderExtension2" Header="Extension" Binding="{Binding}" Width="*" Foreground="white" FontSize="15" FontWeight="SemiBold"/>
+                    <DataGridTemplateColumn x:Name="HeaderActions3" Header="Actions" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
+                                Command="{Binding DataContext.RemovePriorityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!-- ExtensionList - AddExtension -->
+            <Button x:Name="AddExtension" Content="Ajouter une extension" HorizontalAlignment="Center" Margin="0,172,0,0"
+            VerticalAlignment="Center"
+            Click="OpenAddPriorityPopup"
+            Style="{StaticResource PrimaryButtonStyle}" Grid.Column="2" Grid.Row="2"/>
 
-        <!-- Button Leave -->
-        <Button x:Name="BackToMenu"
-        Content="Retour au menu"
-        HorizontalAlignment="Center"
-        Margin="0,0,0,0"
-        VerticalAlignment="Center"
-        Command="{Binding CloseWindowCommand}"
-        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1" Grid.Row="2"/>
+            <!-- ExtensionList -->
+            <TextBlock x:Name="ExtensionList" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Grid.Column="0" Grid.Row="2" Margin="0,0,0,125"><Run Language="fr-fr" Text="ExtensionListLabel"/></TextBlock>
+            <DataGrid ItemsSource="{Binding EncryptExtensions}" AutoGenerateColumns="False"
+            HorizontalAlignment="Center" Height="116" Margin="0,10,0,0"
+            VerticalAlignment="Center" Width="240"
+            IsReadOnly="True" 
+            CanUserAddRows="False" 
+            CanUserDeleteRows="False"
+            CanUserResizeColumns="False"
+            CanUserReorderColumns="False"
+            Background="#1E1E1E" RowBackground="#444444" AlternatingRowBackground="#444444" Grid.Column="0" Grid.Row="2">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="HeaderExtension" Header="Extension" Binding="{Binding}" Width="*" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                    <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
+                                Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!-- PriorityList - AddPriority -->
+            <Button x:Name="AddPriority" Content="Ajouter une priorité" HorizontalAlignment="Center" Margin="0,172,0,0"
+            VerticalAlignment="Center"
+            Click="OpenAddExtensionPopup"
+            Style="{StaticResource PrimaryButtonStyle}" Grid.Column="0" Grid.Row="2"/>
 
-        <!-- BanList - Pop up -->
-        <Popup x:Name="AddSoftwarePopup" IsOpen="False"
+            <!-- Button Leave -->
+            <Button x:Name="BackToMenu"
+            Content="Retour au menu"
+            HorizontalAlignment="Center"
+            Margin="0,0,0,0"
+            VerticalAlignment="Center"
+            Command="{Binding CloseWindowCommand}"
+            Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" Grid.Row="3"/>
+
+            <!-- BanList - Pop up -->
+            <Popup x:Name="AddSoftwarePopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-            <Border Width="300" Height="250">
-                <StackPanel>
-                    <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10" Foreground="White"/>
-                    <TextBox Text="{Binding NewSoftwareName, Mode=TwoWay}" Margin="10"/>
+                <Border Width="300" Height="250">
+                    <StackPanel>
+                        <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10" Foreground="White"/>
+                        <TextBox Text="{Binding NewSoftwareName, Mode=TwoWay}" Margin="10"/>
 
-                    <Button x:Name="AddBannedSoftware"
+                        <Button x:Name="AddBannedSoftware"
                             Content="Ajouter" Margin="10"
                             Command="{Binding AddBannedSoftwareCommand}"
                             Click="ClosePopup"
-                            Style="{StaticResource RoundedButtonStyle}"/>
-                    <Button x:Name="CancelBannedSoftware"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+                        <Button x:Name="CancelBannedSoftware"
                             Content="Annuler" Margin="10"
                             Click="ClosePopup"
-                            Style="{StaticResource DeleteButtonStyle}"/>
-                </StackPanel>
-            </Border>
-        </Popup>
+                            Style="{StaticResource SecondaryButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
 
-        <!-- ExtensionList - Pop up -->
-        <Popup x:Name="AddExtensionPopup" IsOpen="False"
+            <!-- ExtensionList - Pop up -->
+            <Popup x:Name="AddExtensionPopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-            <Border Width="300" Height="250">
-                <StackPanel>
-                    <TextBlock x:Name="AddExtensionDot" Text="Ajouter une extension" Margin="10"/>
-                    <TextBox Text="{Binding NewExtensionName}" Margin="10"/>
+                <Border Width="300" Height="250">
+                    <StackPanel>
+                        <TextBlock x:Name="AddExtensionDot" Text="Ajouter une extension" Margin="10"/>
+                        <TextBox Text="{Binding NewExtensionName}" Margin="10"/>
 
-                    <Button x:Name="AddExtensionToEncrypt"
+                        <Button x:Name="AddExtensionToEncrypt"
                         Content="Ajouter" Margin="10"
                         Command="{Binding AddExtensionCommand}"
                         CommandParameter="{Binding NewExtensionName}"
                         Click="ClosePopup"
-                        Style="{StaticResource RoundedButtonStyle}"/>
+                        Style="{StaticResource PrimaryButtonStyle}"/>
 
-                    <Button x:Name="CancelExtensionToEncrypt"
+                        <Button x:Name="CancelExtensionToEncrypt"
                         Content="Annuler" Margin="10"
                         Click="ClosePopup"
-                        Style="{StaticResource DeleteButtonStyle}"/>
-                </StackPanel>
-            </Border>
-        </Popup>
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
 
-        <!-- PriorityList - Pop up -->
-        <Popup x:Name="AddPriorityPopup" IsOpen="False"
+            <!-- PriorityList - Pop up -->
+            <Popup x:Name="AddPriorityPopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-            <Border Width="300" Height="250">
-                <StackPanel>
-                    <TextBlock x:Name="AddPriorityDot" Text="Ajouter une priorité" Margin="10"/>
-                    <TextBox Text="{Binding NewPriorityName}" Margin="10"/>
+                <Border Width="300" Height="250">
+                    <StackPanel>
+                        <TextBlock x:Name="AddPriorityDot" Text="Ajouter une priorité" Margin="10"/>
+                        <TextBox Text="{Binding NewPriorityName}" Margin="10"/>
 
-                    <Button x:Name="AddExtensionPriority"
+                        <Button x:Name="AddExtensionPriority"
                         Content="Ajouter" Margin="10"
                         Command="{Binding AddPriorityCommand}"
                         CommandParameter="{Binding NewPriorityName}"
                         Click="ClosePopup"
-                        Style="{StaticResource RoundedButtonStyle}"/>
+                        Style="{StaticResource PrimaryButtonStyle}"/>
 
-                    <Button x:Name="CancelExtensionPriority"
+                        <Button x:Name="CancelExtensionPriority"
                         Content="Annuler" Margin="10"
                         Click="ClosePopup"
-                        Style="{StaticResource DeleteButtonStyle}"/>
-                </StackPanel>
-            </Border>
-        </Popup>
-
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </Grid>
     </Grid>
 </Window>
 

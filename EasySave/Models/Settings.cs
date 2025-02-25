@@ -10,7 +10,7 @@ namespace EasySave.Models
         private static readonly Lazy<Settings> _instance = new(() => LoadSettings());
         public static Settings Instance => _instance.Value;
 
-        public static readonly bool DEBUG_MODE = false;
+        public static readonly bool DEBUG_MODE = true;
         private static readonly string CONFIG_FILE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasySave", "config.json");
         private static readonly string CRYPTO_SOFT_EXE_NAME = "CryptoSoft.exe";
 
@@ -22,9 +22,9 @@ namespace EasySave.Models
         public string[] EncryptExtensions { get; set; } = { };
         public string[] PriorisedExtensions { get; set; } = { };
         public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
-        public string CryptoSoftPath { get; set; } = String.Empty; // Default value will be set in the constructor if not found
+        public string CryptoSoftPath { get; set; } = string.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
-        public int MaxFileSize { get; set; } = 4; // Default 4 MB
+        public int MaxFileSizeKo { get; set; } = 100; // Default value is 100 Ko
 
         private Settings() { } // Default constructor (uses the default values)
 
@@ -37,18 +37,32 @@ namespace EasySave.Models
                 newSettings = JsonConvert.DeserializeObject<Settings>(json);
             }
 
+            bool changedSettings = false;
             if (newSettings == null)
             {
                 newSettings = new Settings();
-                SaveSettings(newSettings);
+                changedSettings = true;
             }
-            else if (string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If the CryptoSoft path is not set, try to find it
+            else
             {
-                newSettings.CryptoSoftPath = FindCryptoSoftExe();
-                if (!string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If found, save the new settings
+                if (string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If the CryptoSoft path is not set, try to find it
                 {
-                    SaveSettings(newSettings);
+                    newSettings.CryptoSoftPath = FindCryptoSoftExe();
+                    if (!string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If found, save the new settings
+                    {
+                        changedSettings = true;
+                    }
                 }
+                if (newSettings.MaxFileSizeKo == 0)
+                {
+                    newSettings.MaxFileSizeKo = new Settings().MaxFileSizeKo; // Reset to default value
+                    changedSettings = true;
+                }
+            }
+
+            if (changedSettings)
+            {
+                SaveSettings(newSettings);
             }
 
             // Set the logger settings

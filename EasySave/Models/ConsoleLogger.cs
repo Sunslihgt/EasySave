@@ -11,9 +11,9 @@ namespace EasySave.Models
     {
         private static object logLock = new object();
 
-        public static void Log(string message, bool debugOnly = false)
+        public static void Log(string message)
         {
-            if (debugOnly && !Settings.DEBUG_MODE)
+            if (!Settings.DEBUG_MODE)
             {
                 return;
             }
@@ -24,9 +24,9 @@ namespace EasySave.Models
             }
         }
 
-        public static void Log(string message, ConsoleColor consoleColor, bool debugOnly = false)
+        public static void Log(string message, ConsoleColor consoleColor)
         {
-            if (debugOnly && !Settings.DEBUG_MODE)
+            if (!Settings.DEBUG_MODE)
             {
                 return;
             }
@@ -39,14 +39,27 @@ namespace EasySave.Models
             }
         }
 
-        public static void LogWarning(string message, bool debugOnly = false)
+        public static void LogWarning(string message)
         {
-            Log(message, ConsoleColor.Yellow, debugOnly);
+            Log(message, ConsoleColor.Yellow);
         }
 
-        public static void LogError(string message, bool debugOnly = false)
+        public static void LogError(string message)
         {
-            Log(message, ConsoleColor.Red, debugOnly);
+            Log(message, ConsoleColor.Red);
+        }
+
+        public static string ShortenPath(string path, char slashChar = '/')
+        {
+            int slashes = path.Count(p => p == slashChar);
+            // has 2 slashes and no double (C:/.../...) or more than 2 slashes (C://.../...)
+            if ((slashes == 2 && !path.Contains($"{slashChar}{slashChar}")) || slashes > 2)
+            {
+                string pathStart = path.Split(slashChar)[0];
+                string pathEnd = path.Split(slashChar)[^0];
+                return $"{pathStart}//.../{pathEnd}";
+            }
+            return path;
         }
     }
 }

@@ -8,3 +8,6 @@ EasySave/Sources/*
 EasySave.Logger/obj
 EasySave.Logger/bin
 EasySave/Log/**
+
+EasySave.Monitoring/obj
+EasySave.Monitoring/bin
