@@ -3,162 +3,211 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:vm="clr-namespace:EasySave.ViewModels"
         xmlns:models="clr-namespace:EasySave.Models"
         mc:Ignorable="d"
-        Title="EasySave" Height="600" Width="1000" Background="#1E1E1E" MinHeight="450" MinWidth="800">
+        Title="EasySave"
+        Height="700" Width="1100"
+        MinHeight="500" MinWidth="1100"
+        Background="{StaticResource BackgroundColor}">
 
-    <Grid>
+    <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.ColumnSpan="2" Text="EasySave" FontSize="28" FontWeight="Bold" Foreground="#00A8E8" 
-                   HorizontalAlignment="Center" Margin="10" VerticalAlignment="Center"/>
-
-        <Border Grid.Column="0" Grid.Row="1" Background="#252526" Margin="10" Width="180" Padding="10" 
-        CornerRadius="15" BorderBrush="#444444" BorderThickness="1">
+        <Border Grid.Column="0" Grid.Row="1" Margin="10,8,0,0" Width="150" Padding="0"
+            Style="{StaticResource SectionStyle}">
             <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="EasySave" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TitleColor}"
+                   HorizontalAlignment="Center" Margin="10" VerticalAlignment="Center"/>
                 <Button x:Name="LanguageButton" Command="{Binding OpenLanguageWindowCommand}" 
-                Content="🌍 Language" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
+                Content="Language" Style="{StaticResource PrimaryMenuButtonStyle}" Margin="5"/>
                 <Button x:Name="SettingsButton" Command="{Binding OpenSettingsWindowCommand}" 
-                Content="⚙️ Settings" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
+                Content="Settings" Style="{StaticResource PrimaryMenuButtonStyle}" Margin="5"/>
             </StackPanel>
         </Border>
 
-
-        <Grid Grid.Column="1" Grid.Row="1" Background="#2D2D30" Margin="10">
+        <Grid Grid.Column="1" Grid.Row="1" Background="{StaticResource BackgroundColor}" Margin="0,0,10,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10" BorderThickness="0" Background="Transparent">
+            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#444444" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10" Background="#333333">
-                            <Grid>
+                        <Border Style="{StaticResource SectionStyle}" Margin="5" Padding="10" HorizontalAlignment="Stretch">
+                            <Grid HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF"/>
-                                <TextBlock Grid.Row="1" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC"/>
-                                <TextBlock Grid.Row="2" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC"/>
-                                <TextBlock Grid.Row="3" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC"/>
+                                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
 
-                                <Grid Grid.Row="4" Margin="0,10,0,0">
-                                    <ProgressBar Value="{Binding Progress}" Height="20" Foreground="#00A8E8" Background="#444444"/>
-                                    <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke"/>
+                                    <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Grid.Column="5"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Upload" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Grid.Column="6"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Download" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Grid.Column="7"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource SecondarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
+                                    </Button>
                                 </Grid>
 
-                                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                    <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="🔁" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
-                                    <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="⏬" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
-                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="❌" Style="{StaticResource DeleteButtonStyle}" Margin="5"/>
-                                    <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="⏯️" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
-                                    <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="⏹️" Style="{StaticResource DeleteButtonStyle}" Margin="5"/>
+                                <Separator Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{StaticResource BorderColor}"/>
+
+                                <Grid Grid.Row="2" Margin="0,0,0,0" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ProgressBar Grid.Column="0" Value="{Binding Progress}" Style="{DynamicResource ProgressBarStyle}" Height="20"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke" Margin="5,0,5,0"/>
+
                                     <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            Content="⏩" Style="{StaticResource RoundedButtonStyle}" Margin="5"/>
-                                </StackPanel>
+                                        Grid.Column="2"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Play" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Grid.Column="3"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Pause" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Grid.Column="4"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource SecondarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Stop" Width="24" Height="24"/>
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-            <Grid Grid.Row="1" Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <!-- NameTextBox -->
-                    <ColumnDefinition Width="3*" />
-                    <!-- Source -->
-                    <ColumnDefinition Width="3*" />
-                    <!-- Destination -->
-                    <ColumnDefinition Width="Auto" />
-                    <!-- Type -->
-                    <ColumnDefinition Width="Auto"/>
-                    <!-- Add Button -->
-                </Grid.ColumnDefinitions>
-
-                <!-- Name TextBox -->
-                <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" 
-             MinWidth="100" Padding="5" Background="#333333" Foreground="#FFFFFF" 
-             BorderBrush="#444444" VerticalAlignment="Center" Grid.Column="0" Margin="5,0,5,0"/>
-
-                <!-- Source Folder Selection -->
-                <Grid Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource, Mode=OneWay}" 
-                        IsReadOnly="True" MinWidth="170" Padding="5" Background="#333333" 
-                        Foreground="#FFFFFF" BorderBrush="#444444" VerticalAlignment="Center"
-                        Grid.Column="0" Margin="5,0,0,0" Focusable="True">
-                        <TextBox.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding OpenSourceFolderCommand}" />
-                        </TextBox.InputBindings>
-                    </TextBox>
-
-                    <!-- Source Button -->
-                    <Button Content="📂" Height="35" Width="45" Command="{Binding OpenSourceFolderCommand}" 
-                        Margin="0,0,5,0" VerticalAlignment="Center" 
-                        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1"/>
-                </Grid>
-
-                <!-- Destination Folder Selection -->
-                <Grid Grid.Column="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination, Mode=OneWay}" 
-                        IsReadOnly="True" MinWidth="170" Padding="5" Background="#333333" 
-                        Foreground="#FFFFFF" BorderBrush="#444444" VerticalAlignment="Center"
-                        Grid.Column="0" Margin="5,0,0,0">
-                        <TextBox.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding OpenDestinationFolderCommand}" />
-                        </TextBox.InputBindings>
-                    </TextBox>
-                    <Button Content="📂" Height="35" Width="45" Command="{Binding OpenDestinationFolderCommand}" 
-                        Margin="0,0,5,0" VerticalAlignment="Center" 
-                        Style="{StaticResource RoundedButtonStyle}" Grid.Column="1"/>
-                </Grid>
-
-                <!-- Save Type ComboBox -->
-                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}"
-                    SelectedItem="{Binding MySaveType}" MinWidth="95" 
-                    Background="#333333" Foreground="Black" BorderBrush="#444444"
-                    VerticalAlignment="Center" Grid.Column="3"/>
-
-                <!-- Add Save Button -->
-                <Button x:Name="AddSaveButton" Height="35" Command="{Binding CreateSaveCommand}" 
-                    Content="➕" Style="{StaticResource RoundedButtonStyle}" Margin="5" 
-                    Grid.Column="4"/>
-            </Grid>
         </Grid>
+
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="10,8,20,0" Padding="10" HorizontalAlignment="Stretch"
+                Style="{StaticResource SectionStyle}">
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <!-- NameTextBox -->
+                        <ColumnDefinition Width="3*" />
+                        <!-- Source -->
+                        <ColumnDefinition Width="3*" />
+                        <!-- Destination -->
+                        <ColumnDefinition Width="Auto" />
+                        <!-- Type -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Add Button -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Name TextBox -->
+                    <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" 
+                         MinWidth="100" Style="{StaticResource TextBoxStyle}" Grid.Column="0" Margin="5,0,5,0"/>
+
+                    <!-- Source Folder Selection -->
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="DestinationTextBox" Text="{Binding SaveSource, Mode=OneWay}" 
+                            IsReadOnly="True" MinWidth="170" Style="{StaticResource TextBoxStyle}"
+                            Grid.Column="0" Margin="10,0,5,0">
+                            <TextBox.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding OpenSourceFolderCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+
+                        <!-- Source Button -->
+                        <Button Command="{Binding OpenSourceFolderCommand}" 
+                            Margin="0,0,5,0" VerticalAlignment="Center" 
+                            Style="{StaticResource PrimarySquareButtonStyle}" Grid.Column="1">
+                            <materialDesign:PackIcon Kind="Folder" Width="24" Height="24"/>
+                        </Button>
+                </Grid>
+
+                    <!-- Destination Folder Selection -->
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="SourceTextBox" Text="{Binding SaveDestination, Mode=OneWay}" 
+                            IsReadOnly="True" MinWidth="170" Style="{StaticResource TextBoxStyle}"
+                            Grid.Column="0" Margin="10,0,5,0">
+                            <TextBox.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding OpenDestinationFolderCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Command="{Binding OpenDestinationFolderCommand}" 
+                            Margin="0,0,5,0" VerticalAlignment="Center" 
+                            Style="{StaticResource PrimarySquareButtonStyle}" Grid.Column="1">
+                            <materialDesign:PackIcon Kind="Folder" Width="24" Height="24"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- Save Type ComboBox -->
+                    <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}"
+                        SelectedItem="{Binding MySaveType}" MinWidth="95" 
+                        Background="#333333" Foreground="Black" BorderBrush="{StaticResource BorderColor}"
+                        VerticalAlignment="Center" Grid.Column="3"
+                        Margin="10,0,5,0"/>
+
+                    <!-- Add Save Button -->
+                    <Button x:Name="AddSaveButton" Command="{Binding CreateSaveCommand}" 
+                        Style="{StaticResource PrimarySquareButtonStyle}"
+                        Grid.Column="4"
+                        Margin="10,0,0,0">
+                        <materialDesign:PackIcon Kind="Plus" Width="24" Height="24"/>
+                    </Button>
+            </Grid>
+            </Border>
+        
     </Grid>
 </Window>

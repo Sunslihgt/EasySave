@@ -82,7 +82,7 @@
                 <DataGridTemplateColumn x:Name="HeaderActions" Header="Actions" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
+                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource RedButtonStyle}"
                             Command="{Binding DataContext.RemoveBannedSoftwareCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"/>
                         </DataTemplate>
@@ -120,7 +120,7 @@
                 <DataGridTemplateColumn x:Name="HeaderActions2" Header="Actions" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
+                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource RedButtonStyle}"
                             Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"/>
                         </DataTemplate>
@@ -158,7 +158,7 @@
                 <DataGridTemplateColumn x:Name="HeaderActions3" Header="Actions" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource DeleteButtonStyle}"
+                            <Button Content="❌" FontSize="10" Width="35" Height="30" Background="Red" Style="{StaticResource RedButtonStyle}"
                             Command="{Binding DataContext.RemovePriorityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"/>
                         </DataTemplate>
@@ -197,7 +197,7 @@
                     <Button x:Name="CancelBannedSoftware"
                             Content="Annuler" Margin="10"
                             Click="ClosePopup"
-                            Style="{StaticResource DeleteButtonStyle}"/>
+                            Style="{StaticResource RedButtonStyle}"/>
                 </StackPanel>
             </Border>
         </Popup>
@@ -220,7 +220,7 @@
                     <Button x:Name="CancelExtensionToEncrypt"
                         Content="Annuler" Margin="10"
                         Click="ClosePopup"
-                        Style="{StaticResource DeleteButtonStyle}"/>
+                        Style="{StaticResource RedButtonStyle}"/>
                 </StackPanel>
             </Border>
         </Popup>
@@ -243,7 +243,7 @@
                     <Button x:Name="CancelExtensionPriority"
                         Content="Annuler" Margin="10"
                         Click="ClosePopup"
-                        Style="{StaticResource DeleteButtonStyle}"/>
+                        Style="{StaticResource RedButtonStyle}"/>
                 </StackPanel>
             </Border>
         </Popup>
