@@ -24,7 +24,7 @@ namespace EasySave.Models
         public List<BannedSoftware> BannedSoftwares { get; set; } = new List<BannedSoftware>();
         public string CryptoSoftPath { get; set; } = string.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
-        public int MaxFileSize { get; set; } = 4 * 1024; // Default 4 MB
+        public int MaxFileSizeKo { get; set; } = 100; // Default value is 100 Ko
 
         private Settings() { } // Default constructor (uses the default values)
 
@@ -37,18 +37,32 @@ namespace EasySave.Models
                 newSettings = JsonConvert.DeserializeObject<Settings>(json);
             }
 
+            bool changedSettings = false;
             if (newSettings == null)
             {
                 newSettings = new Settings();
-                SaveSettings(newSettings);
+                changedSettings = true;
             }
-            else if (string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If the CryptoSoft path is not set, try to find it
+            else
             {
-                newSettings.CryptoSoftPath = FindCryptoSoftExe();
-                if (!string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If found, save the new settings
+                if (string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If the CryptoSoft path is not set, try to find it
                 {
-                    SaveSettings(newSettings);
+                    newSettings.CryptoSoftPath = FindCryptoSoftExe();
+                    if (!string.IsNullOrEmpty(newSettings.CryptoSoftPath)) // If found, save the new settings
+                    {
+                        changedSettings = true;
+                    }
                 }
+                if (newSettings.MaxFileSizeKo == 0)
+                {
+                    newSettings.MaxFileSizeKo = new Settings().MaxFileSizeKo; // Reset to default value
+                    changedSettings = true;
+                }
+            }
+
+            if (changedSettings)
+            {
+                SaveSettings(newSettings);
             }
 
             // Set the logger settings

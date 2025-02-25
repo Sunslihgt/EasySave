@@ -81,12 +81,12 @@ namespace EasySave.ViewModels
 
         public int MaxFileSize
         {
-            get => Settings.Instance.MaxFileSize;
+            get => Settings.Instance.MaxFileSizeKo;
             set
             {
-                if (Settings.Instance.MaxFileSize != value)
+                if (Settings.Instance.MaxFileSizeKo != value)
                 {
-                    Settings.Instance.MaxFileSize = value;
+                    Settings.Instance.MaxFileSizeKo = value;
                     OnPropertyChanged(nameof(MaxFileSize));
                     Settings.Instance.SaveSettings();
                 }
