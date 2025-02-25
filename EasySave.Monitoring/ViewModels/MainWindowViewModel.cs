@@ -97,6 +97,7 @@ namespace EasySave.Monitoring.ViewModels
                     if (!newSaves.Any(newSave => newSave.Name == save.Name))
                     {
                         save.Dispose();
+                        Saves.Remove(save);
                     }
                     else
                     {

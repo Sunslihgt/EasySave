@@ -208,8 +208,9 @@ namespace EasySave.ViewModels
             }
         }
 
-        public bool CreateSave(string saveName, string saveSource, string saveDestination, Save.SaveType saveType)
+        public bool CreateSaveThreaded(string saveName, string saveSource, string saveDestination, Save.SaveType saveType)
         {
+            // Use dispatcher to avoid cross-threading issues
             return Application.Current.Dispatcher.Invoke(new Func<bool>(() =>
             {
                 if (string.IsNullOrEmpty(saveName) || saveName.Contains('|') || string.IsNullOrEmpty(saveSource) || string.IsNullOrEmpty(saveDestination))
@@ -253,6 +254,20 @@ namespace EasySave.ViewModels
                 save.Dispose();
                 StateLogger.WriteState(Saves.ToList());
             }
+        }
+
+        public void DeleteSaveThreaded(Save save)
+        {
+            // Use dispatcher to avoid cross-threading issues
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (save.DeleteSave())
+                {
+                    Saves.Remove(save);
+                    save.Dispose();
+                    StateLogger.WriteState(Saves.ToList());
+                }
+            }));
         }
 
         public void PauseSave(Save save)

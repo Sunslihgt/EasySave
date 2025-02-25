@@ -108,7 +108,7 @@ namespace EasySave.Models
                             ConsoleLogger.Log($"{saveType}", ConsoleColor.DarkCyan);
                             if (name.Length > 0 && source.Length > 0 && destination.Length > 0)
                             {
-                                bool createSuccess = mainWindowViewModel.CreateSave(name, source, destination, saveType);
+                                bool createSuccess = mainWindowViewModel.CreateSaveThreaded(name, source, destination, saveType);
                                 ConsoleLogger.Log($"CreateSucess={createSuccess}", ConsoleColor.DarkCyan);
                                 if (createSuccess)
                                 {
@@ -133,7 +133,7 @@ namespace EasySave.Models
                 case "DELETE":
                     if (data.Length > 0 && mainWindowViewModel.Saves.Any((save) => save.Name == data))
                     {
-                        mainWindowViewModel.DeleteSave(mainWindowViewModel.Saves.First((save) => save.Name == data));
+                        mainWindowViewModel.DeleteSaveThreaded(mainWindowViewModel.Saves.First((save) => save.Name == data));
                     }
                     break;
                 case "PAUSE":

@@ -3,71 +3,180 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:vm="clr-namespace:EasySave.Monitoring.ViewModels"
         xmlns:models="clr-namespace:EasySave.Monitoring.Models"
         mc:Ignorable="d"
-        Title="EasySave Monitoring" Height="500" Width="950" Background="#cccccc" MinHeight="450" MinWidth="800">
+        Title="EasySave Monitoring"
+        Height="500" Width="900"
+        MinHeight="450" MinWidth="900"
+        Background="{StaticResource BackgroundColor}">
     <!-- Main Content -->
-    <Grid Background="White" Margin="10">
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
 
-        <!-- ListView with dynamic height -->
-        <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="0,0,0,10">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                            <TextBlock Text="{Binding RealDirectoryPath}" FontSize="14"/>
-                            <TextBlock Text="{Binding CopyDirectoryPath}" FontSize="14"/>
-                            <TextBlock Text="{Binding Type}" FontSize="14"/>
-                            <TextBlock Text="{Binding Transfering}" FontSize="14"/>
-                            <ProgressBar Value="{Binding Progress}" Height="20" Margin="0,10,0,0"/>
-                            <TextBlock Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Right" Margin="0,10,0,0"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Update" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                                <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Load" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                                <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="5,0"/>
-                                <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Pause" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                                <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Stop" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                                <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Play" Style="{StaticResource RoundedButtonStyle}" Margin="5,0"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="{StaticResource BackgroundColor}" Margin="0,0,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15 10">
-            <TextBox x:Name="NameTextBox" Height="30" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0 0 10 0"/>
+            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource SectionStyle}" Margin="5" Padding="10" HorizontalAlignment="Stretch">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-            <!-- Champ Source en lecture seule avec bouton de sélection -->
-            <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                <TextBox x:Name="SourceTextBox" Height="30" Text="{Binding SaveSource}" Width="200"/>
-            </StackPanel>
+                                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-            <!-- Champ Destination en lecture seule avec bouton de sélection -->
-            <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-                <TextBox x:Name="DestinationTextBox" Height="30" Text="{Binding SaveDestination}" Width="200"/>
-            </StackPanel>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
 
-            <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" SelectedItem="{Binding MySaveType}" Width="100" Margin="0 0 10 0"/>
-            <Button x:Name="AddSaveButton" Height="30" Command="{Binding CreateSaveCommand}" Content="Add Save" Style="{StaticResource RoundedButtonStyle}"/>
-        </StackPanel>
+                                    <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="5"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Upload" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.LoadSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="6"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Download" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.DeleteSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="7"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource SecondarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
+                                    </Button>
+                                </Grid>
+
+                                <Separator Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{StaticResource BorderColor}"/>
+
+                                <Grid Grid.Row="2" Margin="0,0,0,0" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ProgressBar Grid.Column="0" Value="{Binding Progress}" Style="{DynamicResource ProgressBarStyle}" Height="20"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0:F2}%}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke" Margin="5,0,5,0"/>
+
+                                    <Button Command="{Binding DataContext.PlaySaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="2"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Play" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.PauseSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="3"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource PrimarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Pause" Width="24" Height="24"/>
+                                    </Button>
+                                    <Button Command="{Binding DataContext.StopSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Grid.Column="4"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource SecondarySquareButtonStyle}">
+                                        <materialDesign:PackIcon Kind="Stop" Width="24" Height="24"/>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="10,8,20,0" Padding="10" HorizontalAlignment="Stretch"
+        Style="{StaticResource SectionStyle}">
+            <Grid Grid.Row="1" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <!-- NameTextBox -->
+                    <ColumnDefinition Width="3*" />
+                    <!-- Source -->
+                    <ColumnDefinition Width="3*" />
+                    <!-- Destination -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Type -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Add Button -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Name TextBox -->
+                <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" FontSize="16"
+                    MinWidth="100" Style="{StaticResource TextBoxStyle}" Grid.Column="0" Margin="5,0,5,0"/>
+
+                <!-- Source Folder Selection -->
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="DestinationTextBox" Text="{Binding SaveSource}" FontSize="16"
+                    MinWidth="170" Style="{StaticResource TextBoxStyle}"
+                    Grid.Column="0" Margin="10,0,5,0">
+                    </TextBox>
+                </Grid>
+
+                <!-- Destination Folder Selection -->
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SourceTextBox" Text="{Binding SaveDestination}" FontSize="16"
+                    MinWidth="170" Style="{StaticResource TextBoxStyle}"
+                    Grid.Column="0" Margin="10,0,5,0">
+                    </TextBox>
+                </Grid>
+
+                <!-- Save Type ComboBox -->
+                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" FontSize="16"
+                SelectedItem="{Binding MySaveType}" MinWidth="95" 
+                Template="{DynamicResource ComboBoxTemplate}" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}"
+                VerticalAlignment="Center" Grid.Column="3"
+                Margin="10,0,5,0"/>
+
+                <!-- Add Save Button -->
+                <Button x:Name="AddSaveButton" Command="{Binding CreateSaveCommand}"
+                Style="{StaticResource SecondarySquareButtonStyle}"
+                Grid.Column="4"
+                Margin="10,0,0,0">
+                    <materialDesign:PackIcon Kind="Plus" Width="24" Height="24"/>
+                </Button>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
