@@ -35,10 +35,11 @@
                 <ColumnDefinition Width="270"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="45"/>
                 <RowDefinition Height="220"/>
                 <RowDefinition Height="100"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
 
             <!-- Language -->
@@ -202,9 +203,9 @@
             <!-- BanList - Pop up -->
             <Popup x:Name="AddSoftwarePopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-                <Border Width="300" Height="250">
+                <Border Width="300" Height="200">
                     <StackPanel>
-                        <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10" Foreground="White"/>
+                        <TextBlock x:Name="AddSoftwareExe" Text="Ajouter un logiciel" Margin="10" Foreground="{StaticResource TextColor}"/>
                         <TextBox Text="{Binding NewSoftwareName, Mode=TwoWay}" Margin="10"/>
 
                         <Button x:Name="AddBannedSoftware"
@@ -223,9 +224,9 @@
             <!-- ExtensionList - Pop up -->
             <Popup x:Name="AddExtensionPopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-                <Border Width="300" Height="250">
+                <Border Width="300" Height="200">
                     <StackPanel>
-                        <TextBlock x:Name="AddExtensionDot" Text="Ajouter une extension" Margin="10"/>
+                        <TextBlock x:Name="AddExtensionDot" Text="Ajouter une extension" Margin="10" Foreground="{StaticResource TextColor}"/>
                         <TextBox Text="{Binding NewExtensionName}" Margin="10"/>
 
                         <Button x:Name="AddExtensionToEncrypt"
@@ -246,9 +247,9 @@
             <!-- PriorityList - Pop up -->
             <Popup x:Name="AddPriorityPopup" IsOpen="False"
             Placement="Center" StaysOpen="False" Grid.ColumnSpan="2">
-                <Border Width="300" Height="250">
+                <Border Width="300" Height="200">
                     <StackPanel>
-                        <TextBlock x:Name="AddPriorityDot" Text="Ajouter une priorité" Margin="10"/>
+                        <TextBlock x:Name="AddPriorityDot" Text="Ajouter une extension" Margin="10" Foreground="{StaticResource TextColor}"/>
                         <TextBox Text="{Binding NewPriorityName}" Margin="10"/>
 
                         <Button x:Name="AddExtensionPriority"

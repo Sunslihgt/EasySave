@@ -41,8 +41,13 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!-- Saves -->
+            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" 
+                        BorderThickness="0" Background="Transparent" 
+                        HorizontalContentAlignment="Stretch" 
+                        HorizontalAlignment="Stretch"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource SectionStyle}" Margin="5" Padding="10" HorizontalAlignment="Stretch">
@@ -64,7 +69,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    
+
                                     <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>

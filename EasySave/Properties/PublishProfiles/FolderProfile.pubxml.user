@@ -3,4 +3,8 @@
 https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
+  <PropertyGroup>
+    <History>True|2025-02-26T10:56:21.7412166Z||;True|2025-02-26T11:51:39.4241333+01:00||;True|2025-02-26T11:00:12.7057072+01:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
 </Project>
