@@ -19,6 +19,17 @@ EasySave is designed to simplify and automate the process of saving and backing 
 1. Clone the repository
 2. Navigate to the project directory
 3. Build the project
+4. CryptsoSoft :
+   4.1 Download win-64 from https://github.com/Sunslihgt/CryptoSoft/releases
+   4.2 Extract the archive in the destination folder chosen
+   4.3 Copy the folder address of the executable
+   4.4 Go to Windows search Change system environment variables, click on environment variables, new and paste the folder address of the executable, click OK in each window to confirm
+   4.5 Restart all currently open terminals if necessary
+Verify the install :
+  5.1 Launch a PowerShell window
+  5.2 Run the command Where.exe CryptoSoft.exe
+  5.3 If the full path of the software is displayed, the installation is complete
+    
 
 ### 🖥️ Usage
 1. Run the application
