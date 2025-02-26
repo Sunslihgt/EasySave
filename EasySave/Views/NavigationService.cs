@@ -15,23 +15,23 @@ namespace EasySave.Views
         // Allows to open a window of type T without breaking the MVVM pattern
         public void OpenWindow<T>() where T : Window, new()
         {
-            // Vérifie si une fenêtre est déjà ouverte
+            // Checks if a window is already open
             if (_currentWindow != null)
             {
-                _currentWindow.Focus(); // Donne le focus à la fenêtre déjà ouverte
+                _currentWindow.Focus(); // Gives focus to the already opened window
                 return;
             }
 
-            // Crée une nouvelle fenêtre
+            // creates a new window
             _currentWindow = new T();
-            _currentWindow.Owner = Application.Current.MainWindow; // Définit la fenêtre parent
-            _currentWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Centre la fenêtre
+            _currentWindow.Owner = Application.Current.MainWindow; // Sets the parent window
+            _currentWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Center the window
 
-            // Ouvre la fenêtre en mode modal
+            // Opens the window in modal mode
             _currentWindow.ShowDialog();
             _currentWindow = null;
 
-            // Ouvre la fenêtre sans le mode modal
+            // Opens the window without modal mode
             //_currentWindow.Closed += (sender, e) => _currentWindow = null;
         }
     }

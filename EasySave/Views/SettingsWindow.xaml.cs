@@ -17,7 +17,7 @@ using EasySave.ViewModels;
 namespace EasySave.Views
 {
     /// <summary>
-    /// Logique d'interaction pour SettingsWindow.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow : Window
     {

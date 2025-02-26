@@ -147,7 +147,7 @@ namespace EasySave.ViewModels
                         }
                     }
                 }
-                else if (param.Contains(';')) // Sauvegardes spécifiques (ex : 1;3)
+                else if (param.Contains(';')) // specific safeguards (ex : 1;3)
                 {
                     var saves = param.Split(';').Select(int.Parse);
                     foreach (var saveId in saves)
@@ -162,7 +162,7 @@ namespace EasySave.ViewModels
                         }
                     }
                 }
-                else // Sauvegarde unique (ex : -run:2)
+                else // single backup (ex : -run:2)
                 {
                     if (int.TryParse(param, out int saveId))
                     {
