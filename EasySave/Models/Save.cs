@@ -204,15 +204,13 @@ namespace EasySave.Models
             {
                 string destFilePath = Path.Combine(destination, file.Name);
                 bool copyFile = true;
-                if (transferType == TransferType.Download && File.Exists(destFilePath)) // Loading save and file exists
+                // File already exists and differential file load
+                if ((transferType == TransferType.Download || transferType == TransferType.Upload) && Type == SaveType.Differential && File.Exists(destFilePath))
                 {
-                    if (Type == SaveType.Differential) // Differential file load
+                    // Then do not overwrite files that haven't changed
+                    if (File.GetLastWriteTime(destFilePath) <= file.LastWriteTime)
                     {
-                        // Do not overwrite files that haven't changed
-                        if (File.GetLastWriteTime(destFilePath) <= file.LastWriteTime)
-                        {
-                            copyFile = false;
-                        }
+                        copyFile = false;
                     }
                 }
 
@@ -228,10 +226,18 @@ namespace EasySave.Models
             // Start transfer processes
             if (isRootDirectory)
             {
-                saveProcesses.ForEach(saveProcess => saveProcess.Start());
+                if (saveProcesses.Count == 0)
+                {
+                    UpdateStateFinished(DateTime.Now);
+                    ConsoleLogger.LogWarning("No files to transfer.");
+                }
+                else
+                {
+                    saveProcesses.ForEach(saveProcess => saveProcess.Start());
 
-                // Wait for all transfers to finish in a separate Thread
-                TransferFinishedTask();
+                    // Wait for all transfers to finish in a separate Thread
+                    TransferFinishedTask();
+                }
             }
         }
 
