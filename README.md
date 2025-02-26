@@ -2,6 +2,8 @@
 
 ## 📝 Overview
 EasySave is designed to simplify and automate the process of saving and backing up files. It provides a user-friendly interface and robust functionality to ensure your important data is securely backed up.
+Requirements to use EsaySave:
+Install CryptoSoft: https://github.com/Sunslihgt/CryptoSoft/blob/master/README.md
 
 ## ✨ Features
 - Directory backup
