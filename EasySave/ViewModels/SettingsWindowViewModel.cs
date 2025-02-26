@@ -189,7 +189,7 @@ namespace EasySave.ViewModels
         private void AddExtension(string extensionName)
         {
             if (string.IsNullOrWhiteSpace(extensionName)) return;
-            if (!(extensionName[0] == '.')) return;
+            if (!extensionName.StartsWith('.')) extensionName = extensionName.Insert(0, ".");
 
             EncryptExtensions.Add(extensionName);
 
@@ -218,7 +218,7 @@ namespace EasySave.ViewModels
         private void AddPriority(string priorityName)
         {
             if (string.IsNullOrWhiteSpace(priorityName)) return;
-            if (!(priorityName[0] == '.')) return;
+            if (!priorityName.StartsWith('.')) priorityName = priorityName.Insert(0, ".");
 
             PriorisedExtensions.Add(priorityName);
 
