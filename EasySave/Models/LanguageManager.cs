@@ -28,8 +28,7 @@ namespace EasySave.Models
         {
             try
             {
-                string jsonPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Sources", "languages.json"));
-
+                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources", "languages.json");
                 if (File.Exists(jsonPath))
                 {
                     string jsonText = File.ReadAllText(jsonPath, System.Text.Encoding.UTF8);
