@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using EasySave.Monitoring.Models;
 using System.Windows;
+using System.Net;
 
 namespace EasySave.Monitoring.ViewModels
 {
@@ -13,6 +14,7 @@ namespace EasySave.Monitoring.ViewModels
         private string _saveDestination = string.Empty;
         private string _mySaveType = string.Empty;
 
+        public ICommand ConnectCommand { get; }
         public ICommand DeleteSaveCommand { get; }
         public ICommand UpdateSaveCommand { get; }
         public ICommand LoadSaveCommand { get; }
@@ -20,6 +22,11 @@ namespace EasySave.Monitoring.ViewModels
         public ICommand PauseSaveCommand { get; }
         public ICommand StopSaveCommand { get; }
         public ICommand PlaySaveCommand { get; }
+
+        public Visibility ShowDisonnected{ get; set; } = Visibility.Visible;
+        public Visibility ShowWaiting{ get; set; } = Visibility.Collapsed;
+        public Visibility ShowLoggedOut { get; set; } = Visibility.Collapsed;
+        public Visibility ShowConnected{ get; set; } = Visibility.Collapsed;
 
         public string SaveName
         {
@@ -40,6 +47,10 @@ namespace EasySave.Monitoring.ViewModels
                 OnPropertyChanged(nameof(SaveSource));
             }
         }
+
+        public string IP { get; set; } = "127.0.0.1";
+        public string Port { get; set; } = "8888";
+        public string Password { get; set; } = "";
 
         public string SaveDestination
         {
@@ -69,6 +80,7 @@ namespace EasySave.Monitoring.ViewModels
         public MainWindowViewModel()
         {
             // Commands
+            ConnectCommand = new RelayCommand(Connect);
             CreateSaveCommand = new RelayCommand(CreateSave);
             DeleteSaveCommand = new RelayCommand<Save>(DeleteSave);
             UpdateSaveCommand = new RelayCommand<Save>(UpdateSave);
@@ -115,6 +127,47 @@ namespace EasySave.Monitoring.ViewModels
                     }
                 });
             }));
+        }
+
+        public void ShowConnection(string connectionState)
+        {
+            ShowDisonnected = Visibility.Collapsed;
+            ShowWaiting = Visibility.Collapsed;
+            ShowLoggedOut = Visibility.Collapsed;
+            ShowConnected = Visibility.Collapsed;
+
+            switch (connectionState)
+            {
+                case "DISCONNECTED":
+                    ShowDisonnected = Visibility.Visible;
+                    break;
+                case "WAITING":
+                    ShowWaiting = Visibility.Visible;
+                    break;
+                case "LOGGEDOUT":
+                    ShowLoggedOut = Visibility.Visible;
+                    break;
+                case "CONNECTED":
+                    ShowConnected = Visibility.Visible;
+                    break;
+                default:
+                    Console.WriteLine($"Invalid connection state view update: {connectionState}");
+                    break;
+            }
+
+            OnPropertyChanged(nameof(ShowDisonnected));
+            OnPropertyChanged(nameof(ShowWaiting));
+            OnPropertyChanged(nameof(ShowLoggedOut));
+            OnPropertyChanged(nameof(ShowConnected));
+        }
+
+        public void Connect()
+        {
+            if (IP != "" && IPAddress.TryParse(IP, out IPAddress? ipAdress) && Port != "" && int.TryParse(Port, out int portInt) && Password != "")
+            {
+                Saves.Clear();
+                Client.Connect(ipAdress, portInt, Password);
+            }
         }
 
         public void CreateSave()

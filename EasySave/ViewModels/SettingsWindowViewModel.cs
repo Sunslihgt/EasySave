@@ -17,6 +17,7 @@ namespace EasySave.ViewModels
         private string _newSoftwareName = string.Empty;
         private string _newExtensionName = string.Empty;
         private string _newPriorityName = string.Empty;
+        private string _serverPassword = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -88,6 +89,21 @@ namespace EasySave.ViewModels
                 {
                     Settings.Instance.MaxFileSizeKo = value;
                     OnPropertyChanged(nameof(MaxFileSize));
+                    Settings.Instance.SaveSettings();
+                }
+            }
+        }
+
+        public string ServerPassword
+        {
+            get => _serverPassword;
+            set
+            {
+                if (value != "")
+                {
+                    _serverPassword = value;
+                    Settings.Instance.ServerPasswordHash = Cryptography.GetPasswordHash(_serverPassword);
+                    OnPropertyChanged(nameof(ServerPassword));
                     Settings.Instance.SaveSettings();
                 }
             }

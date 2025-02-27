@@ -1,19 +1,20 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using EasySave.Monitoring.ViewModels;
 using System.IO;
+using System.Security.Cryptography;
+using Newtonsoft.Json;
+using EasySave.Monitoring.ViewModels;
 
 namespace EasySave.Monitoring.Models
 {
     public class Client
     {
-        private TcpClient client = new TcpClient();
+        private IPAddress serverIP = IPAddress.Loopback;
+        private int serverPort = 8888;
+        private string serverPasswordHash = "";
+
+        private TcpClient? client;
         private NetworkStream? stream;
 
         private MainWindowViewModel mainWindowViewModel;
@@ -21,17 +22,40 @@ namespace EasySave.Monitoring.Models
         public Client(MainWindowViewModel mainWindowViewModel)
         {
             this.mainWindowViewModel = mainWindowViewModel;
+        }
 
+        public void Connect(IPAddress ipAddress, int port, string password)
+        {
+            if (ipAddress == null)
+            {
+                Console.WriteLine("Invalid IP address");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("No password provided");
+                return;
+            }
+
+            serverIP = ipAddress;
+            serverPort = port;
+            serverPasswordHash = GetPasswordHash(password);
+
+            mainWindowViewModel.ShowConnection("DISCONNECTED");
             Task.Run(ClientMain);
         }
 
         public async Task ClientMain()
         {
-            client = new TcpClient();
-
             try
             {
-                await client.ConnectAsync(IPAddress.Loopback, 8888);
+                mainWindowViewModel.ShowConnection("WAITING");
+
+                client = new TcpClient();
+                
+                await client.ConnectAsync(serverIP, serverPort);
+                mainWindowViewModel.ShowConnection("LOGGEDOUT");
                 Console.WriteLine("Connected to the server!");
 
                 stream = client.GetStream();
@@ -40,7 +64,7 @@ namespace EasySave.Monitoring.Models
                 _ = Task.Run(ListenForMessages);
 
                 // Allow sending messages from the console
-                while (client.Connected)
+                while (IsConnected())
                 {
                     string message = Console.ReadLine() ?? "";
                     if (!string.IsNullOrEmpty(message))
@@ -57,6 +81,7 @@ namespace EasySave.Monitoring.Models
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
+            mainWindowViewModel.ShowConnection("DISCONNECTED");
         }
 
         public async Task ListenForMessages()
@@ -64,7 +89,9 @@ namespace EasySave.Monitoring.Models
             if (stream == null) return;
             StreamReader reader = new StreamReader(stream, new UTF8Encoding(false));
 
-            while (client.Connected)
+            SendMessage($"LOGIN|{serverPasswordHash}");
+
+            while (IsConnected())
             {
                 try
                 {
@@ -87,7 +114,7 @@ namespace EasySave.Monitoring.Models
             }
 
             Console.WriteLine("Disconnected from server.");
-            client.Close();
+            client?.Close();
         }
 
         private void ProcessCommand(string command)
@@ -97,17 +124,12 @@ namespace EasySave.Monitoring.Models
             if (command.StartsWith("STATE|"))
             {
                 string stateString = command.Split("STATE|")[1];
-                Console.WriteLine($"Received state");
 
                 try
                 {
                     List<Save>? saves = JsonConvert.DeserializeObject<List<Save>>(stateString);
                     if (saves != null)
                     {
-                        foreach (Save save in saves)
-                        {
-                            Console.WriteLine($"Save: {save.Name} has Transfering={save.Transfering}, Pause={save.PauseTransfer}");
-                        }
                         mainWindowViewModel.UpdateState(saves);
                     }
                 }
@@ -119,6 +141,19 @@ namespace EasySave.Monitoring.Models
             else if (command.StartsWith("RESETCREATE|"))
             {
                 mainWindowViewModel.ResetCreateSaveForm();
+            }
+            else if (command.StartsWith("LOGIN|"))
+            {
+                if (command.Split("LOGIN|")[1].Trim().Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
+                {
+                    mainWindowViewModel.ShowConnection("CONNECTED");
+                    Console.WriteLine("Login successful");
+                }
+                else
+                {
+                    mainWindowViewModel.ShowConnection("LOGGEDOUT");
+                    Console.WriteLine("Login failed");
+                }
             }
         }
 
@@ -136,9 +171,16 @@ namespace EasySave.Monitoring.Models
             Console.WriteLine($"[Client]: {message}");
         }
 
+        public static string GetPasswordHash(string password)
+        {
+            using var sha256 = SHA256.Create();
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashBytes);
+        }
+
         public bool IsConnected()
         {
-            return client.Connected;
+            return client != null && client.Connected;
         }
 
         public void CreateSave(string SaveName, string SaveSource, string SaveDestination, string MySaveType)

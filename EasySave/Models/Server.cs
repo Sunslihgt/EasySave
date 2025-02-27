@@ -10,7 +10,7 @@ namespace EasySave.Models
     {
         private TcpListener server;
         private bool running = false;
-        private List<TcpClient> clients = new List<TcpClient>();
+        private List<Client> clients = new List<Client>();
 
         private MainWindowViewModel mainWindowViewModel;
 
@@ -34,23 +34,24 @@ namespace EasySave.Models
         {
             while (running)
             {
-                var client = await server.AcceptTcpClientAsync();
+                TcpClient tcpClient = await server.AcceptTcpClientAsync();
+                Client client = new Client(tcpClient);
 
                 lock (clients) {
                     clients.Add(client);
                 }
 
-                ConsoleLogger.Log($"New client connected: {client.Client.RemoteEndPoint}", ConsoleColor.Cyan);
+                ConsoleLogger.Log($"New client connected: {tcpClient.Client.RemoteEndPoint}", ConsoleColor.Cyan);
 
                 _ = Task.Run(() => HandleClient(client));
             }
         }
 
-        private async Task HandleClient(TcpClient client)
+        private async Task HandleClient(Client client)
         {
             try
             {
-                NetworkStream stream = client.GetStream();
+                NetworkStream stream = client.TcpClient.GetStream();
                 StreamReader reader = new StreamReader(stream, new UTF8Encoding(false));
                 StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = true };
 
@@ -67,20 +68,20 @@ namespace EasySave.Models
             }
             catch (Exception ex)
             {
-                ConsoleLogger.LogError(ex.ToString());
+                ConsoleLogger.LogError(ex.Message);
             }
             finally
             {
                 lock (clients) {
                     clients.Remove(client);
+                    client.Close();
                 }
-                client.Close();
                 
                 ConsoleLogger.Log($"Client disconnected", ConsoleColor.Yellow);
             }
         }
 
-        private void ProcessCommand(TcpClient client, string command)
+        private void ProcessCommand(Client client, string command)
         {
             if (string.IsNullOrEmpty(command) || !command.Contains('|') || command.IndexOf('|') + 1 > command.Length)
             {
@@ -154,48 +155,72 @@ namespace EasySave.Models
                         mainWindowViewModel.StopSave(mainWindowViewModel.Saves.First((save) => save.Name == data));
                     }
                     break;
+                case "LOGIN":
+                    if (data.Length > 0 && !client.LoggedIn)
+                    {
+                        client.Login(data);
+
+                        if (client.LoggedIn)
+                        {
+                            ConsoleLogger.Log($"Login successful: {client.TcpClient.Client.RemoteEndPoint}", ConsoleColor.Cyan);
+                            SendClient(client, $"LOGIN|SUCCESS");
+                            SendState(client);
+                        }
+                        else
+                        {
+                            SendClient(client, $"LOGIN|FAILED", false);
+                            ConsoleLogger.Log($"Login failed: {client.TcpClient.Client.RemoteEndPoint}", ConsoleColor.Cyan);
+                        }
+                    }
+                    break;
             }
         }
 
-        public void SendState(string state = "")
+        public void BroadcastState(string state, bool needLoggedIn = true)
         {
             if (string.IsNullOrEmpty(state))
             {
-                state = mainWindowViewModel.StateLogger.GetStateString(mainWindowViewModel.Saves.ToList());
+                return;
             }
-            Broadcast($"STATE|{state}");
+            Broadcast($"STATE|{state}", needLoggedIn);
         }
 
-        public void SendState(TcpClient client, string state = "")
-        {
-            if (string.IsNullOrEmpty(state))
-            {
-                state = mainWindowViewModel.StateLogger.GetStateString(mainWindowViewModel.Saves.ToList());
-            }
-            SendClient(client, $"STATE|{state}");
-        }
-
-        public void Broadcast(string message)
+        public void Broadcast(string message, bool needLoggedIn = true)
         {
             lock (clients)
             {
                 foreach (var client in clients)
                 {
-                    SendClient(client, message);
+                    if (needLoggedIn && !client.LoggedIn) continue;
+                    SendClient(client, message, needLoggedIn);
                 }
             }
         }
 
-        private void SendClient(TcpClient client, string message)
+        public void SendState(Client client, bool needLoggedIn = true)
         {
+            if (needLoggedIn && !client.LoggedIn) return;
+
+            string state = mainWindowViewModel.StateLogger.GetStateString(mainWindowViewModel.Saves.ToList());
+            if (string.IsNullOrEmpty(state))
+            {
+                return;
+            }
+            SendClient(client, $"STATE|{state}", needLoggedIn);
+        }
+
+        private void SendClient(Client client, string message, bool needLoggedIn = true)
+        {
+            if (needLoggedIn && !client.LoggedIn) return;
+
             try
             {
-                NetworkStream stream = client.GetStream();
+                NetworkStream stream = client.TcpClient.GetStream();
                 StreamWriter writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
                 writer.WriteLine(message + "\n");
 
-                if (message.Length > 70) ConsoleLogger.Log($"Sent {client.Client.RemoteEndPoint}: {message[0..70]}...", ConsoleColor.Cyan);
-                else ConsoleLogger.Log($"Sent {client.Client.RemoteEndPoint}: {message}", ConsoleColor.Cyan);
+                if (message.Length > 70) ConsoleLogger.Log($"Sent {client.TcpClient.Client.RemoteEndPoint}: {message[0..70]}...", ConsoleColor.Cyan);
+                else ConsoleLogger.Log($"Sent {client.TcpClient.Client.RemoteEndPoint}: {message}", ConsoleColor.Cyan);
             }
             catch (Exception ex)
             {

@@ -57,6 +57,32 @@ namespace EasySave.Models
             return key;
         }
 
+        public static string GeneratePassword(int length = 16)
+        {
+            Random rand = new Random();
+
+            string password = string.Empty;
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?#&€$%*";
+            for (int i = 0; i < length; i++)
+            {
+                password += (byte)chars[rand.Next(chars.Length)];
+            }
+
+            return password;
+        }
+
+        public static string GetPasswordHash(string password = "")
+        {
+            if (password == null)
+            {
+                password = GeneratePassword(16);
+            }
+            
+            using var sha256 = SHA256.Create();
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashBytes);
+        }
+
         // Check if the file should be encrypted based on its extension
         public static bool ShouldEncrypt(string path)
         {

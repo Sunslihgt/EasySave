@@ -25,6 +25,7 @@ namespace EasySave.Models
         public string CryptoSoftPath { get; set; } = string.Empty; // Default value will be set in the constructor if not found
         public string CryptoKey { get; set; } = Cryptography.GenerateCryptoKey(64);
         public int MaxFileSizeKo { get; set; } = 100; // Default value is 100 Ko
+        public string ServerPasswordHash { get; set; } = string.Empty;
 
         private Settings() { } // Default constructor (uses the default values)
 
@@ -56,6 +57,12 @@ namespace EasySave.Models
                 if (newSettings.MaxFileSizeKo == 0)
                 {
                     newSettings.MaxFileSizeKo = new Settings().MaxFileSizeKo; // Reset to default value
+                    changedSettings = true;
+                }
+                if (string.IsNullOrEmpty(newSettings.ServerPasswordHash))
+                {
+                    newSettings.ServerPasswordHash = Cryptography.GetPasswordHash("azertyuiop");
+                    //newSettings.ServerPasswordHash = Cryptography.GetPasswordHash();
                     changedSettings = true;
                 }
             }

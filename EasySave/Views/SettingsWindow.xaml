@@ -38,6 +38,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="45"/>
                 <RowDefinition Height="220"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="45"/>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
@@ -97,7 +99,7 @@
                             <DataTemplate>
                                 <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
                                 Command="{Binding DataContext.RemoveBannedSoftwareCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}">
+                                CommandParameter="{Binding}" Margin="0,2,0,2">
                                     <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
                                 </Button>
                             </DataTemplate>
@@ -137,7 +139,7 @@
                             <DataTemplate>
                                 <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
                                 Command="{Binding DataContext.RemovePriorityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}">
+                                CommandParameter="{Binding}" Margin="0,2,0,2">
                                     <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
                                 </Button>
                             </DataTemplate>
@@ -177,7 +179,7 @@
                             <DataTemplate>
                                 <Button FontSize="10" Style="{StaticResource SecondarySquareButtonStyle}"
                                 Command="{Binding DataContext.RemoveExtensionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}">
+                                CommandParameter="{Binding}" Margin="0,2,0,2">
                                     <materialDesign:PackIcon Kind="Delete" Width="24" Height="24"/>
                                 </Button>
                             </DataTemplate>
@@ -190,6 +192,14 @@
             VerticalAlignment="Center"
             Click="OpenAddExtensionPopup"
             Style="{StaticResource PrimaryButtonStyle}" Grid.Column="0" Grid.Row="2"/>
+            
+            <!-- Password -->
+            <TextBlock x:Name="PasswordLabel" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Foreground="white" Grid.Row="3" Grid.Column="1">
+                <Run Language="fr-fr" Text="PasswordLabel"/>
+            </TextBlock>
+            <TextBox Text="{Binding ServerPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Background="{StaticResource TextBoxColor}" Foreground="{StaticResource TextColor}"
+                HorizontalAlignment="Center" Margin="0,0,0,0"
+                Width="160" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
 
             <!-- Button Leave -->
             <Button x:Name="BackToMenu"
@@ -198,7 +208,7 @@
             Margin="0,0,0,0"
             VerticalAlignment="Center"
             Command="{Binding CloseWindowCommand}"
-            Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" Grid.Row="3"/>
+            Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" Grid.Row="5"/>
 
             <!-- BanList - Pop up -->
             <Popup x:Name="AddSoftwarePopup" IsOpen="False"
