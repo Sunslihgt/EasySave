@@ -15,7 +15,7 @@ namespace EasySave.Models
             FR,
             ES
         }
-        private static Language currentLanguage = Language.EN;
+        public static Language CurrentLanguage { get; private set; } = Language.EN;
 
         public static event Action? LanguageChanged;
 
@@ -51,20 +51,20 @@ namespace EasySave.Models
         {
             if (languages.ContainsKey(language.ToString().ToLower()))
             {
-                currentLanguage = language;
+                CurrentLanguage = language;
                 LanguageChanged?.Invoke();
             }
             else
             {
                 ConsoleLogger.Log("Language not found! Defaulting to English.");
-                currentLanguage = Language.EN;
+                CurrentLanguage = Language.EN;
                 LanguageChanged?.Invoke();
             }
         }
 
         public static string GetText(string key)
         {
-            string langKey = currentLanguage.ToString().ToLower();
+            string langKey = CurrentLanguage.ToString().ToLower();
             if (languages.ContainsKey(langKey) && languages[langKey].ContainsKey(key))
             {
                 var value = languages[langKey][key];

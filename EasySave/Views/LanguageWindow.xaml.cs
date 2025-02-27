@@ -20,7 +20,9 @@ namespace EasySave.Views
 
         private void UpdateTexts()
         {
+            LanguageComboBox.SelectedIndex = (int)LanguageManager.CurrentLanguage;
             Title = LanguageManager.GetText("language_window_title");
+            LanguageLabel.Text = LanguageManager.GetText("choose_language");
             SubmitButton.Content = LanguageManager.GetText("modify_language_button");
         }
 
@@ -29,7 +31,6 @@ namespace EasySave.Views
             if (LanguageComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 string selectedLanguage = selectedItem.Tag.ToString() ?? "";
-                MessageBox.Show($"Current Language : {selectedLanguage}");
 
                 switch (selectedLanguage)
                 {
