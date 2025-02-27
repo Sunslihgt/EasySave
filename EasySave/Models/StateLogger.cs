@@ -165,7 +165,7 @@ namespace EasySave.Models
         {
             if (sendServerUpdate)
             {
-                mainWindowViewModel.Server.SendState(GetStateString(saves, false));
+                mainWindowViewModel.Server.BroadcastState(GetStateString(saves, false));
             }
 
             lock (writeLock)

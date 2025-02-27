@@ -14,7 +14,6 @@
     <!-- Main Content -->
     <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -24,13 +23,60 @@
             <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="{StaticResource BackgroundColor}" Margin="0,0,10,0">
+        <Grid Grid.Column="0" Grid.Row="1" Background="{StaticResource BackgroundColor}" Margin="0,0,0,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Border Grid.Row="0" Margin="10,8,10,0" Padding="10" HorizontalAlignment="Stretch"
+                Style="{StaticResource SectionStyle}">
+                <Grid Grid.Row="0" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- <RowDefinition Height="Auto"/> -->
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Connection labels -->
+                    <!-- <TextBlock Grid.Row="0" Grid.Column="0" Text="???" Style="{StaticResource LabelTextBlockStyle}"/> -->
+
+                    <!-- Connection fields -->
+                    <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource TextBoxStyle}" Width="200"
+                        Text="{Binding IP}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Width="200" Margin="15,0,0,0"
+                        Text="{Binding Port}"/>
+                    <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource TextBoxStyle}" Width="200" Margin="15,0,0,0"
+                        Text="{Binding Password}"/>
+                    <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource PrimarySquareButtonStyle}" Margin="15,0,0,0"
+                        Command="{Binding ConnectCommand}">
+                        <materialDesign:PackIcon Kind="Connection" Width="24" Height="24"/>
+                    </Button>
+                    <Button Grid.Row="1" Grid.Column="5" Style="{StaticResource PrimarySquareButtonStyle}" IsEnabled="False" Background="{StaticResource TextBoxColor}">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Display icon according to the client state -->
+                            <materialDesign:PackIcon Kind="NetworkOff" Width="24" Height="24" Visibility="{Binding ShowDisonnected}" HorizontalAlignment="Stretch"/>
+                            <materialDesign:PackIcon Kind="TimerSand" Width="24" Height="24" Visibility="{Binding ShowWaiting}" HorizontalAlignment="Stretch"/>
+                            <materialDesign:PackIcon Kind="AccountCancel" Width="24" Height="24" Visibility="{Binding ShowLoggedOut}" HorizontalAlignment="Stretch"/>
+                            <materialDesign:PackIcon Kind="AccountCheck" Width="24" Height="24" Visibility="{Binding ShowConnected}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <ListView Grid.Row="1" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent"
+                HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                VirtualizingPanel.ScrollUnit="Pixel">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource SectionStyle}" Margin="5" Padding="10" HorizontalAlignment="Stretch">
@@ -118,8 +164,8 @@
             </ListView>
         </Grid>
 
-        <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="10,8,20,0" Padding="10" HorizontalAlignment="Stretch"
-        Style="{StaticResource SectionStyle}">
+        <Border Grid.Column="0" Grid.Row="2" Margin="10,8,10,0" Padding="10" HorizontalAlignment="Stretch"
+            Style="{StaticResource SectionStyle}">
             <Grid Grid.Row="1" Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
@@ -135,7 +181,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Name TextBox -->
-                <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" FontSize="16"
+                <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}"
                     MinWidth="100" Style="{StaticResource TextBoxStyle}" Grid.Column="0" Margin="5,0,5,0"/>
 
                 <!-- Source Folder Selection -->
@@ -144,7 +190,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="DestinationTextBox" Text="{Binding SaveSource}" FontSize="16"
+                    <TextBox x:Name="DestinationTextBox" Text="{Binding SaveSource}"
                     MinWidth="170" Style="{StaticResource TextBoxStyle}"
                     Grid.Column="0" Margin="10,0,5,0">
                     </TextBox>
@@ -156,14 +202,14 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SourceTextBox" Text="{Binding SaveDestination}" FontSize="16"
+                    <TextBox x:Name="SourceTextBox" Text="{Binding SaveDestination}"
                     MinWidth="170" Style="{StaticResource TextBoxStyle}"
                     Grid.Column="0" Margin="10,0,5,0">
                     </TextBox>
                 </Grid>
 
                 <!-- Save Type ComboBox -->
-                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" FontSize="16"
+                <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" FontSize="14"
                 SelectedItem="{Binding MySaveType}" MinWidth="95" 
                 Template="{DynamicResource ComboBoxTemplate}" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}"
                 VerticalAlignment="Center" Grid.Column="3"

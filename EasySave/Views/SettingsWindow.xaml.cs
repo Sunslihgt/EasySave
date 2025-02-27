@@ -76,6 +76,9 @@ namespace EasySave.Views
             AddPriorityDot.Text = LanguageManager.GetText("modify_extension");
             AddExtensionPriority.Content = LanguageManager.GetText("add");
             CancelExtensionPriority.Content = LanguageManager.GetText("cancel");
+
+            // Password
+            PasswordLabel.Text = LanguageManager.GetText("modify_password");
         }
 
         private void OpenAddSoftwarePopup(object sender, RoutedEventArgs e)

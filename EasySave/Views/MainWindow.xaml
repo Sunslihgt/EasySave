@@ -43,11 +43,12 @@
             </Grid.RowDefinitions>
             <!-- Saves -->
             <ListView Grid.Row="0" ItemsSource="{Binding Saves}" Margin="10,0,10,0" 
-                        BorderThickness="0" Background="Transparent" 
-                        HorizontalContentAlignment="Stretch" 
-                        HorizontalAlignment="Stretch"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}">
+                BorderThickness="0" Background="Transparent" 
+                HorizontalContentAlignment="Stretch" 
+                HorizontalAlignment="Stretch"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                VirtualizingPanel.ScrollUnit="Pixel">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource SectionStyle}" Margin="5" Padding="10" HorizontalAlignment="Stretch">

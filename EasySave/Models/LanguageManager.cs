@@ -72,26 +72,5 @@ namespace EasySave.Models
             }
             return $"[MISSING:{key}]";
         }
-
-        public static List<string> GetTextArray(string key)
-        {
-            string langKey = currentLanguage.ToString().ToLower();
-            if (languages.ContainsKey(langKey) && languages[langKey].ContainsKey(key))
-            {
-                try
-                {
-                    var value = languages[langKey][key];
-                    if (value is JArray jsonArray)
-                    {
-                        return jsonArray.ToObject<List<string>>() ?? new List<string>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ConsoleLogger.LogError($"Error parsing language key '{key}': {ex.Message}");
-                }
-            }
-            return new List<string> { "[MISSING]" };
-        }
     }
 }
