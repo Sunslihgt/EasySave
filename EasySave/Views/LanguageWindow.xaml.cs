@@ -21,6 +21,7 @@ namespace EasySave.Views
         private void UpdateTexts()
         {
             Title = LanguageManager.GetText("language_window_title");
+            LanguageLabel.Text = LanguageManager.GetText("choose_language");
             SubmitButton.Content = LanguageManager.GetText("modify_language_button");
         }
 

@@ -50,10 +50,13 @@
                     <!-- <TextBlock Grid.Row="0" Grid.Column="0" Text="???" Style="{StaticResource LabelTextBlockStyle}"/> -->
 
                     <!-- Connection fields -->
+                    <TextBlock x:Name="IPaddress" Text="Enter the IP Address" MinWidth="100" Grid.Row="1" Grid.Column="0" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource TextBoxStyle}" Width="200"
                         Text="{Binding IP}"/>
+                    <TextBlock x:Name="Portaddress" Text="Enter the Port" MinWidth="100" Grid.Row="1" Grid.Column="1" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                     <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Width="200" Margin="15,0,0,0"
                         Text="{Binding Port}"/>
+                    <TextBlock x:Name="Password" Text="Enter the Password" MinWidth="100" Grid.Row="1" Grid.Column="2" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                     <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource TextBoxStyle}" Width="200" Margin="15,0,0,0"
                         Text="{Binding Password}"/>
                     <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource PrimarySquareButtonStyle}" Margin="15,0,0,0"
@@ -181,10 +184,12 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Name TextBox -->
+                <TextBlock x:Name="NameSave" Text="Enter a save name" MinWidth="100" Grid.Column="0" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}"
                     MinWidth="100" Style="{StaticResource TextBoxStyle}" Grid.Column="0" Margin="5,0,5,0"/>
 
                 <!-- Source Folder Selection -->
+                <TextBlock x:Name="SourcePath" Text="Enter a source path to copy" MinWidth="100" Grid.Column="1" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -197,6 +202,7 @@
                 </Grid>
 
                 <!-- Destination Folder Selection -->
+                <TextBlock x:Name="DestPath" Text="Enter a destination path for the save" MinWidth="100" Grid.Column="2" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <Grid Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -209,6 +215,7 @@
                 </Grid>
 
                 <!-- Save Type ComboBox -->
+                <TextBlock x:Name="TypeSave" Text="Choose a type of backup" MinWidth="100" Grid.Column="3" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}" FontSize="14"
                 SelectedItem="{Binding MySaveType}" MinWidth="95" 
                 Template="{DynamicResource ComboBoxTemplate}" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}"

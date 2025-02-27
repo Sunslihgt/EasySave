@@ -153,10 +153,12 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Name TextBox -->
+                <TextBlock x:Name="NameSave" Text="NameSaveLabel" MinWidth="100" Grid.Column="0" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <TextBox x:Name="NameTextBox" Text="{Binding SaveName, UpdateSourceTrigger=PropertyChanged}" 
                         MinWidth="100" Style="{StaticResource TextBoxStyle}" Grid.Column="0" Margin="5,0,5,0"/>
 
                 <!-- Source Folder Selection -->
+                <TextBlock x:Name="SourcePath" Text="SourcePathLabel" MinWidth="100" Grid.Column="1" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -179,6 +181,7 @@
                 </Grid>
 
                 <!-- Destination Folder Selection -->
+                <TextBlock x:Name="DestPath" Text="DestPathLabel" MinWidth="100" Grid.Column="2" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <Grid Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -199,6 +202,7 @@
                 </Grid>
 
                 <!-- Save Type ComboBox -->
+                <TextBlock x:Name="TypeSave" Text="TypeSaveLabel" MinWidth="100" Grid.Column="3" Margin="0,0,0,60" HorizontalAlignment="Center" Foreground="{StaticResource TextColor}"/>
                 <ComboBox x:Name="TypeComboBox" Height="30" ItemsSource="{Binding SaveTypes}"
                     SelectedItem="{Binding MySaveType}" MinWidth="95" FontSize="16"
                     Template="{DynamicResource ComboBoxTemplate}" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}"

@@ -15,16 +15,17 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Conteneur avec effet carte -->
         <Border Grid.Row="1" Margin="20" Padding="20"
                 Background="#252526" CornerRadius="15"
                 BorderBrush="#444444" BorderThickness="1">
 
             <StackPanel HorizontalAlignment="Center">
-                <!-- Titre -->
-                <TextBlock Text="{Binding Path=ChooseLanguageText}" 
+                <!-- Title -->
+                <TextBlock x:Name="LanguageLabel" 
+                           Text="Changer la langue" 
+                           TextWrapping="Wrap"
                            Style="{StaticResource LanguageWindowTextBlockStyle}" 
-                           Foreground="White"/>
+                           Foreground="{StaticResource TextColor}"/>
 
                 <!-- ComboBox -->
                 <ComboBox Template="{DynamicResource ComboBoxTemplate}" x:Name="LanguageComboBox" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}" Margin="10">
@@ -33,7 +34,7 @@
                     <ComboBoxItem Content="Español" Tag="ES"/>
                 </ComboBox>
 
-                <!-- Bouton -->
+                <!-- Button -->
                 <Button x:Name="SubmitButton" Content="{Binding Path=ModifyLanguageButtonText}" 
                         Margin="10"
                         Style="{StaticResource PrimaryButtonStyle}" 
