@@ -29,8 +29,8 @@
 
                 <!-- ComboBox -->
                 <ComboBox Template="{DynamicResource ComboBoxTemplate}" x:Name="LanguageComboBox" Style="{StaticResource LanguageComboBoxStyle}" Foreground="{StaticResource TextColor}" Margin="10">
-                    <ComboBoxItem Content="Français" Tag="FR"/>
                     <ComboBoxItem Content="English" Tag="EN"/>
+                    <ComboBoxItem Content="Français" Tag="FR"/>
                     <ComboBoxItem Content="Español" Tag="ES"/>
                 </ComboBox>
 

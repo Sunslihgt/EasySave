@@ -28,7 +28,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="MainGrid" Grid.Column="1" Cursor="">
+        <Grid x:Name="MainGrid" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="270"/>
                 <ColumnDefinition Width="380"/>
