@@ -30,7 +30,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Margin="10,8,10,0" Padding="10" HorizontalAlignment="Stretch"
+            <Border Grid.Row="0" Margin="10,8,10,10" Padding="10" HorizontalAlignment="Stretch"
                 Style="{StaticResource SectionStyle}">
                 <Grid Grid.Row="0" Margin="10">
                     <Grid.RowDefinitions>
@@ -72,7 +72,7 @@
                 </Grid>
             </Border>
 
-            <ListView Grid.Row="1" ItemsSource="{Binding Saves}" Margin="10,0,10,0" BorderThickness="0" Background="Transparent"
+            <ListView Grid.Row="1" ItemsSource="{Binding Saves}" Margin="0,0,10,0" BorderThickness="0" Background="Transparent"
                 HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" 
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                 MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
@@ -101,8 +101,8 @@
 
                                     <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPathDisplayed}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPathDisplayed}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
 
                                     <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     Grid.Column="5"

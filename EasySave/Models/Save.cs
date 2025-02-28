@@ -24,6 +24,20 @@ namespace EasySave.Models
         public string Name { get; set; }
         public string RealDirectoryPath { get; set; }
         public string CopyDirectoryPath { get; set; }
+        public string RealDirectoryPathDisplayed
+        {
+             get
+             {
+                return RealDirectoryPath.Length > 50 ? ConsoleLogger.ShortenPath(RealDirectoryPath): RealDirectoryPath;
+             }
+        }
+        public string CopyDirectoryPathDisplayed
+        {
+            get
+            {
+                return CopyDirectoryPath.Length > 50 ? ConsoleLogger.ShortenPath(CopyDirectoryPath) : CopyDirectoryPath;
+            }
+        }
 
         // Transfer threads
         private List<SaveProcess> saveProcesses = new List<SaveProcess>();
