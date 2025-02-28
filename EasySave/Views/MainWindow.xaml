@@ -73,8 +73,8 @@
 
                                     <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Type}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPath}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding RealDirectoryPathDisplayed}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding CopyDirectoryPathDisplayed}" FontSize="14" Foreground="#CCCCCC" VerticalAlignment="Center"/>
 
                                     <Button Command="{Binding DataContext.UpdateSaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                         Grid.Column="5"
