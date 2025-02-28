@@ -218,7 +218,7 @@ namespace EasySave.Models
                 {
                     // Create TransferProcess objects
                     bool priorised = Settings.Instance.PriorisedExtensions.Any((extension) => file.Name.EndsWith(extension));
-                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, (int)file.Length, priorised);
+                    SaveProcess saveProcess = new SaveProcess(CountdownEvent, this, transferType, file, destFilePath, file.Length, priorised);
                     saveProcesses.Add(saveProcess);
                 }
             }
@@ -311,10 +311,11 @@ namespace EasySave.Models
         {
             lock (updtateStateLock)
             {
-                Progress = (100 - (SizeRemaining - size) * 100 / TotalSize);
+                
                 Date = date;
                 FilesRemaining--;
                 SizeRemaining = Math.Max(SizeRemaining - size, 0); // Prevents negative size remaining if close to 0
+                Progress = (100 - SizeRemaining * 100 / TotalSize);
                 CurrentSource = fileSourcePath;
                 CurrentDestination = fileDestinationPath;
                 MainWindowViewModel.StateLogger.WriteState(MainWindowViewModel.Saves.ToList());
